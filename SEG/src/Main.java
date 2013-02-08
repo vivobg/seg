@@ -1,8 +1,13 @@
 import javax.swing.JFrame;
 
+import javaclient3.PlayerClient;
+import javaclient3.Position2DInterface;
+import javaclient3.PlayerException;
+import javaclient3.structures.PlayerConstants;
+import javaclient3.RangerInterface;
 
 
-public class MainApp
+public class Main 
 {
 	
 	static double forwardSpeed = 0.5;
