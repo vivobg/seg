@@ -6,7 +6,7 @@ public class MainApp
 {
 	
 	static double forwardSpeed = 0.5;
-	
+	//This is the main method
 	public static void main(String[] args) {
 		MainFrame frame = new MainFrame();
 		frame.setTitle("Main Control");
