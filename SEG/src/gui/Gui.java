@@ -8,28 +8,34 @@ import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import map.CoordVal;
 import map.Map;
 import map.VerticalArray;
 
-public class Gui extends JFrame{
+public class Gui extends JFrame implements Observer{
 	
 	private JPanel jp;
 	private Graphics2D pg;
 	private Map map;
-	private int x=20;
-	private int y=20;
+	//private int x=20;
+	//private int y=20;
 	private int blockSize=5;
 	
 	Gui(Map map){
 		super("Map Gui");
 		this.map = map;
+		this.map.addObserver(this);
 		initWidgets();
 	}
+	
+	public Map getMap() {return map;}
 
 	private void initWidgets() {
 		jp = new JPanel(){
@@ -77,22 +83,6 @@ public class Gui extends JFrame{
 						g2.fillRect((centerX-x)*blockSize, (centerY-i)*blockSize, blockSize, blockSize);
 					}
 				}
-				/*
-				for (int i=map.getMinXSize();i<map.getMaxXSize();i++){
-					VerticalArray vr = map.getVertical(i);
-					for (int j=0;j<vr.getNegSize();j++){
-						//float val = vr.getValue((j-1)*-1);
-						//ADD color options
-						g2.fillRect((centerX+i)*blockSize, (centerY+j)*blockSize, blockSize, blockSize);
-						//System.out.println(val);
-					}
-					for (int j=0;j<vr.getPosSize();j++){
-						//float val = vr.getValue(j);
-						//ADD color options
-						g2.fillRect((centerX+i)*blockSize, (centerY-j)*blockSize, blockSize, blockSize);
-						//System.out.println(val);
-					}
-				}*/
 			}
 		};
         pg = (Graphics2D) jp.getGraphics();
@@ -109,10 +99,7 @@ public class Gui extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Draw function here
-				//pg.drawRect(20, 20, 50, 50);
-				//x+=10;
-				//y+=10;
+			
 				jp.repaint();
 			}
 		});
@@ -133,13 +120,19 @@ public class Gui extends JFrame{
 		map.setValue(-70, 0, 0.8f);
 		map.setValue(-20, 3, 0.8f);
 		for (int i=-14;i<15;i+=1){
-			//for (int j=(int) Math.round(-Math.random()*40);j<Math.random()*40+10;j+=1){
 				map.setValue(i, (int) (Math.random()*40+10), 0.2f);
 				map.setValue(i, (int) -(Math.random()*40+10), 0.2f);
-			//}
 		}
 		
 
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		CoordVal cv = (CoordVal) arg;
+		
+		jp.repaint();
+		
 	}
 
 }
