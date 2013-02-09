@@ -21,6 +21,12 @@ public class Map {
 	private int minY=0; //handy for the GUI
 	private int maxY=0; //handy for the GUI	
 	
+	public Map(){
+		posArray=new ArrayList<VerticalArray>();
+		negArray=new ArrayList<VerticalArray>();
+	}
+	
+	
 	private void updateMinMaxY(int y){
 		if (y>maxY) maxY = y;
 		else if(y<minY) minY=y;
@@ -39,6 +45,18 @@ public class Map {
 			return negArray.get(negX).getValue(y);
 		} else
 			return posArray.get(x).getValue(y);
+	}
+	/**
+	 * Only use to read and NOT set (can mess up MinMax sizes)
+	 * @param x the horizontal index
+	 * @return the vertical array at the given index
+	 */
+	public VerticalArray getVertical(int x){
+		if (x < 0) {
+			int negX = x * -1 - 1;
+			return negArray.get(negX);
+		} else
+			return posArray.get(x);
 	}
 	
 	public void setValue(int x, int y, float value){
@@ -103,6 +121,9 @@ public class Map {
 			return posArray.get(x).isUnexplored(y);
 	}
 	
-	
+	public static void main(String[] a){
+		Map map = new Map();
+		System.out.println(map.getMaxXSize());
+	}
 
 }

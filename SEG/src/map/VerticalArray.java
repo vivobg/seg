@@ -16,10 +16,15 @@ public class VerticalArray {
 	private ArrayList<Float> negArray;
 
 	public VerticalArray(){
+		
+		posArray=new ArrayList<Float>();
+		negArray=new ArrayList<Float>();
 		setValue(0, Map.UNEXPLORED);
 	}
 	
 	public VerticalArray(int y, float value){
+		posArray=new ArrayList<Float>();
+		negArray=new ArrayList<Float>();
 		setValue(y, value);
 	}
 	
