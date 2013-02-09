@@ -5,12 +5,14 @@ package map;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * @author Vilian Atmadzhov
  *
  */
-public class Map {
+public class Map extends Observable{
 	
 	static final float OCCThreshold = 0.8f;
 	static final float EMPTYThreshold = 0.2f;
@@ -80,6 +82,8 @@ public class Map {
 		}
 		
 		updateMinMaxY(y);
+		setChanged();
+		notifyObservers(new CoordVal(x, y, value));
 		
 	}
 	
