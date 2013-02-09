@@ -5,6 +5,7 @@ package map;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 
 /**
  * @author Vilian Atmadzhov
@@ -19,12 +20,15 @@ public class VerticalArray {
 		
 		posArray=new ArrayList<Float>();
 		negArray=new ArrayList<Float>();
+		negArray.add(-123f);
 		setValue(0, Map.UNEXPLORED);
 	}
 	
 	public VerticalArray(int y, float value){
 		posArray=new ArrayList<Float>();
 		negArray=new ArrayList<Float>();
+		negArray.add(-123f);
+		setValue(0, Map.UNEXPLORED);
 		setValue(y, value);
 	}
 	
@@ -39,8 +43,8 @@ public class VerticalArray {
 	 */
 	public float getValue(int y) {
 		if (y < 0) {
-			int negY = y * -1 - 1;
-			return negArray.get(negY);
+			y = Math.abs(y);
+			return negArray.get(y);
 		} else
 			return posArray.get(y);
 	}
@@ -56,17 +60,41 @@ public class VerticalArray {
 	 *            The value to write into the cell
 	 */
 	public void setValue(int y, float value) {
+		
+		ArrayList<Float> array;
+		if (y<0) array = negArray;
+		else array = posArray;
+		
+		y = Math.abs(y);
+		
+		if (y < array.size()){// If array is already big enough
+			array.set(y,value);// Update the existing value
+		}
+		else {// Grow the array with default values, up to the needed index
+			int size = array.size();
+			for (int i=0;i<y-size+1;i++){
+				array.add(Map.UNEXPLORED);
+			}
+			array.set(y,value);// Add the value of the needed index at the end
+		}
+		
+		
+		
+		
+		/*
+		
 		if (y < 0) {
 			// Convert to a "negative" index to work with negArray
-			int negY = y * -1 - 1;
+			int negY = Math.abs(y);
 			// If array is already big enough
 			if (negY < negArray.size())
 				// Update the existing value
 				negArray.set(negY, value);
 			else {
 				// Grow the array with default values, up to the needed index
-				negArray.addAll(Collections.nCopies(negY - negArray.size(),
-						Map.UNEXPLORED));
+				for (int i=0;i<negY-negArray.size();i++){//*********************i=0
+					negArray.add(Map.UNEXPLORED);
+				}
 				// Add the value of the needed index at the end
 				negArray.add(value);
 			}
@@ -77,12 +105,13 @@ public class VerticalArray {
 				posArray.set(y, value);
 			else {
 				// Grow the array with default values, up to the needed index
-				posArray.addAll(Collections.nCopies(y - posArray.size(),
-						Map.UNEXPLORED));
+				for (int i=0;i<y-posArray.size();i++){//*********************************i=0
+					posArray.add(Map.UNEXPLORED);
+				}
 				// Add the value of the needed index at the end
 				posArray.add(value);
 			}
-		}
+		}*/
 	}
 
 	/**
@@ -130,6 +159,26 @@ public class VerticalArray {
 	 */
 	public boolean isUnexplored(int y) {
 		return (getValue(y) <= Map.OCCThreshold && getValue(y) >= Map.EMPTYThreshold);
+	}
+	
+	public String toString(){
+		
+		StringBuffer sb = new StringBuffer("[");
+		/*for (int i=getNegSize()-3;i>=0;i++){
+			sb.append(negArray.get(i) + ", ");
+			//sb.insert(offset, d)
+		}
+		sb.append("]");*/
+		Iterator<Float> it= negArray.iterator();
+		while (it.hasNext()){
+			sb.insert(1, it.next()+", ");
+			
+		}
+		sb.append("]");
+		//sb.append(negArray.toString());
+		sb.append(posArray.toString());
+		return sb.toString();
+		
 	}
 
 }

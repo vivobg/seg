@@ -24,12 +24,13 @@ public class Map {
 	public Map(){
 		posArray=new ArrayList<VerticalArray>();
 		negArray=new ArrayList<VerticalArray>();
+		setValue(0, 0, Map.UNEXPLORED);
 	}
 	
 	
 	private void updateMinMaxY(int y){
 		if (y>maxY) maxY = y;
-		else if(y<minY) minY=y;
+		else if(Math.abs(y)>minY) minY=Math.abs(y);
 	}
 	
 	/**
@@ -41,8 +42,8 @@ public class Map {
 	 */
 	public float getValue(int x, int y){
 		if (x < 0) {
-			int negX = x * -1 - 1;
-			return negArray.get(negX).getValue(y);
+			x= Math.abs(x);
+			return negArray.get(x).getValue(y);
 		} else
 			return posArray.get(x).getValue(y);
 	}
@@ -53,43 +54,31 @@ public class Map {
 	 */
 	public VerticalArray getVertical(int x){
 		if (x < 0) {
-			int negX = x * -1 - 1;
-			return negArray.get(negX);
+			x = Math.abs(x);
+			return negArray.get(x);
 		} else
 			return posArray.get(x);
 	}
 	
 	public void setValue(int x, int y, float value){
-		if (x < 0) {
-			// Convert to a "negative" index to work with negArray
-			int negX = x * -1 - 1;
-			// If array is already big enough
-			if (negX < negArray.size())
-				// Update the existing value
-				negArray.get(negX).setValue(y, value);
-			else {
-				// Grow the array with default values, up to the needed index
-				
-				for (int i=0;i<negX-negArray.size();i++){
-					negArray.add(new VerticalArray());
-				}
-				// Add the value of the needed index at the end
-				negArray.add(new VerticalArray(y, value));
-			}
-		} else {
-			// If array is already big enough
-			if (x < posArray.size())
-				// Update the existing value
-				posArray.get(x).setValue(y, value);
-			else {
-				// Grow the array with default values, up to the needed index
-				for (int i=0;i<y-posArray.size();i++){
-					posArray.add(new VerticalArray());
-				}
-				// Add the value of the needed index at the end
-				posArray.add(new VerticalArray(y, value));
-			}
+		
+		ArrayList<VerticalArray> array;
+		if (x<0) array = negArray;
+		else array = posArray;
+		
+		x = Math.abs(x);
+		
+		if (x < array.size()){// If array is already big enough
+			array.get(x).setValue(y, value);// Update the existing value
 		}
+		else {// Grow the array with default values, up to the needed index
+			int size = array.size();
+			for (int i=1;i<x-size+1;i++){//*********************i=0
+				array.add(new VerticalArray());
+			}
+			array.add(new VerticalArray(y, value));
+		}
+		
 		updateMinMaxY(y);
 		
 	}
@@ -101,29 +90,63 @@ public class Map {
 	
 	public boolean isOccupied(int x,int y) {
 		if (x < 0) {
-			int negX = x * -1 - 1;
-			return negArray.get(negX).isOccupied(y);
+			x = Math.abs(x);
+			return negArray.get(x).isOccupied(y);
 		} else
 			return posArray.get(x).isOccupied(y);
 	}
 	public boolean isEmpty(int x,int y) {
 		if (x < 0) {
-			int negX = x * -1 - 1;
-			return negArray.get(negX).isEmpty(y);
+			x = Math.abs(x);
+			return negArray.get(x).isEmpty(y);
 		} else
 			return posArray.get(x).isEmpty(y);
 	}
 	public boolean isUnexplored(int x,int y) {
 		if (x < 0) {
-			int negX = x * -1 - 1;
-			return negArray.get(negX).isUnexplored(y);
+			x = Math.abs(x);
+			return negArray.get(x).isUnexplored(y);
 		} else
 			return posArray.get(x).isUnexplored(y);
 	}
 	
 	public static void main(String[] a){
 		Map map = new Map();
-		System.out.println(map.getMaxXSize());
+		
+		map.setValue(0, 3, 0.3f);
+		map.setValue(2, 4, 2.4f);
+		map.setValue(4, -2, -4.2f);
+		map.setValue(3, -5, -3.5f);
+		
+		map.setValue(-2, -2, -2.2f);
+		//map.setValue(1, 1, 1.1f);
+		//map.setValue(1, 2, 0.2f);
+		//map.setValue(3, 4, 3.4f);
+		//map.setValue(0, -1, 1.2f);
+		//map.setValue(0, -2, 2.2f);
+		//map.setValue(0, -3, 3.2f);
+		//map.setValue(-2, -6, 4.2f);
+		
+		
+		
+		
+		//positive X
+		for (int x=0;x<map.getMaxXSize();x++)
+		{	
+			VerticalArray vert = map.getVertical(x);
+			
+			System.out.println(vert.toString());
+				
+		}
+		System.out.println("Done positive X");
+		//Negative X
+		for (int x=1;x<map.getMinXSize();x++)
+		{	
+			VerticalArray vert = map.getVertical(-x);
+			System.out.println(vert.toString());
+				
+		}
+		System.out.println("Done negative X");
 	}
 
 }
