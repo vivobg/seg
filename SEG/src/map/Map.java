@@ -60,11 +60,16 @@ public class Map extends Observable{
 	 * @throws IndexOutOfBoundsException if indices out of range
 	 */
 	public float getValue(int x, int y){
+		try{
 		if (x < 0) {
 			x= Math.abs(x);
 			return negArray.get(x).getValue(y);
 		} else
 			return posArray.get(x).getValue(y);
+		}
+		catch (ArrayIndexOutOfBoundsException e){
+			return Map.UNEXPLORED;
+		}
 	}
 	/**
 	 * Only use to read and NOT set (can mess up MinMax sizes)
