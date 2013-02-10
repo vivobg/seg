@@ -22,6 +22,8 @@ public class Map extends Observable{
 	private ArrayList<VerticalArray> negArray;
 	private int minY=0; //handy for the GUI
 	private int maxY=0; //handy for the GUI	
+	private int minX=0; //handy for the GUI
+	private int maxX=0; //handy for the GUI	
 	
 	public Map(){
 		posArray=new ArrayList<VerticalArray>();
@@ -30,9 +32,24 @@ public class Map extends Observable{
 	}
 	
 	
-	private void updateMinMaxY(int y){
-		if (y>maxY) maxY = y;
-		else if(Math.abs(y)>minY) minY=Math.abs(y);
+	private boolean updateMinMaxY(int x,int y){
+		if (y>maxY) {
+			maxY = y;
+			return true;
+		}
+		else if(Math.abs(y)>minY) {
+			minY=Math.abs(y);
+			return true;
+		}
+		else if (x>maxX){
+			maxX = x;
+			return true;
+		}
+		else if (Math.abs(x)>minX){
+			minX=Math.abs(x);
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -68,22 +85,22 @@ public class Map extends Observable{
 		if (x<0) array = negArray;
 		else array = posArray;
 		
-		x = Math.abs(x);
+		int xc = Math.abs(x);
 		
-		if (x < array.size()){// If array is already big enough
-			array.get(x).setValue(y, value);// Update the existing value
+		if (xc < array.size()){// If array is already big enough
+			array.get(xc).setValue(y, value);// Update the existing value
 		}
 		else {// Grow the array with default values, up to the needed index
 			int size = array.size();
-			for (int i=1;i<x-size+1;i++){//*********************i=0
+			for (int i=1;i<xc-size+1;i++){//*********************i=0
 				array.add(new VerticalArray());
 			}
 			array.add(new VerticalArray(y, value));
 		}
 		
-		updateMinMaxY(y);
+		boolean grown = updateMinMaxY(x,y);
 		setChanged();
-		notifyObservers(new CoordVal(x, y, value));
+		notifyObservers(new CoordVal(x, y, value, grown));
 		
 	}
 	
