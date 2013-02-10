@@ -34,7 +34,7 @@ public class Gui extends JFrame implements Observer{
 	
 	Gui(Map map){
 		super("Map Gui");
-		img = new BuffImg(1, 1, BufferedImage.TYPE_INT_RGB);
+		img = new BuffImg(1, 1, BufferedImage.TYPE_INT_ARGB);
 		this.map = map;
 		this.map.addObserver(this);
 		updateImage();
@@ -49,7 +49,7 @@ public class Gui extends JFrame implements Observer{
 		int centerY = map.getMaxYSize();
 		//if image is smaller than map
 		if (img.getWidth()<width*blockSize || img.getHeight() < (height+1)*blockSize){
-			BuffImg biggerImg = new BuffImg((width-1)*blockSize, (height+1)*blockSize, BufferedImage.TYPE_INT_RGB);
+			BuffImg biggerImg = new BuffImg((width-1)*blockSize+1, (height+1)*blockSize+1, BufferedImage.TYPE_INT_ARGB);
 			Graphics2D bg2 = biggerImg.createGraphics();
 			bg2.drawImage(img, null, (centerX-img.minX)*blockSize, (centerY-img.MaxY)*blockSize);
 			biggerImg.MaxY = centerY;
@@ -207,8 +207,8 @@ public class Gui extends JFrame implements Observer{
 		Map map = new Map();
 		MapChange mc = new MapChange(map);
 		mc.setVisible(true);
-		//Gui gui = new Gui(map);
-		//gui.setVisible(true);
+		Gui gui = new Gui(map);
+		gui.setVisible(true);
 		//Component c[] = gui.getComponents();
 		map.setValue(0, 50, 0.3f);
 		map.setValue(0, -50, 0.8f);
@@ -219,8 +219,8 @@ public class Gui extends JFrame implements Observer{
 				map.setValue(i, (int) (Math.random()*40+10), 0.2f);
 				map.setValue(i, (int) -(Math.random()*40+10), 0.2f);
 		}
-		Gui gui = new Gui(map);
-		gui.setVisible(true);
+		//Gui gui = new Gui(map);
+		//gui.setVisible(true);
 		
 
 	}
