@@ -42,7 +42,7 @@ public class Gui extends JFrame implements Observer{
 	}
 	
 	private void growImage(){
-		System.out.println(img.getWidth() + " " + img.getHeight());
+		//System.out.println(img.getWidth() + " " + img.getHeight());
 		int width = map.getMaxXSize() + map.getMinXSize();
 		int height = map.getMaxYSize() + map.getMinYSize();
 		int centerX = map.getMinXSize();
@@ -57,13 +57,13 @@ public class Gui extends JFrame implements Observer{
 			img = biggerImg;
 			bg2.dispose();
 		}
-		System.out.println(img.getWidth() + " " + img.getHeight());
+		//System.out.println(img.getWidth() + " " + img.getHeight());
 		
 		
 	}
 	
 	private void UpdateImage(CoordVal cv){
-		System.out.println("SMART update called");
+		//System.out.println("SMART update called");
 		if (cv.grown) growImage();
 		int centerX = map.getMinXSize();
 		int centerY = map.getMaxYSize();
@@ -78,7 +78,7 @@ public class Gui extends JFrame implements Observer{
 	}
 	
 	private void updateImage(){
-		System.out.println("Dumb update called");
+		//System.out.println("Dumb update called");
 		//if image is smaller than map
 		growImage();
 		int centerX = map.getMinXSize();
@@ -102,7 +102,7 @@ public class Gui extends JFrame implements Observer{
 			}
 				
 		}
-		System.out.println("Done positive X");
+		//System.out.println("Done positive X");
 		//Negative X
 		for (int x=1;x<map.getMinXSize();x++)
 		{	
