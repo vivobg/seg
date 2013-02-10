@@ -27,14 +27,14 @@ public class Gui extends JFrame implements Observer{
 	private JPanel jp;
 	private Graphics2D pg;
 	private Map map;
-	private BufferedImage img;
+	private BuffImg img;
 	//private int x=20;
 	//private int y=20;
 	private int blockSize=5;
 	
 	Gui(Map map){
 		super("Map Gui");
-		img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
+		img = new BuffImg(1, 1, BufferedImage.TYPE_INT_RGB);
 		this.map = map;
 		this.map.addObserver(this);
 		updateImage();
@@ -48,10 +48,12 @@ public class Gui extends JFrame implements Observer{
 		int centerX = map.getMinXSize();
 		int centerY = map.getMaxYSize();
 		//if image is smaller than map
-		if (img.getWidth()<width*blockSize || img.getHeight() < height*blockSize){
-			BufferedImage biggerImg = new BufferedImage(width*blockSize, height*blockSize, BufferedImage.TYPE_INT_RGB);
+		if (img.getWidth()<width*blockSize || img.getHeight() < (height+1)*blockSize){
+			BuffImg biggerImg = new BuffImg((width-1)*blockSize, (height+1)*blockSize, BufferedImage.TYPE_INT_RGB);
 			Graphics2D bg2 = biggerImg.createGraphics();
-			bg2.drawImage(img, null, centerX*blockSize-width, centerY*blockSize-height);
+			bg2.drawImage(img, null, (centerX-img.minX)*blockSize, (centerY-img.MaxY)*blockSize);
+			biggerImg.MaxY = centerY;
+			biggerImg.minX = centerX;
 			img = biggerImg;
 			bg2.dispose();
 		}
@@ -71,7 +73,7 @@ public class Gui extends JFrame implements Observer{
 		float val = cv.value;
 		if (Math.abs(val - 0.5f) < 0.01f) g2.setColor(Color.RED);
 		else g2.setColor(Color.BLUE);
-		g2.fillRect((centerX+cv.x)*blockSize, (centerY-cv.y)*blockSize, blockSize, blockSize);
+		g2.fillRect((centerX+cv.x-1)*blockSize, (centerY-cv.y)*blockSize, blockSize, blockSize);
 		g2.dispose();
 	}
 	
@@ -81,6 +83,8 @@ public class Gui extends JFrame implements Observer{
 		growImage();
 		int centerX = map.getMinXSize();
 		int centerY = map.getMaxYSize();
+		//img.minX = centerX*blockSize;
+		//img.MaxY = centerY*blockSize;
 		
 		Graphics2D g2 = img.createGraphics();
 		g2.setColor(Color.blue);		
@@ -94,7 +98,7 @@ public class Gui extends JFrame implements Observer{
 				float val = vert.getValue(i);
 				if (Math.abs(val - 0.5f) < 0.01f) g2.setColor(Color.RED);
 				else g2.setColor(Color.BLUE);
-				g2.fillRect((centerX+x)*blockSize, (centerY-i)*blockSize, blockSize, blockSize);
+				g2.fillRect((centerX+x-1)*blockSize, (centerY-i)*blockSize, blockSize, blockSize);
 			}
 				
 		}
