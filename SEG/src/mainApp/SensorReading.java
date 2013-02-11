@@ -1,3 +1,4 @@
+package mainApp;
 
 public class SensorReading {
 	private double bearing;

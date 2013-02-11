@@ -11,7 +11,7 @@ public class SearchTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		float[][] map = new float[30][30];
+		int[][] map = new int[30][30];
 		for(int i = 0; i< 30; i++)
 		{
 			for(int j = 0; j < 30; j++)
@@ -40,7 +40,7 @@ public class SearchTest {
 		printMap(map, points);
 	}
 
-	private static void printMap(float[][] map, List<Point> points) {
+	private static void printMap(int[][] map, List<Point> points) {
 		char[][] m = new char[30][30];
 		for(int i = 0; i < 30; i++)
 		{
@@ -72,7 +72,7 @@ public class SearchTest {
 		
 	}
 
-	private static void printMap(float[][] map) {
+	private static void printMap(int[][] map) {
 		for(int i = 0; i < 30; i++)
 		{
 			System.out.print("[");

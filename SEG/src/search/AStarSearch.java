@@ -1,15 +1,13 @@
 package search;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.List;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-import map.Map;
+import mainApp.GridContents;
 
 public class AStarSearch {
-	public static List<Point> Search(float[][] map , Point source, Point target )
+	public static List<Point> Search(int[][] map , Point source, Point target )
 	{
 		List<Point> closedSet = new ArrayList<Point>(); //Nodes already evaluated
 		List<Point> openSet = new ArrayList<Point>();//Nodes yet to be evaluated and their score
@@ -112,7 +110,7 @@ public class AStarSearch {
 		return dist;
 	}
 
-	private static List<Point> getAdjacentPoints(float[][] map, Point p )
+	private static List<Point> getAdjacentPoints(int[][] map, Point p )
 	{
 		List<Point> possiblePoints = new ArrayList<Point>();
 		
@@ -133,5 +131,20 @@ public class AStarSearch {
 		
 		return possiblePoints;
 		
+	}
+
+
+
+	public static List<Point> Search(GridContents[][] map, Point currentPoint,
+			Point wall) {
+		int[][] iMap = new int[map.length][map.length];
+		for(int i = 0; i < map.length; i++)
+		{
+			for(int j = 0; j< map[i].length; j++)
+			{
+				iMap[i][j] = map[i][j] == GridContents.Wall ? 1 : 0;
+			}
+		}
+		return Search(iMap,currentPoint,wall);
 	}
 }
