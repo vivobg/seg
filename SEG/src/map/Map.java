@@ -32,6 +32,8 @@ public class Map extends Observable{
 		posArray=new ArrayList<VerticalArray>();
 		negArray=new ArrayList<VerticalArray>();
 		setValue(0, 0, Map.UNEXPLORED);
+		setValue(1, 1, Map.UNEXPLORED);
+		setValue(-1, -1, Map.UNEXPLORED);
 	}
 	
 	
