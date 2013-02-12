@@ -38,6 +38,12 @@ public class SearchTest {
 		
 		
 		map.setValue(15, 15, Map.UNEXPLORED);
+		map.setValue(15, 14, Map.UNEXPLORED);
+		map.setValue(14, 14, Map.UNEXPLORED);
+		map.setValue(14, 15, Map.UNEXPLORED);
+		map.setValue(16, 16, Map.UNEXPLORED);
+		map.setValue(17, 17, Map.UNEXPLORED);
+		map.setValue(18, 18, Map.UNEXPLORED);
 		
 		printMap(map);
 		
