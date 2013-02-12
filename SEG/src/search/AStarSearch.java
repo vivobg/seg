@@ -20,14 +20,14 @@ public class AStarSearch {
 		openSet.add(source);//Start from source
 		
 		gScore.put(source, 0); //score starts at 0
-		fScore.put(source, gScore.get(source) + cost(source,target));//est total cost
+		fScore.put(source, Hcost(source,target));//est total cost (no point to do 0 + cost)
 		
 		
 		
 		while(!openSet.isEmpty())
 		{
 			Point current = getLowest(openSet,fScore);
-			if(cost(current,target) < 0.5) 
+			if(Hcost(current,target) < 0.5*5) 
 				//if we are atleast within 0.5 metres we can say we're there and just use the robot controller to adjust the last 0.5
 			{
 				return reconstructPath(cameFrom, current);
@@ -42,13 +42,13 @@ public class AStarSearch {
 				if(closedSet.contains(neighbour))
 					continue;
 				
-				int tScore = gScore.get(current) + cost(current, neighbour);
+				int tScore = gScore.get(current) + Gcost(current, neighbour);
 				
 				if(!openSet.contains(neighbour) || (gScore.containsKey(neighbour) && tScore < gScore.get(neighbour)) )
 				{
 					cameFrom.put(neighbour, current);
 					gScore.put(neighbour, tScore);
-					fScore.put(neighbour, gScore.get(neighbour) + cost(neighbour, target));
+					fScore.put(neighbour, gScore.get(neighbour) + Hcost(neighbour, target));
 					
 					if(!openSet.contains(neighbour))
 					{
@@ -64,9 +64,29 @@ public class AStarSearch {
 	
 	
 
-	private static int cost(Point source, Point target) {
+	private static int Hcost(Point source, Point target) {
 		//Incase we want to change the cost function
-		return euclidDist(source,target);
+		return 5*euclidDist(source,target);
+		//return 0;
+	}
+	
+	/**
+	 * Calculates the cost for adjacent points.
+	 * CAUTION!!! Only use it for adjacent points.
+	 * @param source
+	 * @param target
+	 * @return 7 if diagonal, 5 otherwise
+	 */
+			
+	private static int Gcost(Point source, Point target){
+		if (isDiagonal(source, target)) return 7;
+		else return 5;
+		
+	}
+	
+	private static boolean isDiagonal(Point s, Point t){
+		if (s.x == t.x || s.y == t.y)return false;
+		else return true;
 	}
 
 
@@ -120,10 +140,11 @@ public class AStarSearch {
 		{
 			for(int j = p.y-1;j < p.y+2; j++)
 			{
-				if(!p.equals(new Point(i,j))  )
+				Point adjPoint = new Point(i,j);
+				if(!p.equals(adjPoint)  )
 				{
 					if(map.isEmpty(i, j)){
-						possiblePoints.add(new Point(i,j));
+						possiblePoints.add(adjPoint);
 					}
 				}
 			}
