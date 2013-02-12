@@ -1,0 +1,116 @@
+# insert the code of the .inc files here
+include "map2.inc"
+include "garbagecollector.inc"
+include "garbage.inc"
+
+# definition of the window
+window 
+(
+  
+   # size in pixels
+   size [1200 800]
+   
+   # meters per pixel
+   scale 50
+
+   # show data
+   show_data 1
+)
+
+# instantiate a flooplan
+floorplan 
+(
+   name "floorplan"
+   bitmap "map2.png"
+   size [20 14 2]
+)
+
+# instantiate the robots
+garbagecollector
+(
+   name "garbagecollector0"
+   pose [-8 -6 0 90]
+   color "red"
+)
+
+garbagecollector
+(
+   name "garbagecollector1"
+   pose [-9 6 0 315]
+   color "yellow"
+)
+
+garbagecollector
+(
+   name "garbagecollector2"
+   pose [6 -2 0 180]
+   color "blue"
+)
+
+
+# instantiate garbage
+garbage-lowvalue
+(
+   name "lowvalue0"
+   pose [-5 1 0 0]
+)
+
+garbage-lowvalue
+(
+   name "lowvalue1"
+   pose [-8 0 0 0]
+)
+
+garbage-lowvalue
+(
+   name "lowvalue2"
+   pose [-6 4 0 0]
+)
+
+garbage-lowvalue
+(
+   name "lowvalue3"
+   pose [-1 4 0 0]
+)
+
+garbage-lowvalue
+(
+   name "lowvalue4"
+   pose [2 6 0 0]
+)
+
+garbage-lowvalue
+(
+   name "lowvalue5"
+   pose [5 -5 0 0]
+)
+
+garbage-medvalue
+(
+   name "medvalue0"
+   pose [0.5 0 0 0]
+)
+
+garbage-medvalue
+(
+   name "medvalue1"
+   pose [-7 -6 0 0]
+)
+
+garbage-medvalue
+(
+   name "medvalue2"
+   pose [-9 0 0 0]
+)
+
+garbage-highvalue
+(
+   name "highvalue0"
+   pose [-2 6 0 0]
+)
+
+garbage-highvalue
+(
+   name "highvalue1"
+   pose [2 0 0 0]
+)

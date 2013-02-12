@@ -56,6 +56,7 @@ public class Control {
 	private void collect(double x1, double y1, double x2, double y2) {
 		// TODO Auto-generated method stub
 		
+		
 	}
 
 	private void switchToMulti() {
