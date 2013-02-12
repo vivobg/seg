@@ -27,8 +27,8 @@ public class AStarSearch {
 		while(!openSet.isEmpty())
 		{
 			Point current = getLowest(openSet,fScore);
-			if(Hcost(current,target) < 0.5*5) 
-				//if we are atleast within 0.5 metres we can say we're there and just use the robot controller to adjust the last 0.5
+			if(current.equals(target))
+				//if we are are at the target, stop search and return path
 			{
 				return reconstructPath(cameFrom, current);
 			}
