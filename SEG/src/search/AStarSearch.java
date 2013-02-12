@@ -36,7 +36,7 @@ public class AStarSearch {
 			openSet.remove(current);
 			closedSet.add(current);
 			
-			for(Point neighbour : getAdjacentPoints(map,current))
+			for(Point neighbour : getAdjacentPoints(map,current,ASEARCH))
 			{
 				
 				if(closedSet.contains(neighbour))
@@ -134,7 +134,7 @@ public class AStarSearch {
 		return dist;
 	}
 
-	private static List<Point> getAdjacentPoints(Map map, Point p )
+	private static List<Point> getAdjacentPoints(Map map, Point p , boolean ASEARCH)
 	{
 		List<Point> possiblePoints = new ArrayList<Point>();
 		
@@ -145,9 +145,10 @@ public class AStarSearch {
 				Point adjPoint = new Point(i,j);
 				if(!p.equals(adjPoint)  )
 				{
-					if(map.isEmpty(i, j)){
+					if(ASEARCH && map.isEmpty(i, j)){
 						possiblePoints.add(adjPoint);
 					}
+					else if( !ASEARCH && (map.isEmpty(i, j) || map.isUnexplored(i, j)) )possiblePoints.add(adjPoint); 
 				}
 			}
 		}

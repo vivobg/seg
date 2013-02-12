@@ -16,7 +16,8 @@ public class SearchTest {
 		{
 			for(int j = 0; j < 30; j++)
 			{
-				map.setValue(i, j, Map.EMPTY);
+				if (j==0 || j==29 || i==0 || i==29) map.setValue(i, j, Map.OCCUPIED);
+				else map.setValue(i, j, Map.EMPTY);
 			}
 		}
 		
@@ -29,17 +30,22 @@ public class SearchTest {
 		{
 			map.setValue(i, 10, Map.OCCUPIED);	
 		}
-		for(int i = 10; i < 28; i++)
+		for(int i = 10; i < 29; i++)
 		{
 			map.setValue(19, i, Map.OCCUPIED);
 		}
 		
-		map.setValue(5, 5, Map.UNEXPLORED);
 		
-		//printMap(map);
 		
-		List<Point> points = AStarSearch.Search(map, new Point(0,0), new Point(28,28), true);
-		System.out.println();
+		map.setValue(15, 15, Map.UNEXPLORED);
+		
+		printMap(map);
+		
+		List<Point> points = AStarSearch.Search(map, new Point(16,20), new Point(28,28), true);
+		System.out.println("A* Search");
+		printMap(map, points);
+		 points = AStarSearch.Search(map, new Point(15,2), null, false);
+		System.out.println("Djikstra's Search");
 		printMap(map, points);
 	}
   
@@ -58,7 +64,12 @@ public class SearchTest {
 		}
 		for(Point p : points)
 		{
+			try{
 			m[p.x][p.y] ='*';
+			}
+			catch (ArrayIndexOutOfBoundsException e){
+				
+			}
 		}
 		
 		for(int i = 0; i < 30; i++)
