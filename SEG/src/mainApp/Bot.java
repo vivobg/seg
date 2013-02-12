@@ -65,7 +65,7 @@ public class Bot  implements ActionListener {
 			return;
 		}
 		else if (src.getText() == "Explore")
-			exploreClosestFrontier();
+			exploreClosestFrontier(getNearestUnexploredPoints());
 		
 		mapCurrentPosition();
 		setUpMapCurrPos();
