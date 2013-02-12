@@ -1,12 +1,19 @@
+package mainApp;
 import javaclient3.PlayerClient;
 import javaclient3.Position2DInterface;
 import javaclient3.RangerInterface;
 import javaclient3.structures.PlayerConstants;
+import javaclient3.structures.PlayerPose2d;
+import javaclient3.structures.position2d.PlayerPosition2dCmdPos;
 
+import java.awt.Point;
 import java.awt.event.*;
 import java.awt.geom.Line2D;
 
 import javax.swing.*;
+
+import search.AStarSearch;
+
 import java.util.*;
 
 
@@ -17,6 +24,7 @@ public class Bot  implements ActionListener {
 	Position2DInterface pos2D;
 	RangerInterface sonar;
 	GridContents[][] map; 
+	final int SensorMaxLength = 5;
 	double MIN_DISTANCE = 1;
 	double MAX_DISTANCE = 1.5;
 	int currX = 99;
@@ -57,7 +65,7 @@ public class Bot  implements ActionListener {
 			return;
 		}
 		else if (src.getText() == "Explore")
-			exploreClosestFrontier();
+			exploreClosestFrontier(getNearestUnexploredPoints());
 		
 		mapCurrentPosition();
 		setUpMapCurrPos();
@@ -125,7 +133,7 @@ public class Bot  implements ActionListener {
 		{
 			for(int j = 0; j < _MapSizeY; j++ )
 			{
-				map[i][j] = GridContents.Empty;
+				map[i][j] = GridContents.Unexplored;
 			}
 		}
 		
@@ -133,14 +141,46 @@ public class Bot  implements ActionListener {
 
 	public void run()
 	{
-		mapCurrentPosition();
-		exploreClosestFrontier();
+		explore();
+		
 		
 	}
+	public void explore()
+	{
+		mapCurrentPosition();
+		List<Point> frontiers = new ArrayList<Point>();
+		frontiers  = getNearestUnexploredPoints();  
+		exploreClosestFrontier(frontiers);
+	}
 	
+	private List<Point> getNearestUnexploredPoints()//Max Length is the maximum dimension of the map
+	{
+		Point currentPoint = this.getCurrentPoint();
+		
+		List<Point> unexploredPoints = new ArrayList<Point>();
+		for(int i = -1; i <= 1; i++)
+		{
+			for(int j = -1; j <= 1; j++)
+			{
+				Point p = new Point(currentPoint.x + (i*this.SensorMaxLength),currentPoint.y + (j*this.SensorMaxLength));
+				if(i == 0 && j == 0 ) continue; //when i = 0 and j = 0. thats the same as the point we're currently standing on 
+				else if(p.x < 0 || p.y < 0 ) continue;//not negative array value
+				else if (p.x >= map.length || p.y >= map.length) continue;//not bigger than the maximum map size
+				else if(map[p.x][p.y] != GridContents.Unexplored) continue;
+				else unexploredPoints.add(p);
+			}
+		}
+		
+		return unexploredPoints;
+	}
+	public Point getCurrentPoint() //getCurrentPoint of robot translated with map
+	{
+		int currX = (int) (100 + (10 * pos2D.getX()));
+		int currY = (int) /*200-*/(100 + (10 * pos2D.getY()));
+		return new Point(currX,currY);
+	}
 	public void mapCurrentPosition() {
-		double currX = 100 + (10 * pos2D.getX());
-		double currY = /*200-*/(100 + (10 * pos2D.getY()));
+		
 		
 		
 		
@@ -163,6 +203,16 @@ public class Bot  implements ActionListener {
 			int yVal = (int) (currY + (y)) > 199 ? 199: (int) (currY + (y));
 			
 			map[xVal][yVal] = GridContents.Wall;
+			
+			
+			Point currentPoint = this.getCurrentPoint();
+			Point wall = new Point(xVal,yVal);
+			
+			List<Point> pointsInbetween = AStarSearch.Search(map, currentPoint,wall);
+			for(Point p : pointsInbetween)
+			{
+				triggerMapUpdateEvent(p.x,p.y,GridContents.Empty);
+			}
 			triggerMapUpdateEvent(xVal,yVal,GridContents.Wall);
 		}
 	}
@@ -189,12 +239,52 @@ public class Bot  implements ActionListener {
 	
 	
 
-	private void exploreClosestFrontier() {
+	private void exploreClosestFrontier(List<Point> frontiers) {
 		
+		while(frontiers.size() > 0)
+		{
+			//get First element
+			Point frontier = frontiers.get(0);
+			frontiers.remove(0);//remove it from the array
+			
+			moveTo(frontier);
+			mapCurrentPosition();
+			exploreClosestFrontier(getNearestUnexploredPoints());
+		}
 		
 	}
 	
 	
+
+	private void moveTo(Point target) {
+		
+		Point currentPoint = this.getCurrentPoint();
+		List<Point> path = AStarSearch.Search(map, currentPoint , target);
+		for(Point p : path)
+		{
+			if(map[p.x][p.y] != GridContents.Unexplored) continue;
+			int adjustPx = -9 + (p.x /10);
+			int adjustPy = -6 + (p.y/10);
+			if(Math.abs(p.x /10) > 9.5 ) continue;
+			if(Math.abs(p.y /10) > 6 ) continue;
+			PlayerPose2d pos = new PlayerPose2d();
+			
+			
+			pos.setPx(adjustPx);
+			
+			pos.setPy(adjustPy);
+			pos.setPa(0.0);
+			
+			PlayerPose2d vel = new PlayerPose2d();
+//			vel.setPx(1);
+//			vel.setPy(1);
+			vel.setPa(Math.PI);
+			
+			
+			int state = 0;
+			pos2D.setPosition(pos, vel, state );
+		}
+	}
 
 	public SensorReading[] getSonarValues()
 	{
