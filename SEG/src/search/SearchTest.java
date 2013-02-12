@@ -35,7 +35,7 @@ public class SearchTest {
 		}
 		printMap(map);
 		
-		List<Point> points = AStarSearch.Search(map, new Point(0,0), new Point(28,28));
+		List<Point> points = AStarSearch.Search(map, new Point(0,0), new Point(28,28), true);
 		System.out.println();
 		printMap(map, points);
 	}

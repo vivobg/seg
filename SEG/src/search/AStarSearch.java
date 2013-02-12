@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import map.Map;
 
 public class AStarSearch {
-	public static List<Point> Search(Map map , Point source, Point target )
+	public static List<Point> Search(Map map , Point source, Point target, boolean ASEARCH )
 	{
 		List<Point> closedSet = new ArrayList<Point>(); //Nodes already evaluated
 		List<Point> openSet = new ArrayList<Point>();//Nodes yet to be evaluated and their score
@@ -20,14 +20,14 @@ public class AStarSearch {
 		openSet.add(source);//Start from source
 		
 		gScore.put(source, 0); //score starts at 0
-		fScore.put(source, Hcost(source,target));//est total cost (no point to do 0 + cost)
+		fScore.put(source, Hcost(source,target,ASEARCH));//est total cost (no point to do 0 + cost)
 		
 		
 		
 		while(!openSet.isEmpty())
 		{
 			Point current = getLowest(openSet,fScore);
-			if(current.equals(target))
+			if((ASEARCH && current.equals(target))|| (!ASEARCH && map.isUnexplored(current.x, current.y)))
 				//if we are are at the target, stop search and return path
 			{
 				return reconstructPath(cameFrom, current);
@@ -48,7 +48,7 @@ public class AStarSearch {
 				{
 					cameFrom.put(neighbour, current);
 					gScore.put(neighbour, tScore);
-					fScore.put(neighbour, gScore.get(neighbour) + Hcost(neighbour, target));
+					fScore.put(neighbour, gScore.get(neighbour) + Hcost(neighbour, target, ASEARCH));
 					
 					if(!openSet.contains(neighbour))
 					{
@@ -63,10 +63,12 @@ public class AStarSearch {
 	}
 	
 	
+	
 
-	private static int Hcost(Point source, Point target) {
+	private static int Hcost(Point source, Point target, boolean ASEARCH) {
 		//Incase we want to change the cost function
-		return 5*euclidDist(source,target);
+		if (ASEARCH) return 5*euclidDist(source,target);
+		else return 0;
 		//return 0;
 	}
 	
