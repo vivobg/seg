@@ -17,6 +17,9 @@ public class Map extends Observable{
 	public static final float OCCThreshold = 0.8f;
 	public static final float EMPTYThreshold = 0.2f;
 	public static final float UNEXPLORED = 0.5f;
+	public static final float OCCUPIED = 1;
+	public static final float EMPTY = 0;
+	
 	
 	private ArrayList<VerticalArray> posArray;
 	private ArrayList<VerticalArray> negArray;
