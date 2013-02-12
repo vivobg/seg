@@ -16,24 +16,27 @@ public class SearchTest {
 		{
 			for(int j = 0; j < 30; j++)
 			{
-				map.setValue(i, j, Map.EMPTYThreshold-0.1f);
+				map.setValue(i, j, Map.EMPTY);
 			}
 		}
 		
 		for(int j = 10; j < 22; j++)
 		{
-			map.setValue(10, j, Map.OCCThreshold+0.1f);
+			map.setValue(10, j, Map.OCCUPIED);
 			
 		}
 		for(int i = 10; i < 20; i++)
 		{
-			map.setValue(i, 10, Map.OCCThreshold+0.1f);	
+			map.setValue(i, 10, Map.OCCUPIED);	
 		}
 		for(int i = 10; i < 28; i++)
 		{
-			map.setValue(19, i, Map.OCCThreshold+0.1f);
+			map.setValue(19, i, Map.OCCUPIED);
 		}
-		printMap(map);
+		
+		map.setValue(5, 5, Map.UNEXPLORED);
+		
+		//printMap(map);
 		
 		List<Point> points = AStarSearch.Search(map, new Point(0,0), new Point(28,28), true);
 		System.out.println();
@@ -46,8 +49,8 @@ public class SearchTest {
 		{
 			for(int j = 0; j< 30; j++)
 			{
-				if(map.isOccupied(i, j)) m[i][j] = '|';
-				
+				if(map.isOccupied(i, j)) m[i][j] = '█';
+				else if(map.isUnexplored(i, j)) m[i][j]='▧';
 				else{
 					m[i][j] = ' ' ;
 				}
@@ -78,7 +81,12 @@ public class SearchTest {
 			System.out.print("[");
 			for(int j = 0; j < 30;j++)
 			{
-				String r = map.isOccupied(i, j)? "|" : " ";
+				char r;
+				if(map.isOccupied(i, j)) r = '█';
+				else if(map.isUnexplored(i, j)) r='▧';
+				else{
+					r = ' ' ;
+				}
 				System.out.print(r);
 				
 			}
