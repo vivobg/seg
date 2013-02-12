@@ -4,9 +4,15 @@ public class Control {
 	BotMode botMode = BotMode.Solo;
 	public Control(String[] args)
 	{
+		setupRobots();
 		processArgs(args);
 	}
 	
+	private void setupRobots() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	private void processArgs(String[] args) {
 		//java MainApp -solo -explore -map map1 -multi -collect 1 1 2 0 -map map2
 		for(int i = 0; i < args.length; i++)
