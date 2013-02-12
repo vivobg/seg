@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import map.Map;
 
 public class AStarSearch {
-	public static List<Point> Search(float[][] map , Point source, Point target )
+	public static List<Point> Search(Map map , Point source, Point target )
 	{
 		List<Point> closedSet = new ArrayList<Point>(); //Nodes already evaluated
 		List<Point> openSet = new ArrayList<Point>();//Nodes yet to be evaluated and their score
@@ -112,7 +112,7 @@ public class AStarSearch {
 		return dist;
 	}
 
-	private static List<Point> getAdjacentPoints(float[][] map, Point p )
+	private static List<Point> getAdjacentPoints(Map map, Point p )
 	{
 		List<Point> possiblePoints = new ArrayList<Point>();
 		
@@ -122,9 +122,7 @@ public class AStarSearch {
 			{
 				if(!p.equals(new Point(i,j))  )
 				{
-					
-					if(!(i<0 || j < 0 || i >= map.length || j >= map[0].length) && map[i][j] == 0)
-					{
+					if(map.isEmpty(i, j)){
 						possiblePoints.add(new Point(i,j));
 					}
 				}

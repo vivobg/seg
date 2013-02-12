@@ -11,27 +11,27 @@ public class SearchTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		float[][] map = new float[30][30];
+		Map map = new Map();
 		for(int i = 0; i< 30; i++)
 		{
 			for(int j = 0; j < 30; j++)
 			{
-				map[i][j] = 0;
+				map.setValue(i, j, Map.EMPTYThreshold-0.1f);
 			}
 		}
 		
 		for(int j = 10; j < 22; j++)
 		{
-			map[10][j] = 1;
+			map.setValue(10, j, Map.OCCThreshold+0.1f);
 			
 		}
 		for(int i = 10; i < 20; i++)
 		{
-			map[i][10] = 1;	
+			map.setValue(i, 10, Map.OCCThreshold+0.1f);	
 		}
 		for(int i = 10; i < 28; i++)
 		{
-			map[19][i] = 1;	
+			map.setValue(19, i, Map.OCCThreshold+0.1f);
 		}
 		printMap(map);
 		
@@ -39,14 +39,14 @@ public class SearchTest {
 		System.out.println();
 		printMap(map, points);
 	}
-
-	private static void printMap(float[][] map, List<Point> points) {
+  
+	private static void printMap(Map map, List<Point> points) {
 		char[][] m = new char[30][30];
 		for(int i = 0; i < 30; i++)
 		{
 			for(int j = 0; j< 30; j++)
 			{
-				if(map[i][j] > 0) m[i][j] = '|';
+				if(map.isOccupied(i, j)) m[i][j] = '|';
 				
 				else{
 					m[i][j] = ' ' ;
@@ -72,13 +72,13 @@ public class SearchTest {
 		
 	}
 
-	private static void printMap(float[][] map) {
+	private static void printMap(Map map) {
 		for(int i = 0; i < 30; i++)
 		{
 			System.out.print("[");
 			for(int j = 0; j < 30;j++)
 			{
-				String r = map[i][j] > 0? "|" : " ";
+				String r = map.isOccupied(i, j)? "|" : " ";
 				System.out.print(r);
 				
 			}

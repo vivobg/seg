@@ -14,9 +14,9 @@ import java.util.Observer;
  */
 public class Map extends Observable{
 	
-	static final float OCCThreshold = 0.8f;
-	static final float EMPTYThreshold = 0.2f;
-	static final float UNEXPLORED = 0.5f;
+	public static final float OCCThreshold = 0.8f;
+	public static final float EMPTYThreshold = 0.2f;
+	public static final float UNEXPLORED = 0.5f;
 	
 	private ArrayList<VerticalArray> posArray;
 	private ArrayList<VerticalArray> negArray;
@@ -67,7 +67,7 @@ public class Map extends Observable{
 		} else
 			return posArray.get(x).getValue(y);
 		}
-		catch (ArrayIndexOutOfBoundsException e){
+		catch (IndexOutOfBoundsException e){
 			return Map.UNEXPLORED;
 		}
 	}
@@ -115,25 +115,13 @@ public class Map extends Observable{
 	public int getMinYSize(){return minY;}
 	
 	public boolean isOccupied(int x,int y) {
-		if (x < 0) {
-			x = Math.abs(x);
-			return negArray.get(x).isOccupied(y);
-		} else
-			return posArray.get(x).isOccupied(y);
+		return getValue(x,y) > Map.OCCThreshold;
 	}
 	public boolean isEmpty(int x,int y) {
-		if (x < 0) {
-			x = Math.abs(x);
-			return negArray.get(x).isEmpty(y);
-		} else
-			return posArray.get(x).isEmpty(y);
+		return getValue(x,y) < Map.EMPTYThreshold;
 	}
 	public boolean isUnexplored(int x,int y) {
-		if (x < 0) {
-			x = Math.abs(x);
-			return negArray.get(x).isUnexplored(y);
-		} else
-			return posArray.get(x).isUnexplored(y);
+		return (getValue(x,y) <= Map.OCCThreshold && getValue(x,y) >= Map.EMPTYThreshold);
 	}
 	
 	public static void main(String[] a){
