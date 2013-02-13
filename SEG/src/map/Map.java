@@ -4,11 +4,12 @@
 package map;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Observable;
-import java.util.Observer;
 
 /**
+ * Provides a dynamic 2D grid of float.
+ * It is based on ArrayLists, and is suitable for storing
+ * occupancy grid maps of arbitrary sizes, because it grows as needed.
  * @author Vilian Atmadzhov
  *
  */
@@ -58,11 +59,11 @@ public class Map extends Observable{
 	}
 	
 	/**
-	 * 
+	 * Always returns a value. If the location was never set
+	 * it returns Map.UNEXPLORED
 	 * @param x the horizontal index
 	 * @param y the vertical index
-	 * @return the value at the specified indices
-	 * @throws IndexOutOfBoundsException if indices out of range
+	 * @return the value at the specified location
 	 */
 	public float getValue(int x, int y){
 		try{
@@ -77,6 +78,7 @@ public class Map extends Observable{
 		}
 	}
 	/**
+	 * It is strongly recommended to use setValue() and getValue() instead
 	 * Only use to read and NOT set (can mess up MinMax sizes)
 	 * @param x the horizontal index
 	 * @return the vertical array at the given index
@@ -88,7 +90,13 @@ public class Map extends Observable{
 		} else
 			return posArray.get(x);
 	}
-	
+	/**
+	 * Updates the existing value, or grows the underlying array
+	 * and writes the given value
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @param value the value to set in the given location
+	 */
 	public void setValue(int x, int y, float value){
 		
 		ArrayList<VerticalArray> array;
