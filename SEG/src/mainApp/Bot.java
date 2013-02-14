@@ -13,6 +13,7 @@ import java.awt.geom.Line2D;
 import javax.swing.*;
 
 import search.AStarSearch;
+import search.OLDAStarSearch;
 
 import java.util.*;
 
@@ -65,7 +66,7 @@ public class Bot  implements ActionListener {
 			return;
 		}
 		else if (src.getText() == "Explore")
-			exploreClosestFrontier(getNearestUnexploredPoints());
+			/// exploreClosestFrontier(getNearestUnexploredPoints());
 		
 		mapCurrentPosition();
 		setUpMapCurrPos();
@@ -150,7 +151,7 @@ public class Bot  implements ActionListener {
 		mapCurrentPosition();
 		List<Point> frontiers = new ArrayList<Point>();
 		frontiers  = getNearestUnexploredPoints();  
-		exploreClosestFrontier(frontiers);
+		///exploreClosestFrontier(frontiers);
 	}
 	
 	private List<Point> getNearestUnexploredPoints()//Max Length is the maximum dimension of the map
@@ -179,7 +180,7 @@ public class Bot  implements ActionListener {
 		int currY = (int) /*200-*/(100 + (10 * pos2D.getY()));
 		return new Point(currX,currY);
 	}
-	public void mapCurrentPosition() {
+	public void mapCurrentPosition() {//Does not work due to change in map structure
 		
 		
 		
@@ -207,13 +208,15 @@ public class Bot  implements ActionListener {
 			
 			Point currentPoint = this.getCurrentPoint();
 			Point wall = new Point(xVal,yVal);
-			
-			List<Point> pointsInbetween = AStarSearch.Search(map, currentPoint,wall);
+			/*
+			 * Does not work, plus it should not use A* Search for sensing
+			List<Point> pointsInbetween = OLDAStarSearch.Search(map, currentPoint,wall);
 			for(Point p : pointsInbetween)
 			{
 				triggerMapUpdateEvent(p.x,p.y,GridContents.Empty);
 			}
 			triggerMapUpdateEvent(xVal,yVal,GridContents.Wall);
+			*/
 		}
 	}
 	public void addListener(MapUpdateEvent listener)
@@ -238,7 +241,8 @@ public class Bot  implements ActionListener {
 	
 	
 	
-
+	/*
+	 * Does not work due to dependency on non-working methods
 	private void exploreClosestFrontier(List<Point> frontiers) {
 		
 		while(frontiers.size() > 0)
@@ -252,14 +256,15 @@ public class Bot  implements ActionListener {
 			exploreClosestFrontier(getNearestUnexploredPoints());
 		}
 		
-	}
+	}*/
 	
 	
-
+	/*
+	 * Does not work due to change in map structure
 	private void moveTo(Point target) {
 		
 		Point currentPoint = this.getCurrentPoint();
-		List<Point> path = AStarSearch.Search(map, currentPoint , target);
+		List<Point> path = OLDAStarSearch.Search(map, currentPoint , target);
 		for(Point p : path)
 		{
 			if(map[p.x][p.y] != GridContents.Unexplored) continue;
@@ -284,7 +289,7 @@ public class Bot  implements ActionListener {
 			int state = 0;
 			pos2D.setPosition(pos, vel, state );
 		}
-	}
+	}*/
 
 	public SensorReading[] getSonarValues()
 	{
