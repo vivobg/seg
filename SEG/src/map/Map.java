@@ -3,6 +3,7 @@
  */
 package map;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Observable;
 
@@ -18,9 +19,11 @@ public class Map extends Observable{
 	public static final float OCCThreshold = 0.8f;
 	public static final float EMPTYThreshold = 0.2f;
 	public static final float UNEXPLORED = 0.5f;
+	public static final float UNWALKABLE = 0.3f;
 	public static final float OCCUPIED = 1;
 	public static final float EMPTY = 0;
 	
+	public static final float SCALE = 0.1f;//Player units into 1 internal map unit
 	
 	private ArrayList<VerticalArray> posArray;
 	private ArrayList<VerticalArray> negArray;
@@ -35,6 +38,12 @@ public class Map extends Observable{
 		setValue(0, 0, Map.UNEXPLORED);
 		setValue(1, 1, Map.UNEXPLORED);
 		setValue(-1, -1, Map.UNEXPLORED);
+	}
+	
+	public static Point convertCoordinates(float x, float y){
+		int xi = (int) (x / Map.SCALE) ;
+		int yi = (int) (y / Map.SCALE) ;
+		return new Point(xi, yi);
 	}
 	
 	
