@@ -50,23 +50,24 @@ public class Map extends Observable{
 	
 	
 	private boolean updateMinMaxY(int x,int y){
+		boolean grown = false;
 		if (y>maxY) {
 			maxY = y;
-			return true;
+			grown =  true;
 		}
-		else if(Math.abs(y)>minY) {
+		else if(y< 0 && Math.abs(y)>minY) {
 			minY=Math.abs(y);
-			return true;
+			grown =  true;
 		}
-		else if (x>maxX){
+		if (x>maxX){
 			maxX = x;
-			return true;
+			grown =  true;
 		}
-		else if (Math.abs(x)>minX){
+		else if (x<0 && Math.abs(x)>minX){
 			minX=Math.abs(x);
-			return true;
+			grown =  true;
 		}
-		return false;
+		return grown;
 	}
 	
 	/**
