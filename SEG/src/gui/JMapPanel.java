@@ -231,7 +231,10 @@ public class JMapPanel extends JPanel implements Observer{
 		
 		System.out.println(map.getValue(0, 50));
 		System.out.println(map.getValue(0, -50));
-		sense.Bresenham.line(map, 1, 1, 20, 12);
+		sense.Bresenham.line(map, 1, 1, 20, 12, true);
+		sense.Bresenham.line(map, -10, -5, -30, 30, true );
+		sense.Bresenham.line(map, -4, 0, -8, 4, true );
+		sense.Bresenham.line(map, 0, 15, -1, 16, true );
 
 	}
 

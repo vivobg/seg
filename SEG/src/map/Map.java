@@ -22,8 +22,10 @@ public class Map extends Observable{
 	public static final float UNWALKABLE = 0.3f;
 	public static final float OCCUPIED = 1;
 	public static final float EMPTY = 0;
-	
+	public static final float TOO_CLOSE = 0.3f;//Player Units from wall
 	public static final float SCALE = 0.1f;//Player units into 1 internal map unit
+	//how many cells away from wall are empty, but too close to the wall
+	public static final int UNWALKABLE_CELLS = Math.round(TOO_CLOSE / SCALE);
 	
 	private ArrayList<VerticalArray> posArray;
 	private ArrayList<VerticalArray> negArray;
@@ -137,13 +139,16 @@ public class Map extends Observable{
 	public int getMinYSize(){return minY;}
 	
 	public boolean isOccupied(int x,int y) {
-		return getValue(x,y) > Map.OCCThreshold;
+		return getValue(x, y) == Map.OCCUPIED;
 	}
 	public boolean isEmpty(int x,int y) {
-		return getValue(x,y) < Map.EMPTYThreshold;
+		return getValue(x, y) == Map.EMPTY;
 	}
 	public boolean isUnexplored(int x,int y) {
-		return (getValue(x,y) <= Map.OCCThreshold && getValue(x,y) >= Map.EMPTYThreshold);
+		return getValue(x, y) == Map.UNEXPLORED;
+	}
+	public boolean isUnwalkable(int x,int y) {
+		return getValue(x, y) == Map.UNWALKABLE;
 	}
 	
 	public static void main(String[] a){
