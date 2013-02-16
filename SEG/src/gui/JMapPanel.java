@@ -22,7 +22,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import explore.ExploreTest;
+
 import search.AStarSearch;
+import search.SearchTest;
 
 import map.CoordVal;
 import map.Map;
@@ -103,7 +106,7 @@ public class JMapPanel extends JPanel implements Observer {
 		int height = map.getMaxYSize() + map.getMinYSize();
 		int centerX = map.getMinXSize();
 		int centerY = map.getMaxYSize();
-		//System.out.println(width);
+		// System.out.println(width);
 		// if image is smaller than map
 		if (img.getWidth() < width * blockSize
 				|| img.getHeight() < (height + 1) * blockSize) {
@@ -202,7 +205,7 @@ public class JMapPanel extends JPanel implements Observer {
 		for (Point p : path) {
 			int x = p.x;
 			int y = p.y;
-			//System.out.println(x + " " + y);
+			// System.out.println(x + " " + y);
 			g2.fillRect((centerX + x - 1) * blockSize, (centerY - y)
 					* blockSize, blockSize, blockSize);
 		}
@@ -293,6 +296,9 @@ public class JMapPanel extends JPanel implements Observer {
 		 * Map.UNEXPLORED); map.setValue(-43, 35, Map.EMPTY);
 		 */
 
+		/*
+		 * Generate a wall-bound rectangle to test path finding on
+		 */
 		for (int i = 0; i < 30; i++) {
 			for (int j = 0; j < 30; j++) {
 				if (j == 0 || j == 29 || i == 0 || i == 29)
@@ -319,20 +325,41 @@ public class JMapPanel extends JPanel implements Observer {
 		map.setValue(19, 5, Map.UNEXPLORED);
 		map.setValue(19, 6, Map.UNEXPLORED);
 
-		//System.out.println(map.getValue(0, 50));
-		//System.out.println(map.getValue(0, -50));
+		// System.out.println(map.getValue(0, 50));
+		// System.out.println(map.getValue(0, -50));
 		// map.setValue(100, 100, Map.OCCUPIED);
 		// map.setValue(-40, -5, Map.OCCUPIED);
+
+		/*
+		 * Bresenham test
+		 */
 		sense.Bresenham.line(map, -42, -3, -45, 15, false);
 		sense.Bresenham.line(map, -21, -3, -40, 1, true);
 		sense.Bresenham.line(map, -10, -5, -30, 5, true);
 		sense.Bresenham.line(map, -4, 0, -8, 4, true);
 		sense.Bresenham.line(map, -20, 15, -21, 14, true);
+
+		/*
+		 * Path drawing test
+		 */
 		List<Point> points = AStarSearch.Search(map, new Point(16, 20),
 				new Point(28, 28), true);
 		jMapPanel.drawPath(points);
 		points = AStarSearch.Search(map, new Point(3, 9), null, false);
 		jMapPanel.drawPath(points);
+
+		/*
+		 * Exploration test
+		 */
+		for (int i = 0; i < 30; i++) {
+			for (int j = 40; j < 70; j++) {
+				if (j == 40 || j == 69 || i == 0 || i == 29)
+					map.setValue(i, j, Map.OCCUPIED);
+
+			}
+		}
+
+		ExploreTest.explore(map, new Point(5, 45));
 
 	}
 
