@@ -7,13 +7,21 @@ import map.Map;
 
 public class Bresenham {
 	/**
-	 * inse
+	 * Draws a line onto the map, with the given internal map coordinates
+	 * 
 	 * @param map
+	 *            The Map instance to work with
 	 * @param x0
+	 *            The X coordinate of the start point
 	 * @param y0
+	 *            The Y coordinate of the start point
 	 * @param x1
+	 *            The X coordinate of the end point
 	 * @param y1
+	 *            The Y coordinate of the end point
 	 * @param WALL
+	 *            A flag to decide whether the line ends with a wall, or is
+	 *            completely empty
 	 */
 	public static void line(Map map, int x0, int y0, int x1, int y1,
 			boolean WALL) {
