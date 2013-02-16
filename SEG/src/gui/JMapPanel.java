@@ -103,7 +103,7 @@ public class JMapPanel extends JPanel implements Observer {
 		int height = map.getMaxYSize() + map.getMinYSize();
 		int centerX = map.getMinXSize();
 		int centerY = map.getMaxYSize();
-		System.out.println(width);
+		//System.out.println(width);
 		// if image is smaller than map
 		if (img.getWidth() < width * blockSize
 				|| img.getHeight() < (height + 1) * blockSize) {
@@ -202,7 +202,7 @@ public class JMapPanel extends JPanel implements Observer {
 		for (Point p : path) {
 			int x = p.x;
 			int y = p.y;
-			System.out.println(x + " " + y);
+			//System.out.println(x + " " + y);
 			g2.fillRect((centerX + x - 1) * blockSize, (centerY - y)
 					* blockSize, blockSize, blockSize);
 		}
@@ -319,8 +319,8 @@ public class JMapPanel extends JPanel implements Observer {
 		map.setValue(19, 5, Map.UNEXPLORED);
 		map.setValue(19, 6, Map.UNEXPLORED);
 
-		System.out.println(map.getValue(0, 50));
-		System.out.println(map.getValue(0, -50));
+		//System.out.println(map.getValue(0, 50));
+		//System.out.println(map.getValue(0, -50));
 		// map.setValue(100, 100, Map.OCCUPIED);
 		// map.setValue(-40, -5, Map.OCCUPIED);
 		sense.Bresenham.line(map, -42, -3, -45, 15, false);
