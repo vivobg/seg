@@ -29,7 +29,7 @@ public class Bresenham {
 				y0 += sy;
 			}
 		}
-
+		if (WALL){
 		for (int i = 0; i < points.size() - Map.UNWALKABLE_CELLS; i++) {
 			Point p = points.get(i);
 			map.setValue(p.x, p.y, Map.EMPTY);
@@ -42,6 +42,12 @@ public class Bresenham {
 			map.setValue(p.x, p.y, Map.UNWALKABLE);
 		}
 		map.setValue(x0, y0, Map.OCCUPIED);
+		}
+		else {
+			for (Point p : points){
+				map.setValue(p.x, p.y, Map.EMPTY);
+			}
+		}
 	}
 
 }

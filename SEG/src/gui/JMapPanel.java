@@ -323,6 +323,7 @@ public class JMapPanel extends JPanel implements Observer {
 		System.out.println(map.getValue(0, -50));
 		// map.setValue(100, 100, Map.OCCUPIED);
 		// map.setValue(-40, -5, Map.OCCUPIED);
+		sense.Bresenham.line(map, -42, -3, -45, 15, false);
 		sense.Bresenham.line(map, -21, -3, -40, 1, true);
 		sense.Bresenham.line(map, -10, -5, -30, 5, true);
 		sense.Bresenham.line(map, -4, 0, -8, 4, true);
