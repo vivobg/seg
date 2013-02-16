@@ -90,6 +90,19 @@ public class Map extends Observable{
 		}
 	}
 	/**
+	 * A wrapper method to abstract the internal representation
+	 * from the caller. The caller can just provide Player/Stage coordinates.
+	 * Always returns a value. If the location was never set
+	 * it returns Map.UNEXPLORED
+	 * @param x the horizontal index
+	 * @param y the vertical index
+	 * @return the value at the specified location
+	 */
+	public float getValue(float x, float y){
+		Point c = convertCoordinates(x, y);
+		return getValue(c.x, c.y);
+	}
+	/**
 	 * It is strongly recommended to use setValue() and getValue() instead
 	 * Only use to read and NOT set (can mess up MinMax sizes)
 	 * @param x the horizontal index
@@ -133,6 +146,19 @@ public class Map extends Observable{
 		notifyObservers(new CoordVal(x, y, value, grown));
 		
 	}
+	/**
+	 * A wrapper method to abstract internal representation from caller.
+	 * The caller can give Player/Stage coordinates directly.
+	 * Updates the existing value, or grows the underlying array
+	 * and writes the given value
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @param value the value to set in the given location
+	 */
+	public void setValue(float x, float y, float value){
+		Point c = convertCoordinates(x, y);
+		setValue(c.x, c.y, value);
+	}
 	
 	public int getMaxXSize(){return posArray.size();}
 	public int getMinXSize(){return negArray.size();}
@@ -149,6 +175,19 @@ public class Map extends Observable{
 		return getValue(x, y) == Map.UNEXPLORED;
 	}
 	public boolean isUnwalkable(int x,int y) {
+		return getValue(x, y) == Map.UNWALKABLE;
+	}
+	
+	public boolean isOccupied(float x,float y) {
+		return getValue(x, y) == Map.OCCUPIED;
+	}
+	public boolean isEmpty(float x,float y) {
+		return getValue(x, y) == Map.EMPTY;
+	}
+	public boolean isUnexplored(float x,float y) {
+		return getValue(x, y) == Map.UNEXPLORED;
+	}
+	public boolean isUnwalkable(float x,float y) {
 		return getValue(x, y) == Map.UNWALKABLE;
 	}
 	
