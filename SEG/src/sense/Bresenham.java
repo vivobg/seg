@@ -48,6 +48,7 @@ public class Bresenham {
 		if (WALL) {
 			for (int i = 0; i < points.size() - Map.UNWALKABLE_CELLS; i++) {
 				Point p = points.get(i);
+				if (!map.isOccupied(p.x, p.y) && !map.isUnwalkable(p.x, p.y))
 				map.setValue(p.x, p.y, Map.EMPTY);
 			}
 			for (int i = (int) (points.size() - Map.UNWALKABLE_CELLS); i < points
@@ -55,11 +56,13 @@ public class Bresenham {
 				if (i < 0)
 					continue;
 				Point p = points.get(i);
+				if (!map.isOccupied(p.x, p.y))
 				map.setValue(p.x, p.y, Map.UNWALKABLE);
 			}
 			map.setValue(x0, y0, Map.OCCUPIED);
 		} else {
 			for (Point p : points) {
+				if (!map.isOccupied(p.x, p.y) && !map.isUnwalkable(p.x, p.y))
 				map.setValue(p.x, p.y, Map.EMPTY);
 			}
 		}
