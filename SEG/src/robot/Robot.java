@@ -109,19 +109,23 @@ public class Robot {
 
 		switch (direction) {
 		case 'u':
+			pos.setPx(x);
 			pos.setPy(y + distance);
 			pos.setPa(Math.PI / 2);
 			break;
 		case 'd':
+			pos.setPx(x);
 			pos.setPy(y - distance);
 			pos.setPa(-Math.PI / 2);
 			break;
 		case 'l':
 			pos.setPx(x - distance);
+			pos.setPy(y);
 			pos.setPa(Math.PI);
 			break;
 		case 'r':
 			pos.setPx(x + distance);
+			pos.setPy(y);
 			pos.setPa(0);
 			break;
 
