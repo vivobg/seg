@@ -87,6 +87,10 @@ public class RobotControl extends JFrame{
 			}
 		};
 		jbtnExplore.addActionListener(moveRobot);
+		jbtnUp.addActionListener(moveRobot);
+		jbtnDown.addActionListener(moveRobot);
+		jbtnLeft.addActionListener(moveRobot);
+		jbtnRight.addActionListener(moveRobot);
 		
 	}
 
