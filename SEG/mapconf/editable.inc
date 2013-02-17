@@ -8,6 +8,7 @@ include "exploresensor.inc"
 
 define robot_ranger ranger 
 (
+   exploresensor ( pose [ 0.000  0.000 0.1   0] )
    exploresensor ( pose [ 0.000  0.000 0.1   22.5] )
    exploresensor ( pose [ 0.000  0.000 0.1   45] )
    exploresensor ( pose [ 0.000  0.000 0.1   67.5] )
@@ -23,5 +24,4 @@ define robot_ranger ranger
    exploresensor ( pose [ 0.000  0.000 0.1   292.5] )
    exploresensor ( pose [ 0.000  0.000 0.1   315] )
    exploresensor ( pose [ 0.000  0.000 0.1   337.5] )
-   exploresensor ( pose [ 0.000  0.000 0.1   360] )
 )
