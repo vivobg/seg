@@ -40,6 +40,7 @@ public class RobotControl extends JFrame{
 		JButton jbtnLeft = new JButton("Move Left");
 		JButton jbtnRight = new JButton("Move Right");
 		JButton jbtnExplore = new JButton("Explore");
+		jbtnExplore.setEnabled(false);
 		this.setLayout(new GridLayout(4, 3));
 		this.add(new JLabel("X: "));
 		this.add(jtX);
@@ -47,7 +48,7 @@ public class RobotControl extends JFrame{
 		this.add(new JLabel("Y: "));
 		this.add(jtY);
 		this.add(jbtnDown);
-		this.add(new JLabel("Yaw: "));
+		this.add(new JLabel("Yaw/Distance: "));
 		this.add(jtV);
 		this.add(jbtnLeft);
 		
