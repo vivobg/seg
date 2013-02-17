@@ -23,7 +23,7 @@ public class Map extends Observable {
 	public static final float UNWALKABLE = 0.3f;
 	public static final float OCCUPIED = 1;
 	public static final float EMPTY = 0;
-	public static final float TOO_CLOSE = 0.9f;// Player Units from wall
+	public static final float TOO_CLOSE = 0.5f;// Player Units from wall
 	public static final float SCALE = 0.1f;// Player units into 1 internal map
 											// unit
 	// how many cells away from wall are empty, but too close to the wall
