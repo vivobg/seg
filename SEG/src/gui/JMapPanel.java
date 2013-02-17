@@ -24,6 +24,7 @@ import javax.swing.JScrollPane;
 
 import explore.ExploreTest;
 
+import robot.Robot;
 import search.AStarSearch;
 import search.SearchTest;
 
@@ -302,28 +303,28 @@ public class JMapPanel extends JPanel implements Observer {
 		for (int i = 0; i < 30; i++) {
 			for (int j = 0; j < 30; j++) {
 				if (j == 0 || j == 29 || i == 0 || i == 29)
-					map.setValue(i, j, Map.OCCUPIED);
+					map.setValue(i-200, j, Map.OCCUPIED);
 				else
-					map.setValue(i, j, Map.EMPTY);
+					map.setValue(i-200, j, Map.EMPTY);
 			}
 		}
 
 		for (int j = 15; j < 22; j++) {
-			map.setValue(10, j, Map.OCCUPIED);
+			map.setValue(10-200, j, Map.OCCUPIED);
 
 		}
 		for (int i = 10; i < 20; i++) {
-			map.setValue(i, 15, Map.OCCUPIED);
+			map.setValue(i-200, 15, Map.OCCUPIED);
 		}
 		for (int i = 15; i < 29; i++) {
-			map.setValue(19, i, Map.OCCUPIED);
+			map.setValue(19-200, i, Map.OCCUPIED);
 		}
 
-		map.setValue(19, 2, Map.UNEXPLORED);
-		map.setValue(19, 3, Map.UNEXPLORED);
-		map.setValue(19, 4, Map.UNEXPLORED);
-		map.setValue(19, 5, Map.UNEXPLORED);
-		map.setValue(19, 6, Map.UNEXPLORED);
+		map.setValue(19-200, 2, Map.UNEXPLORED);
+		map.setValue(19-200, 3, Map.UNEXPLORED);
+		map.setValue(19-200, 4, Map.UNEXPLORED);
+		map.setValue(19-200, 5, Map.UNEXPLORED);
+		map.setValue(19-200, 6, Map.UNEXPLORED);
 
 		// System.out.println(map.getValue(0, 50));
 		// System.out.println(map.getValue(0, -50));
@@ -333,19 +334,19 @@ public class JMapPanel extends JPanel implements Observer {
 		/*
 		 * Bresenham test
 		 */
-		sense.Bresenham.line(map, -42, -3, -45, 15, false);
-		sense.Bresenham.line(map, -21, -3, -40, 1, true);
-		sense.Bresenham.line(map, -10, -5, -30, 5, true);
-		sense.Bresenham.line(map, -4, 0, -8, 4, true);
-		sense.Bresenham.line(map, -20, 15, -21, 14, true);
+		sense.Bresenham.line(map, -42-200, -3, -45-200, 15, false);
+		sense.Bresenham.line(map, -21-200, -3, -40-200, 1, true);
+		sense.Bresenham.line(map, -10-200, -5, -30-200, 5, true);
+		sense.Bresenham.line(map, -4-200, 0, -8-200, 4, true);
+		sense.Bresenham.line(map, -20-200, 15, -21-200, 14, true);
 
 		/*
 		 * Path drawing test
 		 */
-		List<Point> points = AStarSearch.Search(map, new Point(16, 20),
-				new Point(28, 28), true);
+		List<Point> points = AStarSearch.Search(map, new Point(16-200, 20),
+				new Point(28-200, 28), true);
 		jMapPanel.drawPath(points);
-		points = AStarSearch.Search(map, new Point(3, 9), null, false);
+		points = AStarSearch.Search(map, new Point(3-200, 9), null, false);
 		jMapPanel.drawPath(points);
 
 		/*
@@ -354,12 +355,15 @@ public class JMapPanel extends JPanel implements Observer {
 		for (int i = 0; i < 30; i++) {
 			for (int j = 40; j < 70; j++) {
 				if (j == 40 || j == 69 || i == 0 || i == 29)
-					map.setValue(i, j, Map.OCCUPIED);
+					map.setValue(i-200, j, Map.OCCUPIED);
 
 			}
 		}
 
-		ExploreTest.explore(map, new Point(5, 45));
+		ExploreTest.explore(map, new Point(5-200, 45));
+		
+		Robot robot = new Robot(map);
+		new RobotControl(robot).setVisible(true);
 
 	}
 
