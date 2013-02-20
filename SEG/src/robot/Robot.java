@@ -6,12 +6,14 @@ package robot;
 import explore.ExploreTest;
 import map.Map;
 import sense.Sense;
+import javaclient3.GripperInterface;
 import javaclient3.PlayerClient;
 import javaclient3.PlayerException;
 import javaclient3.Position2DInterface;
 import javaclient3.RangerInterface;
 import javaclient3.structures.PlayerConstants;
 import javaclient3.structures.PlayerPose2d;
+import javaclient3.structures.gripper.PlayerGripperGeom;
 
 /**
  * @author Albert
@@ -24,6 +26,7 @@ public class Robot {
 	PlayerClient robot = null;
 	Position2DInterface pos2D = null;
 	RangerInterface sonar = null;
+	GripperInterface gripper = null;
 
 	public static final int COLLECTION_SLEEP = 1;
 	public static final int SENSE_SLEEP = 2;
@@ -48,6 +51,7 @@ public class Robot {
 		// Set up service proxies
 		try {
 			robot = new PlayerClient("localhost", 6665);
+			gripper = robot.requestInterfaceGripper(index, PlayerConstants.PLAYER_OPEN_MODE);
 			pos2D = robot.requestInterfacePosition2D(index,
 					PlayerConstants.PLAYER_OPEN_MODE);
 			sonar = robot.requestInterfaceRanger(index,
@@ -167,6 +171,17 @@ public class Robot {
 	public void explore(){
 		System.out.println("Explore request received");
 		ExploreTest.exploreRobot(map, this, Map.convertCoordinates(x, y));
+	}
+	
+	public boolean pickUpObject()
+	{
+		int stored = gripper.getData().getStored();
+		gripper.close();
+		return gripper.getData().getStored() > stored;
+		
+	}
+	public void dropObject(){
+		gripper.open();
 	}
 
 }
