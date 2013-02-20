@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Observable;
 
 /**
- * Provides a dynamic 2D grid of float. It is based on ArrayLists, and is
+ * Provides a dynamic 2D grid of byte. It is based on ArrayLists, and is
  * suitable for storing occupancy grid maps of arbitrary sizes, because it grows
  * as needed.
  * 
@@ -17,12 +17,12 @@ import java.util.Observable;
  */
 public class Map extends Observable {
 
-	public static final float OCCThreshold = 0.8f;
-	public static final float EMPTYThreshold = 0.2f;
-	public static final float UNEXPLORED = 0.5f;
-	public static final float UNWALKABLE = 0.3f;
-	public static final float OCCUPIED = 1;
-	public static final float EMPTY = 0;
+	//Fiducially explored cells have the sign flipped.
+	public static final byte UNEXPLORED = 1;
+	public static final byte EMPTY 		= 2;
+	public static final byte UNWALKABLE = 3;
+	public static final byte OCCUPIED 	= 4;
+	
 	public static final float TOO_CLOSE = 0.5f;// Player Units from wall
 	public static final float SCALE = 0.1f;// Player units into 1 internal map
 											// unit
@@ -44,7 +44,7 @@ public class Map extends Observable {
 		setValue(-1, -1, Map.UNEXPLORED);
 	}
 
-	public static Point convertCoordinates(double x, double y) {
+	public static Point convertPlayerToInternal(double x, double y) {
 		int xi = (int) (x / Map.SCALE);
 		int yi = (int) (y / Map.SCALE);
 		return new Point(xi, yi);
@@ -79,7 +79,7 @@ public class Map extends Observable {
 	 *            the vertical index
 	 * @return the value at the specified location
 	 */
-	public float getValue(int x, int y) {
+	public byte getValue(int x, int y) {
 		try {
 			if (x < 0) {
 				x = Math.abs(x);
@@ -102,8 +102,8 @@ public class Map extends Observable {
 	 *            the vertical index
 	 * @return the value at the specified location
 	 */
-	public float getValue(float x, float y) {
-		Point c = convertCoordinates(x, y);
+	public byte getValue(float x, float y) {
+		Point c = convertPlayerToInternal(x, y);
 		return getValue(c.x, c.y);
 	}
 
@@ -122,20 +122,8 @@ public class Map extends Observable {
 		} else
 			return posArray.get(x);
 	}
-
-	/**
-	 * Updates the existing value, or grows the underlying array and writes the
-	 * given value
-	 * 
-	 * @param x
-	 *            the x coordinate
-	 * @param y
-	 *            the y coordinate
-	 * @param value
-	 *            the value to set in the given location
-	 */
-	public void setValue(int x, int y, float value) {
-
+	
+	private void updateMap(int x, int y, byte value){
 		ArrayList<VerticalArray> array;
 		if (x < 0)
 			array = negArray;
@@ -157,7 +145,35 @@ public class Map extends Observable {
 		boolean grown = updateMinMaxY(x, y);
 		setChanged();
 		notifyObservers(new CoordVal(x, y, value, grown));
+	}
+	/**
+	 * Set a cell as explored by the fiducial sensor or not
+	 * @param x Horizontal coordinate
+	 * @param y Vertical Coordinate
+	 * @param explored Explored or Not
+	 */
+	public void setFiducialExplored(int x, int y, boolean explored){
+		byte val = getValue(x, y);
+		if (explored && val > 0) val *= -1;
+		else if(!explored && val < 0) val *=-1;	
+		updateMap(x, y, val);
+	}
 
+	/**
+	 * Updates the existing value, or grows the underlying array and writes the
+	 * given value. Use setFiducialExplored() to set fiducial flag.
+	 * 
+	 * @param x
+	 *            the x coordinate
+	 * @param y
+	 *            the y coordinate
+	 * @param value
+	 *            the value to set in the given location
+	 */
+	public void setValue(int x, int y, byte value) {
+		//Preserve fiducial status
+		if (isFiducialExplored(x, y)) value *=-1;
+		updateMap(x, y, value);
 	}
 
 	/**
@@ -172,8 +188,8 @@ public class Map extends Observable {
 	 * @param value
 	 *            the value to set in the given location
 	 */
-	public void setValue(float x, float y, float value) {
-		Point c = convertCoordinates(x, y);
+	public void setValue(float x, float y, byte value) {
+		Point c = convertPlayerToInternal(x, y);
 		setValue(c.x, c.y, value);
 	}
 
@@ -194,46 +210,51 @@ public class Map extends Observable {
 	}
 
 	public boolean isOccupied(int x, int y) {
-		return getValue(x, y) == Map.OCCUPIED;
+		return getValue(x, y) == Math.abs(Map.OCCUPIED);
 	}
 
 	public boolean isEmpty(int x, int y) {
-		return getValue(x, y) == Map.EMPTY;
+		return getValue(x, y) == Math.abs(Map.EMPTY);
 	}
 
 	public boolean isUnexplored(int x, int y) {
-		return getValue(x, y) == Map.UNEXPLORED;
+		return getValue(x, y) == Math.abs(Map.UNEXPLORED);
 	}
 
 	public boolean isUnwalkable(int x, int y) {
-		return getValue(x, y) == Map.UNWALKABLE;
+		return getValue(x, y) == Math.abs(Map.UNWALKABLE);
 	}
-
+	
+	public boolean isFiducialExplored(int x, int y){
+		return getValue(x,y) < 0;
+	}
+	/*
 	public boolean isOccupied(float x, float y) {
-		return getValue(x, y) == Map.OCCUPIED;
+		return getValue(x, y) == Math.abs(Map.OCCUPIED);
 	}
-
+	
+	
 	public boolean isEmpty(float x, float y) {
-		return getValue(x, y) == Map.EMPTY;
+		return getValue(x, y) == Math.abs(Map.EMPTY);
 	}
 
 	public boolean isUnexplored(float x, float y) {
-		return getValue(x, y) == Map.UNEXPLORED;
+		return getValue(x, y) == Math.abs(Map.UNEXPLORED);
 	}
 
 	public boolean isUnwalkable(float x, float y) {
-		return getValue(x, y) == Map.UNWALKABLE;
+		return getValue(x, y) == Math.abs(Map.UNWALKABLE);
 	}
-
+	*/
 	public static void main(String[] a) {
 		Map map = new Map();
 
-		map.setValue(0, 3, 0.3f);
-		map.setValue(2, 4, 2.4f);
-		map.setValue(4, -2, -4.2f);
-		map.setValue(3, -5, -3.5f);
+		map.setValue(0, 3, Map.EMPTY);
+		map.setValue(2, 4, Map.OCCUPIED);
+		map.setValue(4, -2, Map.UNWALKABLE);
+		map.setValue(3, -5, Map.UNEXPLORED);
 
-		map.setValue(-2, -2, -2.2f);
+		map.setValue(-2, -2, Map.EMPTY);
 		// map.setValue(1, 1, 1.1f);
 		// map.setValue(1, 2, 0.2f);
 		// map.setValue(3, 4, 3.4f);

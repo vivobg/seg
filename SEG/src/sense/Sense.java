@@ -6,7 +6,7 @@ import javaclient3.structures.PlayerPose2d;
 
 public class Sense {
 	public static void sense(Map map, double[] sonarValues, PlayerPose2d pose) {
-		Point start = Map.convertCoordinates(pose.getPx(), pose.getPy());
+		Point start = Map.convertPlayerToInternal(pose.getPx(), pose.getPy());
 		if (sonarValues != null) {
 			for (int i = 0; i < sonarValues.length; i++) {
 				senseSensor(map, start, sonarValues[i],

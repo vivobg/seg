@@ -19,7 +19,7 @@ public class ExploreTest {
 			if (path != null) {
 				int size = path.size();
 				Point end = path.get(size - 1);
-				float found = Math.random() < 0.4 ? Map.EMPTY : Map.OCCUPIED;
+				byte found = Math.random() < 0.4 ? Map.EMPTY : Map.OCCUPIED;
 				map.setValue(end.x, end.y, found);
 				
 				if (found < 0.4) //Target cell is EMPTY, start from it.
@@ -59,7 +59,7 @@ public class ExploreTest {
 					}
 					System.out.println("X: " + pose.getPx() + " Y: " + pose.getPy());
 				}
-				start = Map.convertCoordinates(robot.x, robot.y);			
+				start = Map.convertPlayerToInternal(robot.x, robot.y);			
 
 				try {
 					
