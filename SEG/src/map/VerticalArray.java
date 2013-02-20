@@ -4,7 +4,6 @@
 package map;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 
 /**
@@ -13,21 +12,21 @@ import java.util.Iterator;
  */
 public class VerticalArray {
 
-	private ArrayList<Float> posArray;
-	private ArrayList<Float> negArray;
+	private ArrayList<Byte> posArray;
+	private ArrayList<Byte> negArray;
 
 	public VerticalArray(){
 		
-		posArray=new ArrayList<Float>();
-		negArray=new ArrayList<Float>();
-		negArray.add(-123f);
+		posArray=new ArrayList<Byte>();
+		negArray=new ArrayList<Byte>();
+		//negArray.add((byte) -123);
 		setValue(0, Map.UNEXPLORED);
 	}
 	
-	public VerticalArray(int y, float value){
-		posArray=new ArrayList<Float>();
-		negArray=new ArrayList<Float>();
-		negArray.add(-123f);
+	public VerticalArray(int y, byte value){
+		posArray=new ArrayList<Byte>();
+		negArray=new ArrayList<Byte>();
+		//negArray.add((byte) -123);
 		setValue(0, Map.UNEXPLORED);
 		setValue(y, value);
 	}
@@ -41,7 +40,7 @@ public class VerticalArray {
 	 * @throws IndexOutOfBoundsException
 	 *             - if the index is out of range
 	 */
-	public float getValue(int y) {
+	public byte getValue(int y) {
 		if (y < 0) {
 			y = Math.abs(y);
 			return negArray.get(y);
@@ -59,9 +58,9 @@ public class VerticalArray {
 	 * @param value
 	 *            The value to write into the cell
 	 */
-	public void setValue(int y, float value) {
+	public void setValue(int y, byte value) {
 		
-		ArrayList<Float> array;
+		ArrayList<Byte> array;
 		if (y<0) array = negArray;
 		else array = posArray;
 		
@@ -137,7 +136,7 @@ public class VerticalArray {
 	 * @return True if above (>) occupied threshold, false otherwise
 	 */
 	public boolean isOccupied(int y) {
-		return getValue(y) > Map.OCCThreshold;
+		return getValue(y) == Map.OCCUPIED;
 	}
 
 	/**
@@ -147,7 +146,7 @@ public class VerticalArray {
 	 * @return True if below (<) empty threshold, false otherwise
 	 */
 	public boolean isEmpty(int y) {
-		return getValue(y) < Map.EMPTYThreshold;
+		return getValue(y) == Map.EMPTY;
 	}
 
 	/**
@@ -158,7 +157,7 @@ public class VerticalArray {
 	 *         Empty)
 	 */
 	public boolean isUnexplored(int y) {
-		return (getValue(y) <= Map.OCCThreshold && getValue(y) >= Map.EMPTYThreshold);
+		return (getValue(y) == Map.UNEXPLORED);
 	}
 	
 	public String toString(){
@@ -169,7 +168,7 @@ public class VerticalArray {
 			//sb.insert(offset, d)
 		}
 		sb.append("]");*/
-		Iterator<Float> it= negArray.iterator();
+		Iterator<Byte> it= negArray.iterator();
 		while (it.hasNext()){
 			sb.insert(1, it.next()+", ");
 			

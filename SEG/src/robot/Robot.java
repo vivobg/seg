@@ -170,7 +170,7 @@ public class Robot {
 	
 	public void explore(){
 		System.out.println("Explore request received");
-		ExploreTest.exploreRobot(map, this, Map.convertCoordinates(x, y));
+		ExploreTest.exploreRobot(map, this, Map.convertPlayerToInternal(x, y));
 	}
 	
 	public boolean pickUpObject()
