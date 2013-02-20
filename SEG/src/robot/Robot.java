@@ -37,14 +37,20 @@ public class Robot {
 	private double[] sonarValues;
 
 	public Robot(Map map) {
+		
+		this(map,0);
+	}
+	
+	public Robot(Map map, int index)
+	{
 		this.map = map;
 
 		// Set up service proxies
 		try {
 			robot = new PlayerClient("localhost", 6665);
-			pos2D = robot.requestInterfacePosition2D(0,
+			pos2D = robot.requestInterfacePosition2D(index,
 					PlayerConstants.PLAYER_OPEN_MODE);
-			sonar = robot.requestInterfaceRanger(0,
+			sonar = robot.requestInterfaceRanger(index,
 					PlayerConstants.PLAYER_OPEN_MODE);
 		} catch (PlayerException e) {
 			System.err.println("Simplebob: Error connecting to Player!\n>>>"
@@ -54,7 +60,6 @@ public class Robot {
 		robot.runThreaded(-1, -1);
 		collectionThread();
 		senseThread();
-
 	}
 
 	/**
