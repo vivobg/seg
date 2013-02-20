@@ -1,16 +1,38 @@
+
 package mainApp;
 
+import garbage.GarbageCollection;
+
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.List;
+
+import map.Map;
+
+import robot.Robot;
+
+
 public class Control {
+	Map map;
+	ArrayList<Robot> robots  = new ArrayList<Robot>();
+	ArrayList<Point> garbage  = new ArrayList<Point>();
 	BotMode botMode = BotMode.Solo;
 	public Control(String[] args)
 	{
+		map = new Map();
+		
 		setupRobots();
 		processArgs(args);
 	}
 	
 	private void setupRobots() {
-		// TODO Auto-generated method stub
 		
+		for(int i = 0; i< 3; i++)//TODO: Change to autodetect number of robots available
+		{
+			robots.add(new Robot(map,i));
+		}
 	}
 
 	private void processArgs(String[] args) {
@@ -27,7 +49,7 @@ public class Control {
 			}
 			else if (args[i] == "-explore")
 			{
-				explore(botMode);
+				explore();
 			}
 			else if(args[i] == "-map")
 			{
@@ -41,10 +63,10 @@ public class Control {
 			{
 				if(i + 4 < args.length)
 				{
-					double x1 = Double.parseDouble(args[i+1]);
-					double y1 = Double.parseDouble(args[i+2]);
-					double x2 = Double.parseDouble(args[i+3]);
-					double y2 = Double.parseDouble(args[i+4]);
+					int x1 = Integer.parseInt(args[i+1]);
+					int y1 = Integer.parseInt(args[i+2]);
+					int x2 = Integer.parseInt(args[i+3]);
+					int y2 = Integer.parseInt(args[i+4]);
 					collect(x1,y1,x2,y2);
 				}
 			}
@@ -53,9 +75,19 @@ public class Control {
 		
 	}
 
-	private void collect(double x1, double y1, double x2, double y2) {
-		// TODO Auto-generated method stub
+	private void collect(int x1, int y1, int x2, int y2) {
 		
+		Rectangle collectionArea = new Rectangle(x1,y1,x2-x1,y2-y1);
+		GarbageCollection.setCollectionArea(collectionArea);
+		
+		List<Robot> availableBots = new ArrayList<Robot>();
+		if(botMode == BotMode.Solo)
+		{
+			 availableBots.add(robots.get(0));
+		}
+		else availableBots = robots;
+		
+		GarbageCollection.Collect(map, availableBots);
 		
 	}
 
@@ -63,18 +95,33 @@ public class Control {
 		botMode = BotMode.Multi;
 		
 	}
-
+	private void switchToSolo() {
+		botMode = BotMode.Solo;
+	}
+	
+	/**
+	 * 
+	 * @param filename the filename to be used to save the map (filename+.extension)
+	 */
 	private void saveMap(String filename) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private void explore(BotMode botMode) {
-		// TODO Auto-generated method stub
+	public void explore() 
+	{	
+		if(botMode == BotMode.Solo)
+		{
+			robots.get(0).explore(); //Only use the first bot
+		}
+		else{
+			for(Robot bot : robots)
+			{
+				bot.explore();
+			}
+		}
 		
 	}
 
-	private void switchToSolo() {
-		botMode = BotMode.Solo;
-	}
+	
 }
