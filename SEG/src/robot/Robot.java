@@ -4,6 +4,7 @@
 package robot;
 
 import java.awt.Point;
+import java.util.List;
 
 import explore.ExploreTest;
 import map.Map;
@@ -231,6 +232,12 @@ public class Robot {
 		}
 		if(stop) pos2D.setSpeed(0, 0);//Remove for speed?
 	}
+	
+	public void move(Point target)
+	{
+		move(target.x,target.y);
+	}
+	
 	/**
 	 * Move to the specified location
 	 * @param tx internal X coordinate
@@ -295,15 +302,36 @@ public class Robot {
 		ExploreTest.exploreRobot(map, this, Map.convertPlayerToInternal(x, y));
 	}
 	
+	/**
+	 * Picks up an object
+	 * @return true if something was successfully picked up
+	 */
 	public boolean pickUpObject()
 	{
 		int stored = gripper.getData().getStored();
 		gripper.close();
+		gripper.store();
 		return gripper.getData().getStored() > stored;
 		
 	}
+	/**
+	 * Drop the current object by opening gripper
+	 */
 	public void dropObject(){
 		gripper.open();
+	}
+	
+	/**
+	 * Follows a path consisting of a given list of points
+	 * @param points Points in the path
+	 */
+	public void FollowPath(List<Point> points) 
+	{
+		for(Point p : points)
+		{
+			move(p);
+		}
+		
 	}
 
 }
