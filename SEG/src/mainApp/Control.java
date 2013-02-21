@@ -5,7 +5,6 @@ import garbage.GarbageCollection;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,19 +38,19 @@ public class Control {
 		//java MainApp -solo -explore -map map1 -multi -collect 1 1 2 0 -map map2
 		for(int i = 0; i < args.length; i++)
 		{
-			if(args[i] == "-solo")
+			if(args[i].equals("-solo"))
 			{
 				switchToSolo();
 			}
-			else if(args[i] == "-multi")
+			else if(args[i].equals("-multi"))
 			{
 				switchToMulti();
 			}
-			else if (args[i] == "-explore")
+			else if (args[i].equals("-explore"))
 			{
 				explore();
 			}
-			else if(args[i] == "-map")
+			else if(args[i].equals("-map"))
 			{
 				if(i + 1 < args.length)
 				{
@@ -59,7 +58,7 @@ public class Control {
 					saveMap(filename);
 				}
 			}
-			else if(args[i] == "-collect")
+			else if(args[i].equals("-collect"))
 			{
 				if(i + 4 < args.length)
 				{
