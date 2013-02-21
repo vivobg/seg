@@ -3,6 +3,8 @@
  */
 package robot;
 
+import java.awt.Point;
+
 import explore.ExploreTest;
 import map.Map;
 import sense.Sense;
@@ -30,8 +32,15 @@ public class Robot {
 
 	public static final int COLLECTION_SLEEP = 1;
 	public static final int SENSE_SLEEP = 2;
-	public static final int MOVE_SLEEP = 30;
-	public static final boolean WAIT_MOVE = false;
+	public static final int MOVE_SLEEP = 14;
+	public static final int TURN_SLEEP = 4;
+	public static final double TURN_RATE = 0.5;
+	public static final double TURN_RATE_SLOW = 0.1;
+	public static final double TURN_RATE_LIMIT = 0.3;//Below this, turn slowly
+	public static final double SPEED_RATE = 0.5;
+	public static final double TARGET_THRESHOLD = 0.05;
+	public static final double HEADING_THRESHOLD = 0.05;
+	
 
 	public double x;
 	public double y;
@@ -113,7 +122,7 @@ public class Robot {
 		sense.start();
 	}
 
-	public void move(char direction, double distance) {
+	public void moveP(char direction, double distance) {
 		PlayerPose2d pos = new PlayerPose2d();
 
 		switch (direction) {
@@ -141,31 +150,144 @@ public class Robot {
 		}
 
 		pos2D.setPosition(pos, pos, (byte) 1);
-		
-		while (WAIT_MOVE && Math.abs(pos.getPx() - x) > 0.1 && Math.abs(pos.getPy() - y) > 0.1){
-			System.out.println("Waiting for robot to move");
-			try {
-				Thread.sleep(MOVE_SLEEP);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 
 	}
 	
-	public void move (PlayerPose2d pose){
+	public void moveP (PlayerPose2d pose){
 		pos2D.setPosition(pose, pose, (byte) 1);
-		while (WAIT_MOVE && Math.abs(pose.getPx() - x) >0.1 && Math.abs(pose.getPy() - y) > 0.1){
-			System.out.println("Waiting for robot to move to " + pose.getPx() + " " + pose.getPy());
+		
+	}
+	
+	private double targetYaw(double targetX, double targetY){
+		double dy = Math.abs(targetY - y);
+		double dx = Math.abs(targetX - x);
+		double theta = 0;
+		double opposite, adjacent;
+		opposite = dy;
+		adjacent = dx;
+		if (targetX > x) {
+
+			if (targetY > y) {
+				// quad TR
+				theta = Math.atan(opposite / adjacent);
+			} else {
+				// quad BR
+				theta = -Math.atan(opposite / adjacent);
+			}
+		} else if (targetX == x) { // vertical
+			if (targetY > y)
+				theta = Math.PI / 2;// up
+			else if (targetY < y)
+				theta = -Math.PI / 2;// down
+		} else if (targetY == y) {// horizontal
+			if (targetX > x)
+				theta = 0; // right
+			else if (targetX < x)
+				theta = Math.PI;// left
+		} else {
+			if (targetY > y) {
+				// quad TL
+				theta = Math.PI
+						- Math.atan(opposite / adjacent);
+			} else {
+				// quad BL
+				theta = -Math.PI
+						+ Math.atan(opposite / adjacent);
+			}
+		}
+
+		
+		return theta;
+	}
+	/**
+	 * Turn to the specified heading. 
+	 * @param targetYaw The heading to turn to.
+	 * @param stop whether to stop the robot after turning (faster if false when moving)
+	 */
+	public void turn(double targetYaw, boolean stop){
+		while (Math.abs(targetYaw - yaw) > HEADING_THRESHOLD && Math.abs(targetYaw - yaw) < 2*Math.PI-HEADING_THRESHOLD ) {
+			
+			double a = targetYaw - yaw;
+			if (a > Math.PI)
+				a -= 2 * Math.PI;
+			if (a < -Math.PI)
+				a += 2 * Math.PI;
+			
+			if (a > 0){
+				if (a > TURN_RATE_LIMIT)
+				pos2D.setSpeed(0, TURN_RATE);// left
+				else pos2D.setSpeed(0, TURN_RATE_SLOW);// left
+			}
+			else {
+				if (a < -TURN_RATE_LIMIT)
+				pos2D.setSpeed(0, -TURN_RATE);// right
+				else pos2D.setSpeed(0, -TURN_RATE_SLOW);// right
+			}
+			
+			try {
+				Thread.sleep(TURN_SLEEP);
+			} catch (InterruptedException e) {
+			}
+		}
+		if(stop) pos2D.setSpeed(0, 0);//Remove for speed?
+	}
+	/**
+	 * Move to the specified location
+	 * @param tx internal X coordinate
+	 * @param ty internal Y coordinate
+	 */
+	public void move(int tx, int ty){
+		double px = tx * Map.SCALE;//convert to Player coords
+		double py = ty * Map.SCALE;
+		while (true) {
+				if (Math.abs(px - x) < TARGET_THRESHOLD
+						&& Math.abs(py - y) < TARGET_THRESHOLD) {
+					pos2D.setSpeed(0, 0);
+					break;//target reached
+				}
+				/*
+				 * Decide which way to turn, to never turn more than 1/2 circle.
+				 */
+				double targetYaw = targetYaw(px,py);
+				turn(targetYaw, false);
+
+				pos2D.setSpeed(SPEED_RATE, 0);
+			
 			try {
 				Thread.sleep(MOVE_SLEEP);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 		}
 		
+	}
+	/**
+	 * WORK IN PROGRESS
+	 * @param tx
+	 * @param ty
+	 * @param end
+	 */
+	public void explore_move(int tx, int ty, Point end){
+		double px = tx * Map.SCALE;//convert to Player coords
+		double py = ty * Map.SCALE;
+		while(map.isUnexplored(end.x, end.y)){
+				if (Math.abs(px - x) < TARGET_THRESHOLD
+						&& Math.abs(py - y) < TARGET_THRESHOLD) {
+					pos2D.setSpeed(0, 0);
+					break;//target reached
+				}
+				/*
+				 * Decide which way to turn, to never turn more than 1/2 circle.
+				 */
+				double targetYaw = targetYaw(px,py);
+				turn(targetYaw,false);
+
+				pos2D.setSpeed(SPEED_RATE, 0);
+			
+			try {
+				Thread.sleep(MOVE_SLEEP);
+			} catch (InterruptedException e) {
+			}
+		}
 	}
 	
 	public void explore(){

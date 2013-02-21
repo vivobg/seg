@@ -40,12 +40,12 @@ public class RobotControl extends JFrame{
 		JButton jbtnLeft = new JButton("Move Left");
 		JButton jbtnRight = new JButton("Move Right");
 		JButton jbtnExplore = new JButton("Explore");
-		jbtnExplore.setEnabled(false);
+		//jbtnExplore.setEnabled(false);
 		this.setLayout(new GridLayout(4, 3));
-		this.add(new JLabel("X: "));
+		this.add(new JLabel("X:(INT x) "));
 		this.add(jtX);
 		this.add(jbtnUp);
-		this.add(new JLabel("Y: "));
+		this.add(new JLabel("Y:(INT y) "));
 		this.add(jtY);
 		this.add(jbtnDown);
 		this.add(new JLabel("Yaw/Distance: "));
@@ -60,11 +60,9 @@ public class RobotControl extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				double x = Double.valueOf(jtX.getText());
-				double y = Double.valueOf(jtY.getText());
-				double yaw = Double.valueOf(jtV.getText());
-				PlayerPose2d pose = new PlayerPose2d(x, y, yaw);
-				robot.move(pose);
+				int x = Integer.valueOf(jtX.getText());
+				int y = Integer.valueOf(jtY.getText());
+				robot.move(x,y);
 				
 			}
 		});
@@ -76,10 +74,10 @@ public class RobotControl extends JFrame{
 				JButton btn = (JButton) e.getSource();
 				String txt = btn.getText();
 				double d = Double.valueOf(jtV.getText());
-				if (txt.equals("Move Up")) robot.move('u', d);
-				else if (txt.equals("Move Down")) robot.move('d', d);
-				else if (txt.equals("Move Left")) robot.move('l', d);
-				else if (txt.equals("Move Right")) robot.move('r', d);
+				if (txt.equals("Move Up")) robot.moveP('u', d);
+				else if (txt.equals("Move Down")) robot.moveP('d', d);
+				else if (txt.equals("Move Left")) robot.moveP('l', d);
+				else if (txt.equals("Move Right")) robot.moveP('r', d);
 				else if (txt.equals("Explore")){
 					System.out.println("Exploration requested");
 					robot.explore();
