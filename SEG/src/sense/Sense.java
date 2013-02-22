@@ -29,6 +29,7 @@ public class Sense {
 	 * @param robot
 	 */
 	public static void fiducialScan(Map map, Robot robot){
+		updateFiducialExplored(map, robot);
 		throw new UnsupportedOperationException("Not Implemented Yet!");
 	}
 	/**
@@ -52,6 +53,10 @@ public class Sense {
 		boolean WALL = distance < 5 ? true : false;
 		Bresenham.line(map, s.x, s.y, t.x, t.y, WALL);
 
+	}
+	
+	private static void updateFiducialExplored(Map map, Robot robot){
+		throw new UnsupportedOperationException("Not Implemented Yet!");
 	}
 
 }
