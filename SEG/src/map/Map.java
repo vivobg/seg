@@ -5,6 +5,7 @@ package map;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 
 /**
@@ -101,11 +102,11 @@ public class Map extends Observable {
 	 * @param y
 	 *            the vertical index
 	 * @return the value at the specified location
-	 */
+	 *//*
 	public byte getValue(float x, float y) {
 		Point c = convertPlayerToInternal(x, y);
 		return getValue(c.x, c.y);
-	}
+	}*/
 
 	/**
 	 * It is strongly recommended to use setValue() and getValue() instead Only
@@ -152,23 +153,22 @@ public class Map extends Observable {
 	 * @param y Vertical Coordinate
 	 * @param explored Explored or Not
 	 */
-	public void setFiducialExplored(int x, int y, boolean explored){
+	public void setFiducialExplored(int x, int y){
 		byte val = getValue(x, y);
-		if (explored && val > 0) val *= -1;
-		else if(!explored && val < 0) val *=-1;	
+		if (val > 0) val *= -1;	
 		updateMap(x, y, val);
 	}
 
 	/**
 	 * Updates the existing value, or grows the underlying array and writes the
-	 * given value. Use setFiducialExplored() to set fiducial flag.
+	 * given value(positive). Use setFiducialExplored() to set fiducial flag.
 	 * 
 	 * @param x
 	 *            the x coordinate
 	 * @param y
 	 *            the y coordinate
 	 * @param value
-	 *            the value to set in the given location
+	 *            the value to set in the given location, assumes positive value
 	 */
 	public void setValue(int x, int y, byte value) {
 		//Preserve fiducial status
@@ -187,11 +187,11 @@ public class Map extends Observable {
 	 *            the y coordinate
 	 * @param value
 	 *            the value to set in the given location
-	 */
+	 *//*
 	public void setValue(float x, float y, byte value) {
 		Point c = convertPlayerToInternal(x, y);
 		setValue(c.x, c.y, value);
-	}
+	}*/
 
 	public int getMaxXSize() {
 		return posArray.size();
