@@ -46,7 +46,7 @@ public class ExploreTest {
 			if (path != null) {
 				for (int i = 1; i<path.size();i++){
 					Point p = path.get(i);
-					robot.explore_move(p.x,p.y, path.get(path.size()-1));
+					robot.move(p);
 					try {
 						
 						Thread.sleep(30);

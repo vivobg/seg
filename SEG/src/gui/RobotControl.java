@@ -1,6 +1,8 @@
 package gui;
 
 import java.awt.GridLayout;
+import java.awt.Point;
+
 import robot.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -62,7 +64,7 @@ public class RobotControl extends JFrame{
 			public void actionPerformed(ActionEvent arg0) {
 				int x = Integer.valueOf(jtX.getText());
 				int y = Integer.valueOf(jtY.getText());
-				robot.move(x,y);
+				robot.move(new Point(x,y));
 				
 			}
 		});
@@ -74,10 +76,10 @@ public class RobotControl extends JFrame{
 				JButton btn = (JButton) e.getSource();
 				String txt = btn.getText();
 				double d = Double.valueOf(jtV.getText());
-				if (txt.equals("Move Up")) robot.moveP('u', d);
-				else if (txt.equals("Move Down")) robot.moveP('d', d);
-				else if (txt.equals("Move Left")) robot.moveP('l', d);
-				else if (txt.equals("Move Right")) robot.moveP('r', d);
+				if (txt.equals("Move Up")) robot.move('u', d);
+				else if (txt.equals("Move Down")) robot.move('d', d);
+				else if (txt.equals("Move Left")) robot.move('l', d);
+				else if (txt.equals("Move Right")) robot.move('r', d);
 				else if (txt.equals("Explore")){
 					System.out.println("Exploration requested");
 					robot.explore();

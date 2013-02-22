@@ -37,11 +37,10 @@ public class Robot {
 	public static final int TURN_SLEEP = 4;
 	public static final double TURN_RATE = 0.5;
 	public static final double TURN_RATE_SLOW = 0.1;
-	public static final double TURN_RATE_LIMIT = 0.3;//Below this, turn slowly
+	public static final double TURN_RATE_LIMIT = 0.3;// Below this, turn slowly
 	public static final double SPEED_RATE = 0.5;
 	public static final double TARGET_THRESHOLD = 0.05;
 	public static final double HEADING_THRESHOLD = 0.05;
-	
 
 	public double x;
 	public double y;
@@ -50,18 +49,18 @@ public class Robot {
 	private double[] sonarValues;
 
 	public Robot(Map map) {
-		
-		this(map,0);
+
+		this(map, 0);
 	}
-	
-	public Robot(Map map, int index)
-	{
+
+	public Robot(Map map, int index) {
 		this.map = map;
 
 		// Set up service proxies
 		try {
 			robot = new PlayerClient("localhost", 6665);
-			gripper = robot.requestInterfaceGripper(index, PlayerConstants.PLAYER_OPEN_MODE);
+			gripper = robot.requestInterfaceGripper(index,
+					PlayerConstants.PLAYER_OPEN_MODE);
 			pos2D = robot.requestInterfacePosition2D(index,
 					PlayerConstants.PLAYER_OPEN_MODE);
 			sonar = robot.requestInterfaceRanger(index,
@@ -123,43 +122,16 @@ public class Robot {
 		sense.start();
 	}
 
-	public void moveP(char direction, double distance) {
-		PlayerPose2d pos = new PlayerPose2d();
-
-		switch (direction) {
-		case 'u':
-			pos.setPx(x);
-			pos.setPy(y + distance);
-			pos.setPa(Math.PI / 2);
-			break;
-		case 'd':
-			pos.setPx(x);
-			pos.setPy(y - distance);
-			pos.setPa(-Math.PI / 2);
-			break;
-		case 'l':
-			pos.setPx(x - distance);
-			pos.setPy(y);
-			pos.setPa(Math.PI);
-			break;
-		case 'r':
-			pos.setPx(x + distance);
-			pos.setPy(y);
-			pos.setPa(0);
-			break;
-
-		}
-
-		pos2D.setPosition(pos, pos, (byte) 1);
-
-	}
-	
-	public void moveP (PlayerPose2d pose){
-		pos2D.setPosition(pose, pose, (byte) 1);
-		
-	}
-	
-	private double targetYaw(double targetX, double targetY){
+	/**
+	 * Calculate the heading to the target
+	 * 
+	 * @param targetX
+	 *            Target's X coordinate, Player units
+	 * @param targetY
+	 *            Target's Y coordinate, Player units
+	 * @return the heading in radians
+	 */
+	private double targetYaw(double targetX, double targetY) {
 		double dy = Math.abs(targetY - y);
 		double dx = Math.abs(targetX - x);
 		double theta = 0;
@@ -188,150 +160,172 @@ public class Robot {
 		} else {
 			if (targetY > y) {
 				// quad TL
-				theta = Math.PI
-						- Math.atan(opposite / adjacent);
+				theta = Math.PI - Math.atan(opposite / adjacent);
 			} else {
 				// quad BL
-				theta = -Math.PI
-						+ Math.atan(opposite / adjacent);
+				theta = -Math.PI + Math.atan(opposite / adjacent);
 			}
 		}
 
-		
 		return theta;
 	}
+
 	/**
-	 * Turn to the specified heading. 
-	 * @param targetYaw The heading to turn to.
-	 * @param stop whether to stop the robot after turning (faster if false when moving)
+	 * Turn to the specified heading.
+	 * 
+	 * @param targetYaw
+	 *            The heading to turn to.
+	 * @param stop
+	 *            whether to stop the robot after turning (faster if false when
+	 *            moving)
 	 */
-	public void turn(double targetYaw, boolean stop){
-		while (Math.abs(targetYaw - yaw) > HEADING_THRESHOLD && Math.abs(targetYaw - yaw) < 2*Math.PI-HEADING_THRESHOLD ) {
-			
+	public void turn(double targetYaw, boolean stop) {
+		while (Math.abs(targetYaw - yaw) > HEADING_THRESHOLD
+				&& Math.abs(targetYaw - yaw) < 2 * Math.PI - HEADING_THRESHOLD) {
+
 			double a = targetYaw - yaw;
 			if (a > Math.PI)
 				a -= 2 * Math.PI;
 			if (a < -Math.PI)
 				a += 2 * Math.PI;
-			
-			if (a > 0){
+
+			if (a > 0) {
 				if (a > TURN_RATE_LIMIT)
-				pos2D.setSpeed(0, TURN_RATE);// left
-				else pos2D.setSpeed(0, TURN_RATE_SLOW);// left
-			}
-			else {
+					pos2D.setSpeed(0, TURN_RATE);// left
+				else
+					pos2D.setSpeed(0, TURN_RATE_SLOW);// left
+			} else {
 				if (a < -TURN_RATE_LIMIT)
-				pos2D.setSpeed(0, -TURN_RATE);// right
-				else pos2D.setSpeed(0, -TURN_RATE_SLOW);// right
+					pos2D.setSpeed(0, -TURN_RATE);// right
+				else
+					pos2D.setSpeed(0, -TURN_RATE_SLOW);// right
 			}
-			
+
 			try {
 				Thread.sleep(TURN_SLEEP);
 			} catch (InterruptedException e) {
 			}
 		}
-		if(stop) pos2D.setSpeed(0, 0);//Remove for speed?
+		if (stop)
+			pos2D.setSpeed(0, 0);// Remove for speed?
 	}
-	
-	public void move(Point target)
-	{
-		move(target.x,target.y);
-	}
-	
+
 	/**
 	 * Move to the specified location
-	 * @param tx internal X coordinate
-	 * @param ty internal Y coordinate
+	 * 
+	 * @param target
+	 *            Target in internal coordinates
 	 */
-	public void move(int tx, int ty){
-		double px = tx * Map.SCALE;//convert to Player coords
-		double py = ty * Map.SCALE;
-		while (true) {
-				if (Math.abs(px - x) < TARGET_THRESHOLD
-						&& Math.abs(py - y) < TARGET_THRESHOLD) {
-					pos2D.setSpeed(0, 0);
-					break;//target reached
-				}
-				/*
-				 * Decide which way to turn, to never turn more than 1/2 circle.
-				 */
-				double targetYaw = targetYaw(px,py);
-				turn(targetYaw, false);
-
-				pos2D.setSpeed(SPEED_RATE, 0);
-			
-			try {
-				Thread.sleep(MOVE_SLEEP);
-			} catch (InterruptedException e) {
-			}
-		}
-		
+	public void move(Point target) {
+		double px = target.x * Map.SCALE;// convert to Player coords
+		double py = target.y * Map.SCALE;
+		move(new PlayerPose2d(px, py, 0));
 	}
+
 	/**
-	 * WORK IN PROGRESS
-	 * @param tx
-	 * @param ty
-	 * @param end
+	 * Move to the specified location. Main move method. Other move methods call
+	 * this method.
+	 * 
+	 * @param pose
+	 *            Target in Player coordinates
 	 */
-	public void explore_move(int tx, int ty, Point end){
-		double px = tx * Map.SCALE;//convert to Player coords
-		double py = ty * Map.SCALE;
-		while(map.isUnexplored(end.x, end.y)){
-				if (Math.abs(px - x) < TARGET_THRESHOLD
-						&& Math.abs(py - y) < TARGET_THRESHOLD) {
-					pos2D.setSpeed(0, 0);
-					break;//target reached
-				}
-				/*
-				 * Decide which way to turn, to never turn more than 1/2 circle.
-				 */
-				double targetYaw = targetYaw(px,py);
-				turn(targetYaw,false);
+	public void move(PlayerPose2d pose) {
+		double px = pose.getPx();
+		double py = pose.getPy();
+		while (true) {
+			if (Math.abs(px - x) < TARGET_THRESHOLD
+					&& Math.abs(py - y) < TARGET_THRESHOLD) {
+				pos2D.setSpeed(0, 0);
+				break;// target reached
+			}
+			/*
+			 * Decide which way to turn, to never turn more than 1/2 circle.
+			 */
+			double targetYaw = targetYaw(px, py);
+			turn(targetYaw, false);
 
-				pos2D.setSpeed(SPEED_RATE, 0);
-			
+			pos2D.setSpeed(SPEED_RATE, 0);
+
 			try {
 				Thread.sleep(MOVE_SLEEP);
 			} catch (InterruptedException e) {
 			}
 		}
 	}
-	
-	public void explore(){
+
+	/**
+	 * Used by RobotControl to move up,down,left,right
+	 * 
+	 * @param direction
+	 * @param distance
+	 */
+	public void move(char direction, double distance) {
+		PlayerPose2d pos = new PlayerPose2d();
+
+		switch (direction) {
+		case 'u':
+			pos.setPx(x);
+			pos.setPy(y + distance);
+			pos.setPa(Math.PI / 2);
+			break;
+		case 'd':
+			pos.setPx(x);
+			pos.setPy(y - distance);
+			pos.setPa(-Math.PI / 2);
+			break;
+		case 'l':
+			pos.setPx(x - distance);
+			pos.setPy(y);
+			pos.setPa(Math.PI);
+			break;
+		case 'r':
+			pos.setPx(x + distance);
+			pos.setPy(y);
+			pos.setPa(0);
+			break;
+
+		}
+
+		move(pos);
+
+	}
+
+	public void explore() {
 		System.out.println("Explore request received");
 		ExploreTest.exploreRobot(map, this, Map.convertPlayerToInternal(x, y));
 	}
-	
+
 	/**
 	 * Picks up an object
+	 * 
 	 * @return true if something was successfully picked up
 	 */
-	public boolean pickUpObject()
-	{
+	public boolean pickUpObject() {
 		int stored = gripper.getData().getStored();
 		gripper.close();
 		gripper.store();
 		return gripper.getData().getStored() > stored;
-		
+
 	}
+
 	/**
 	 * Drop the current object by opening gripper
 	 */
-	public void dropObject(){
+	public void dropObject() {
 		gripper.open();
 	}
-	
+
 	/**
 	 * Follows a path consisting of a given list of points
-	 * @param points Points in the path
+	 * 
+	 * @param points
+	 *            Points in the path
 	 */
-	public void FollowPath(List<Point> points) 
-	{
-		for(Point p : points)
-		{
+	public void FollowPath(List<Point> points) {
+		for (Point p : points) {
 			move(p);
 		}
-		
+
 	}
 
 }
