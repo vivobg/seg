@@ -5,6 +5,7 @@ package map;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Observable;
 
@@ -17,6 +18,8 @@ import java.util.Observable;
  * 
  */
 public class Map extends Observable {
+	
+	public HashMap<Point,Boolean> garbageList;
 
 	//Fiducially explored cells have the sign flipped.
 	public static final byte UNEXPLORED = 1;
@@ -36,10 +39,11 @@ public class Map extends Observable {
 	private int maxY = 0; // handy for the GUI
 	private int minX = 0; // handy for the GUI
 	private int maxX = 0; // handy for the GUI
-
+	
 	public Map() {
 		posArray = new ArrayList<VerticalArray>();
 		negArray = new ArrayList<VerticalArray>();
+		garbageList = new HashMap<Point, Boolean>();
 		setValue(0, 0, Map.UNEXPLORED);
 		setValue(1, 1, Map.UNEXPLORED);
 		setValue(-1, -1, Map.UNEXPLORED);
