@@ -1,21 +1,46 @@
 package sense;
 
 import java.awt.Point;
+
+import robot.Robot;
 import map.Map;
 import javaclient3.structures.PlayerPose2d;
 
 public class Sense {
-	public static void sense(Map map, double[] sonarValues, PlayerPose2d pose) {
+	/**
+	 * Scan the current surroundings with the sonar sensors
+	 * @param map
+	 * @param robot
+	 */
+	public static void sonarScan(Map map, Robot robot) {
+		PlayerPose2d pose = robot.getPose();
+		double[] sonarValues = robot.getSonar();
 		Point start = Map.convertPlayerToInternal(pose.getPx(), pose.getPy());
 		if (sonarValues != null) {
 			for (int i = 0; i < sonarValues.length; i++) {
-				senseSensor(map, start, sonarValues[i],
+				senseSonarSensor(map, start, sonarValues[i],
 						pose.getPa() + i * Math.toRadians(360 / 16));
 			}
 		}
 	}
+	/**
+	 * Scan the current surroundings with the fiducial sensor
+	 * @param map
+	 * @param robot
+	 */
+	public static void fiducialScan(Map map, Robot robot){
+		throw new UnsupportedOperationException("Not Implemented Yet!");
+	}
+	/**
+	 * Scan the current surroundings with both types of sensors
+	 * @param map
+	 * @param robot
+	 */
+	public static void scan360(Map map, Robot robot){
+		throw new UnsupportedOperationException("Not Implemented Yet!");
+	}
 
-	private static void senseSensor(Map map, Point s, double distance,
+	private static void senseSonarSensor(Map map, Point s, double distance,
 			double angle) {
 		double distance2 = distance / Map.SCALE; // Convert distance to internal
 													// map

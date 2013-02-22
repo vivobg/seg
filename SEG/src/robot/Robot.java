@@ -48,6 +48,14 @@ public class Robot {
 	private Map map;
 	private double[] sonarValues;
 
+	/**
+	 * 
+	 * @return the current pose of the robot
+	 */
+	public PlayerPose2d getPose(){
+		return new PlayerPose2d(x,y,yaw);
+	}
+
 	public Robot(Map map) {
 
 		this(map, 0);
@@ -73,6 +81,14 @@ public class Robot {
 		robot.runThreaded(-1, -1);
 		collectionThread();
 		senseThread();
+	}
+	
+	public double[] getSonar(){
+		return sonarValues;
+	}
+	
+	public double[] getFiducial() {
+		throw new UnsupportedOperationException("Not Implemented Yet!");
 	}
 
 	/**
@@ -110,8 +126,7 @@ public class Robot {
 			public void run() {
 
 				while (true) {
-					PlayerPose2d pose = new PlayerPose2d(x, y, yaw);
-					Sense.sense(map, sonarValues, pose);
+					Sense.sonarScan(map, Robot.this);
 					try {
 						sleep(SENSE_SLEEP);
 					} catch (InterruptedException e) {
@@ -179,7 +194,7 @@ public class Robot {
 	 *            whether to stop the robot after turning (faster if false when
 	 *            moving)
 	 */
-	public void turn(double targetYaw, boolean stop) {
+	public void turn(double targetYaw) {
 		while (Math.abs(targetYaw - yaw) > HEADING_THRESHOLD
 				&& Math.abs(targetYaw - yaw) < 2 * Math.PI - HEADING_THRESHOLD) {
 
@@ -206,7 +221,6 @@ public class Robot {
 			} catch (InterruptedException e) {
 			}
 		}
-		if (stop)
 			pos2D.setSpeed(0, 0);// Remove for speed?
 	}
 
@@ -242,7 +256,7 @@ public class Robot {
 			 * Decide which way to turn, to never turn more than 1/2 circle.
 			 */
 			double targetYaw = targetYaw(px, py);
-			turn(targetYaw, false);
+			turn(targetYaw);
 
 			pos2D.setSpeed(SPEED_RATE, 0);
 
@@ -321,7 +335,7 @@ public class Robot {
 	 * @param points
 	 *            Points in the path
 	 */
-	public void FollowPath(List<Point> points) {
+	public void followPath(List<Point> points) {
 		for (Point p : points) {
 			move(p);
 		}

@@ -86,7 +86,7 @@ public class Control {
 		}
 		else availableBots = robots;
 		
-		GarbageCollection.Collect(map, availableBots);
+		GarbageCollection.collect(map, availableBots, new Rectangle());
 		
 	}
 

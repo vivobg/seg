@@ -3,8 +3,6 @@ package explore;
 import java.awt.Point;
 import java.util.List;
 
-import javaclient3.structures.PlayerPose2d;
-
 import robot.Robot;
 import search.AStarSearch;
 
@@ -15,7 +13,7 @@ public class ExploreTest {
 	public static void explore(Map map, Point start) {
 		List<Point> path = null;
 		do {
-			path = AStarSearch.Search(map, start, null, false);
+			path = AStarSearch.dSearch(map, start);
 			if (path != null) {
 				int size = path.size();
 				Point end = path.get(size - 1);
@@ -42,7 +40,7 @@ public class ExploreTest {
 		System.out.println("Exploration started");
 		List<Point> path = null;
 		do {
-			path = AStarSearch.Search(map, start, null, false);
+			path = AStarSearch.dSearch(map, start);
 			if (path != null) {
 				for (int i = 1; i<path.size();i++){
 					Point p = path.get(i);

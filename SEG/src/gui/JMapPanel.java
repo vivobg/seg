@@ -2,7 +2,6 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -18,7 +17,6 @@ import java.util.Observer;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -26,8 +24,6 @@ import explore.ExploreTest;
 
 import robot.Robot;
 import search.AStarSearch;
-import search.SearchTest;
-
 import map.CoordVal;
 import map.Map;
 import map.VerticalArray;
@@ -343,10 +339,10 @@ public class JMapPanel extends JPanel implements Observer {
 		/*
 		 * Path drawing test
 		 */
-		List<Point> points = AStarSearch.Search(map, new Point(16-200, 20),
-				new Point(28-200, 28), true);
+		List<Point> points = AStarSearch.aSearch(map, new Point(16-200, 20),
+				new Point(28-200, 28));
 		jMapPanel.drawPath(points);
-		points = AStarSearch.Search(map, new Point(3-200, 9), null, false);
+		points = AStarSearch.dSearch(map, new Point(3-200, 9));
 		jMapPanel.drawPath(points);
 
 		/*

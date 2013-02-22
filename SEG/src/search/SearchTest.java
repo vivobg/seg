@@ -47,10 +47,10 @@ public class SearchTest {
 		
 		printMap(map);
 		
-		List<Point> points = AStarSearch.Search(map, new Point(16,20), new Point(28,28), true);
+		List<Point> points = AStarSearch.aSearch(map, new Point(16,20), new Point(28,28));
 		System.out.println("A* Search");
 		printMap(map, points);
-		 points = AStarSearch.Search(map, new Point(15,2), null, false);
+		 points = AStarSearch.dSearch(map, new Point(15,2));
 		System.out.println("Djikstra's Search");
 		printMap(map, points);
 	}

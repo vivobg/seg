@@ -14,14 +14,19 @@ import javaclient3.structures.PlayerPose2d;
 
 import robot.Robot;
 
-public class GarbageCollection {
+public class GarbageCollection {//too much static
 	static Map map;
 	static Queue<Point> toBeCollected = new ArrayDeque<Point>();
-	static HashMap<Point,Boolean> garbageObjects = new HashMap<Point,Boolean>();
+	static HashMap<Point,Boolean> garbageObjects = new HashMap<Point,Boolean>();//redundant, Map holds the list
 	static Rectangle collectionArea;
-	static List<Point> garbageLoc;
-	
-	public static void Collect(Map map , List<Robot> robots)
+	static List<Point> garbageLoc;//redundant, Map holds the list
+	/**
+	 * 
+	 * @param map
+	 * @param robots
+	 * @param collArea The rectangle that specifies the collection area
+	 */
+	public static void collect(Map map , List<Robot> robots, Rectangle collArea)
 	{
 		GarbageCollection.map = map;
 		for(Point p : garbageLoc)

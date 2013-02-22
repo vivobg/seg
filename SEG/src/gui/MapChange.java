@@ -12,6 +12,8 @@ import javax.swing.JTextField;
 import map.Map;
 
 public class MapChange extends JFrame{
+
+	private static final long serialVersionUID = -4782550536318642966L;
 	private Map map;
 	
 	public MapChange(Map map){

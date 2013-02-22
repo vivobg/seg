@@ -7,16 +7,10 @@ import robot.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javaclient3.structures.PlayerPose2d;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-
-import map.Map;
-
-import explore.ExploreTest;
 
 public class RobotControl extends JFrame{
 	/**

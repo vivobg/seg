@@ -1,6 +1,4 @@
 package search;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.awt.Point;
@@ -9,7 +7,36 @@ import java.util.ArrayList;
 import map.Map;
 
 public class AStarSearch {
-	public static List<Point> Search(Map map , Point source, Point target, boolean ASEARCH )
+	/**
+	 * A* search from source to target.
+	 * Useful during garbage collection.
+	 * @param map
+	 * @param source
+	 * @param target
+	 * @return
+	 */
+	public static List<Point> aSearch(Map map , Point source, Point target){
+		return search(map, source, target, true );
+	}
+	/**
+	 * Djikstra's search from source to nearest unexplored cell.
+	 * Useful during exploration
+	 * @param map
+	 * @param source
+	 * @return
+	 */
+	public static List<Point> dSearch(Map map , Point source){
+		return search(map, source, null, false );
+	}
+	/**
+	 * A* or Djikstra's search, depending on parameters
+	 * @param map
+	 * @param source
+	 * @param target
+	 * @param ASEARCH
+	 * @return
+	 */
+	private static List<Point> search(Map map , Point source, Point target, boolean ASEARCH )
 	{
 		List<Point> closedSet = new ArrayList<Point>(); //Nodes already evaluated
 		List<Point> openSet = new ArrayList<Point>();//Nodes yet to be evaluated and their score
