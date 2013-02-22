@@ -17,11 +17,14 @@ import javaclient3.RangerInterface;
 import javaclient3.structures.PlayerConstants;
 import javaclient3.structures.PlayerPose2d;
 import javaclient3.structures.gripper.PlayerGripperGeom;
+import javaclient3.FiducialInterface;
+import javaclient3.structures.fiducial.PlayerFiducialData;
+import javaclient3.structures.fiducial.PlayerFiducialItem;
 
 /**
  * @author Albert
  * 
- *         Generic robot class provides the interface with player/stage
+ *Generic robot class provides the interface with player/stage
  * 
  */
 public class Robot {
@@ -29,7 +32,11 @@ public class Robot {
 	PlayerClient robot = null;
 	Position2DInterface pos2D = null;
 	RangerInterface sonar = null;
+<<<<<<< HEAD
 	GripperInterface gripper = null;
+=======
+	FiducialInterface fiducial = null;
+>>>>>>> Added fiducial sensor to Robot and non complete version of GarbageManager
 
 	public static final int COLLECTION_SLEEP = 1;
 	public static final int SENSE_SLEEP = 2;
@@ -49,6 +56,7 @@ public class Robot {
 	public double yaw;
 	private Map map;
 	private double[] sonarValues;
+	public PlayerFiducialItem[] fiducialsInView;
 
 	/**
 	 * 
@@ -75,6 +83,7 @@ public class Robot {
 					PlayerConstants.PLAYER_OPEN_MODE);
 			sonar = robot.requestInterfaceRanger(index,
 					PlayerConstants.PLAYER_OPEN_MODE);
+			fiducial = robot.requestInterfaceFiducial(0,PlayerConstants.PLAYER_OPEN_MODE);
 		} catch (PlayerException e) {
 			System.err.println("Simplebob: Error connecting to Player!\n>>>"
 					+ e.toString());
@@ -111,7 +120,11 @@ public class Robot {
 					if (sonar.isDataReady()) {
 						sonarValues = sonar.getData().getRanges();
 					}
-
+					
+					if(fiducial.isDataReady()){
+						fiducialsInView = fiducial.getData().getFiducials();
+	                }
+					
 					try {
 						sleep(COLLECTION_SLEEP);
 					} catch (InterruptedException e) {

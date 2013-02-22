@@ -25,6 +25,8 @@ import explore.ExploreTest;
 
 import robot.Robot;
 import search.AStarSearch;
+import search.SearchTest;
+import sense.GarbageManager;
 import map.CoordVal;
 import map.Map;
 import map.VerticalArray;
@@ -374,6 +376,7 @@ public class JMapPanel extends JPanel implements Observer {
 		ExploreTest.explore(map, new Point(5-200, 45));
 		*/
 		Robot robot = new Robot(map);
+		new GarbageManager(robot);
 		new RobotControl(robot).setVisible(true);
 
 	}
