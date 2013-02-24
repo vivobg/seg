@@ -56,9 +56,15 @@ public class RobotControl extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				int x = Integer.valueOf(jtX.getText());
-				int y = Integer.valueOf(jtY.getText());
-				robot.move(new Point(x,y));
+				final int x = Integer.valueOf(jtX.getText());
+				final int y = Integer.valueOf(jtY.getText());
+				Thread moveThread = new Thread(){
+					public void run(){
+						robot.move(new Point(x,y));
+					}
+				};
+				moveThread.start();
+				
 				
 			}
 		});
@@ -69,11 +75,40 @@ public class RobotControl extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				JButton btn = (JButton) e.getSource();
 				String txt = btn.getText();
-				double d = Double.valueOf(jtV.getText());
-				if (txt.equals("Move Up")) robot.move('u', d);
-				else if (txt.equals("Move Down")) robot.move('d', d);
-				else if (txt.equals("Move Left")) robot.move('l', d);
-				else if (txt.equals("Move Right")) robot.move('r', d);
+				final double d = Double.valueOf(jtV.getText());				
+				
+				if (txt.equals("Move Up")) {
+					Thread moveThread = new Thread(){
+						public void run(){
+							robot.move('u', d);
+						}
+					};
+					moveThread.start();
+					}
+				else if (txt.equals("Move Down")){
+					Thread moveThread = new Thread(){
+						public void run(){
+							robot.move('d', d);
+						}
+					};
+					moveThread.start();
+					}
+				else if (txt.equals("Move Left")) {
+					Thread moveThread = new Thread(){
+						public void run(){
+							robot.move('l', d);
+						}
+					};
+					moveThread.start();
+				}
+				else if (txt.equals("Move Right")) {
+					Thread moveThread = new Thread(){
+						public void run(){
+							robot.move('r', d);
+						}
+					};
+					moveThread.start();
+				}
 				else if (txt.equals("Explore")){
 					System.out.println("Exploration requested");
 					robot.explore();

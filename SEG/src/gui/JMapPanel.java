@@ -19,6 +19,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 import explore.ExploreTest;
 
@@ -56,7 +57,13 @@ public class JMapPanel extends JPanel implements Observer {
 		g2.dispose();
 		this.map = map;
 		this.map.addObserver(this);
-		updateImage();
+		SwingUtilities.invokeLater(new Runnable(){
+			@Override
+			public void run() {
+				updateImage();
+			}
+		});
+		
 	}
 
 	/**
@@ -92,10 +99,18 @@ public class JMapPanel extends JPanel implements Observer {
 	 */
 	@Override
 	public void update(Observable o, Object arg) {
-		CoordVal cv = (CoordVal) arg;
-		UpdateImage(cv);
-		this.repaint();
-		this.revalidate();
+		final CoordVal cv = (CoordVal) arg;
+		SwingUtilities.invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				UpdateImage(cv);
+				JMapPanel.this.repaint();
+				JMapPanel.this.revalidate();
+			}
+			
+		});
+		
 	}
 
 	private void growImage() {
@@ -295,7 +310,7 @@ public class JMapPanel extends JPanel implements Observer {
 
 		/*
 		 * Generate a wall-bound rectangle to test path finding on
-		 */
+		 *//*
 		for (int i = 0; i < 30; i++) {
 			for (int j = 0; j < 30; j++) {
 				if (j == 0 || j == 29 || i == 0 || i == 29)
@@ -329,7 +344,7 @@ public class JMapPanel extends JPanel implements Observer {
 
 		/*
 		 * Bresenham test
-		 */
+		 *//*
 		sense.Bresenham.line(map, -42-200, -3, -45-200, 15, false);
 		sense.Bresenham.line(map, -21-200, -3, -40-200, 1, true);
 		sense.Bresenham.line(map, -10-200, -5, -30-200, 5, true);
@@ -338,7 +353,7 @@ public class JMapPanel extends JPanel implements Observer {
 
 		/*
 		 * Path drawing test
-		 */
+		 *//*
 		List<Point> points = AStarSearch.aSearch(map, new Point(16-200, 20),
 				new Point(28-200, 28));
 		jMapPanel.drawPath(points);
@@ -347,7 +362,7 @@ public class JMapPanel extends JPanel implements Observer {
 
 		/*
 		 * Exploration test
-		 */
+		 *//*
 		for (int i = 0; i < 30; i++) {
 			for (int j = 40; j < 70; j++) {
 				if (j == 40 || j == 69 || i == 0 || i == 29)
@@ -357,7 +372,7 @@ public class JMapPanel extends JPanel implements Observer {
 		}
 
 		ExploreTest.explore(map, new Point(5-200, 45));
-		
+		*/
 		Robot robot = new Robot(map);
 		new RobotControl(robot).setVisible(true);
 

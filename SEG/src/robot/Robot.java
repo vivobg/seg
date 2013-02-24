@@ -41,6 +41,8 @@ public class Robot {
 	public static final double SPEED_RATE = 0.5;
 	public static final double TARGET_THRESHOLD = 0.05;
 	public static final double HEADING_THRESHOLD = 0.05;
+	
+	public Object moveLock = new Object();
 
 	public double x;
 	public double y;
@@ -231,9 +233,11 @@ public class Robot {
 	 *            Target in internal coordinates
 	 */
 	public void move(Point target) {
+		synchronized (moveLock){
 		double px = target.x * Map.SCALE;// convert to Player coords
 		double py = target.y * Map.SCALE;
 		move(new PlayerPose2d(px, py, 0));
+		}
 	}
 
 	/**
@@ -244,6 +248,7 @@ public class Robot {
 	 *            Target in Player coordinates
 	 */
 	public void move(PlayerPose2d pose) {
+		synchronized (moveLock){
 		double px = pose.getPx();
 		double py = pose.getPy();
 		while (true) {
@@ -265,6 +270,7 @@ public class Robot {
 			} catch (InterruptedException e) {
 			}
 		}
+		}
 	}
 
 	/**
@@ -274,6 +280,7 @@ public class Robot {
 	 * @param distance
 	 */
 	public void move(char direction, double distance) {
+		synchronized (moveLock){
 		PlayerPose2d pos = new PlayerPose2d();
 
 		switch (direction) {
@@ -301,6 +308,7 @@ public class Robot {
 		}
 
 		move(pos);
+		}
 
 	}
 
