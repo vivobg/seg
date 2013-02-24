@@ -35,9 +35,9 @@ public class JMapPanel extends JPanel implements Observer {
 	 * 
 	 */
 	private static final long serialVersionUID = -1361469152515719114L;
-	public static final int blockSize = 5;
-	public static final int minWidth = 400;
-	public static final int minHeight = 400;
+	public static final int blockSize = 1;
+	public static final int minWidth = 800;
+	public static final int minHeight = 800;
 	public static final Color COLOR_WALL = Color.BLACK;
 	public static final Color COLOR_EMPTY = Color.WHITE;
 	public static final Color COLOR_UNEXPLORED = Color.GRAY;
