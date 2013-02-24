@@ -251,6 +251,7 @@ public class Robot {
 		synchronized (moveLock){
 		double px = pose.getPx();
 		double py = pose.getPy();
+		
 		while (true) {
 			if (Math.abs(px - x) < TARGET_THRESHOLD
 					&& Math.abs(py - y) < TARGET_THRESHOLD) {
@@ -262,8 +263,9 @@ public class Robot {
 			 */
 			double targetYaw = targetYaw(px, py);
 			turn(targetYaw);
-
-			pos2D.setSpeed(SPEED_RATE, 0);
+			double difference  = Math.sqrt(Math.pow(Math.abs(px -x) + Math.abs(py-y),2));
+					
+			pos2D.setSpeed(difference/2 * Math.PI, 0);
 
 			try {
 				Thread.sleep(MOVE_SLEEP);
