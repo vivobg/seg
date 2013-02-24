@@ -60,7 +60,8 @@ public class RobotControl extends JFrame{
 				final int y = Integer.valueOf(jtY.getText());
 				Thread moveThread = new Thread(){
 					public void run(){
-						robot.move(new Point(x,y));
+						Point target = map.Map.convertPlayerToInternal(x,y);
+						robot.move(target);
 					}
 				};
 				moveThread.start();
