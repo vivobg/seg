@@ -46,7 +46,7 @@ public class Robot {
 
 	public double x;
 	public double y;
-	private double yaw;
+	public double yaw;
 	private Map map;
 	private double[] sonarValues;
 
