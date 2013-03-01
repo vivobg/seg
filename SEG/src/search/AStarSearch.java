@@ -1,8 +1,8 @@
 package search;
-import java.util.HashMap;
-import java.util.List;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import map.Map;
 
@@ -57,6 +57,7 @@ public class AStarSearch {
 			if((ASEARCH && current.equals(target))|| (!ASEARCH && map.isUnexplored(current.x, current.y)))
 				//if we are are at the target, stop search and return path
 			{
+				// return optimisePath(map, reconstructPath(cameFrom, current));
 				return reconstructPath(cameFrom, current);
 			}
 			
@@ -183,4 +184,68 @@ public class AStarSearch {
 		return possiblePoints;
 		
 	}
+
+	private static List<Point> optimisePath(Map map, List<Point> path) {
+		if (path.size() > 2) {
+			for (int i = 0; i < path.size() - 2; i++) {
+				int j = 2;
+				while (j < path.size()) {
+					boolean line = lineofSight(map, path.get(i), path.get(j));
+					if (line)
+						path.remove(i + 1);
+					else break;
+				}
+			}
+		}
+
+		return path;
+	}
+	
+	/**
+	 * Draws a line onto the map, with the given internal map coordinates
+	 * 
+	 * @param map
+	 *            The Map instance to work with
+	 * @param x0
+	 *            The X coordinate of the start point
+	 * @param y0
+	 *            The Y coordinate of the start point
+	 * @param x1
+	 *            The X coordinate of the end point
+	 * @param y1
+	 *            The Y coordinate of the end point
+	 * @param WALL
+	 *            A flag to decide whether the line ends with a wall, or is
+	 *            completely empty
+	 */
+	public static boolean lineofSight(Map map, Point s, Point t) {
+
+		int dx = Math.abs(t.x - s.x), sx = s.x < t.x ? 1 : -1;
+		int dy = Math.abs(t.y - s.y), sy = s.y < t.y ? 1 : -1;
+		int err = (dx > dy ? dx : -dy) / 2, e2;
+
+		List<Point> points = new ArrayList<Point>();
+		for (;;) {
+			points.add(new Point(s.x, s.y));
+			if (s.x == t.x && s.y == t.y)
+				break;
+			e2 = err;
+			if (e2 > -dx) {
+				err -= dy;
+				s.x += sx;
+			}
+			if (e2 < dy) {
+				err += dx;
+				s.y += sy;
+			}
+		}
+
+		for (int i = 1; i < points.size(); i++) {
+			Point node = points.get(i);
+			if (!map.isEmpty(node.x, node.y))
+				return false;
+		}
+		return true;
+	}
+
 }
