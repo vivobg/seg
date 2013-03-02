@@ -32,11 +32,8 @@ public class Robot {
 	PlayerClient robot = null;
 	Position2DInterface pos2D = null;
 	RangerInterface sonar = null;
-<<<<<<< HEAD
 	GripperInterface gripper = null;
-=======
 	FiducialInterface fiducial = null;
->>>>>>> Added fiducial sensor to Robot and non complete version of GarbageManager
 
 	public static final int COLLECTION_SLEEP = 1;
 	public static final int SENSE_SLEEP = 2;

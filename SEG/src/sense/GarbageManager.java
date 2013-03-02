@@ -19,7 +19,7 @@ public class GarbageManager {
 		this.robot = robot;
 		
 		fiducialsInViewThread();
-		//printGarbageToCollectList();
+		printGarbageToCollectList();
 	}
 
 	public void addItem(GarbageItem garbageItem){
@@ -29,6 +29,7 @@ public class GarbageManager {
 		for(int i = 0; i < garbageToCollectList.size(); i++){
 			if(garbageItem.getPoint().equals(garbageToCollectList.get(i).getPoint())){
 				garbageItemAlreadyExists = true;
+				break;
 			}
 		}
 
@@ -44,14 +45,18 @@ public class GarbageManager {
 				while(true){
 					if (robot.fiducialsInView != null) {
 						for(int i = 0; i < robot.fiducialsInView.length; i++ ){
-							double x = robot.x - robot.fiducialsInView[i].getPose().getPy();
-							double y = robot.fiducialsInView[i].getPose().getPx() + robot.y;
+							double Py = robot.fiducialsInView[i].getPose().getPy();
+							// +0.2 accounts for the fiducial sensor being slightly forward on the robot.
+							double Px = robot.fiducialsInView[i].getPose().getPx() + 0.2;
+							double distance = Math.sqrt(Py*Py + Px*Px);
+							double diffX = Math.cos(robot.yaw + Math.atan(Py / Px)) * distance;
+							double diffY = Math.sin(robot.yaw + Math.atan(Py / Px)) * distance;
 							
-							System.out.println("getPx() " + robot.fiducialsInView[i].getPose().getPx());
-							System.out.println("getPy() " + robot.fiducialsInView[i].getPose().getPy());
-							//System.out.println("X = " + robot.x + " Y = " + robot.y);
-							//System.out.println("Combined X " + x + "Combined Y " + y);
-							//addItem(new GarbageItem(Map.convertCoordinates(x, y),false));
+							//System.out.println("X " + diffX);
+							//System.out.println("Y " + diffY);
+							//System.out.println("Robot X " + robot.x + " Robot Y " + robot.y);
+							
+							addItem(new GarbageItem(Map.convertPlayerToInternal(robot.x + diffX, robot.y + diffY),false));
 						}
 					}
 	
@@ -72,7 +77,6 @@ public class GarbageManager {
 					for(int i = 0; i < garbageToCollectList.size(); i++ )
 					System.out.println(garbageToCollectList.get(i).getPoint().toString());
 					System.out.println("*************" + "Array Size is " + garbageToCollectList.size());
-					System.out.println("X = " + robot.x + " Y = " + robot.y);
 					try {
 						sleep(1000);
 					} catch (InterruptedException e) {

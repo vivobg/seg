@@ -49,8 +49,8 @@ public class Map extends Observable {
 	}
 
 	public static Point convertPlayerToInternal(double x, double y) {
-		int xi = (int) (x / Map.SCALE);
-		int yi = (int) (y / Map.SCALE);
+		int xi = (int) Math.round(x / Map.SCALE);
+		int yi = (int) Math.round(y / Map.SCALE);
 		return new Point(xi, yi);
 	}
 
