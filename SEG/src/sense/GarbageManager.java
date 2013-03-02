@@ -6,10 +6,16 @@ import java.util.ArrayList;
 import map.Map;
 import javaclient3.structures.fiducial.PlayerFiducialItem;
 
+/**
+ * @author Albert
+ * 
+ * GarbageItemManager is constructed with a Robot. It then adds that robots fiducialy discovered
+ * GarbageItems to garbageToCollectList 
+ */
 public class GarbageManager {
 
 	public static ArrayList<GarbageItem> garbageToCollectList;
-	public static final int FIDUCIAL_SLEEP = 1;
+	public static final int FIDUCIAL_SLEEP = 1000;
 	
 	private Robot robot;
 	
@@ -52,16 +58,12 @@ public class GarbageManager {
 							double diffX = Math.cos(robot.yaw + Math.atan(Py / Px)) * distance;
 							double diffY = Math.sin(robot.yaw + Math.atan(Py / Px)) * distance;
 							
-							//System.out.println("X " + diffX);
-							//System.out.println("Y " + diffY);
-							//System.out.println("Robot X " + robot.x + " Robot Y " + robot.y);
-							
 							addItem(new GarbageItem(Map.convertPlayerToInternal(robot.x + diffX, robot.y + diffY),false));
 						}
 					}
 	
 					try {
-						sleep(1000);
+						sleep(FIDUCIAL_SLEEP);
 					} catch (InterruptedException e) {
 					}
 				}
@@ -76,7 +78,7 @@ public class GarbageManager {
 				while(true){
 					for(int i = 0; i < garbageToCollectList.size(); i++ )
 					System.out.println(garbageToCollectList.get(i).getPoint().toString());
-					System.out.println("*************" + "Array Size is " + garbageToCollectList.size());
+					System.out.println("*** " + "garbageToCollectList Size is " + garbageToCollectList.size() + " ***");
 					try {
 						sleep(1000);
 					} catch (InterruptedException e) {
