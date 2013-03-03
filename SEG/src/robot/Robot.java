@@ -5,6 +5,7 @@ package robot;
 
 import java.awt.Point;
 import java.util.List;
+import java.util.Observable;
 
 import explore.ExploreTest;
 import map.Map;
@@ -27,7 +28,7 @@ import javaclient3.structures.fiducial.PlayerFiducialItem;
  *Generic robot class provides the interface with player/stage
  * 
  */
-public class Robot {
+public class Robot{
 
 	PlayerClient robot = null;
 	Position2DInterface pos2D = null;
@@ -35,16 +36,17 @@ public class Robot {
 	GripperInterface gripper = null;
 	FiducialInterface fiducial = null;
 
-	public static final int COLLECTION_SLEEP = 1;
-	public static final int SENSE_SLEEP = 2;
+	public static final int COLLECTION_SLEEP = 3;
+	public static final int SENSE_SLEEP = 5;
 	public static final int MOVE_SLEEP = 14;
-	public static final int TURN_SLEEP = 4;
+	public static final int TURN_SLEEP = 5;
 	public static final double TURN_RATE = 0.5;
 	public static final double TURN_RATE_SLOW = 0.1;
 	public static final double TURN_RATE_LIMIT = 0.3;// Below this, turn slowly
 	public static final double SPEED_RATE = 0.5;
 	public static final double TARGET_THRESHOLD = 0.05;
 	public static final double HEADING_THRESHOLD = 0.05;
+	public static final double ROBOT_SIZE = 0.5;
 	
 	public Object moveLock = new Object();
 
