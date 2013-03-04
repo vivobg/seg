@@ -53,7 +53,6 @@ public class JMapPanel extends JPanel implements Observer {
 	public static final Color COLOR_PATH_FINISH = Color.MAGENTA;
 	private Map map;
 	private BuffImg img;
-	private BufferedImage robotImage;
 	
 	private List<Robot> robots;
 
@@ -66,7 +65,6 @@ public class JMapPanel extends JPanel implements Observer {
 		this.map = map;
 		this.map.addObserver(this);
 		robots = new ArrayList<Robot>();
-		robotImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		SwingUtilities.invokeLater(new Runnable(){
 			@Override
 			public void run() {
@@ -102,17 +100,8 @@ public class JMapPanel extends JPanel implements Observer {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.drawImage(img, null, 0, 0);
 		
-		int centerX = map.getMinXSize();
-		int centerY = map.getMaxYSize();
-		int robotSize = (int) (blockSize*(Robot.ROBOT_SIZE / Map.SCALE));
-		g2.setColor(Color.MAGENTA);
-		for (Robot bot : robots){
-			PlayerPose2d pose =  bot.getPose();
-			Point rC = Map.convertPlayerToInternal(pose.getPx(), pose.getPy());
-			int angle = (int) Math.toDegrees(pose.getPa());
-			int startAngle = angle + (360-300)/2;
-			g2.fillArc((centerX + rC.x-1) * blockSize-robotSize/2, (centerY - rC.y) * blockSize-robotSize/2, robotSize, robotSize, startAngle, 300);
-		}
+		drawRobots(g2);
+		
 		
 		g2.dispose();
 	}
@@ -261,28 +250,20 @@ public class JMapPanel extends JPanel implements Observer {
 	public void addRobot(Robot r){
 		robots.add(r);
 	}
-	/*
-	private void drawRobotsThread(){
-		Thread robotsThread = new Thread(){
-			public void run(){
-				if(robots.size() > 0){
-					robotImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
-					Graphics2D g2 = robotImage.createGraphics();
-					int centerX = map.getMinXSize();
-					int centerY = map.getMaxYSize();
-					int robotSize = (int) (blockSize*(Robot.ROBOT_SIZE / Map.SCALE));
-					for (Robot bot : robots){
-						PlayerPose2d pose =  bot.getPose();
-						Point rC = Map.convertPlayerToInternal(pose.getPx(), pose.getPy());
-						int angle = (int) Math.toDegrees(pose.getPa());
-						int startAngle = angle + (360-300)/2;
-						g2.fillArc((centerX + rC.x) * blockSize, (centerY + rC.y) * blockSize, robotSize, robotSize, startAngle, 300);
-					}
-				}
-			}
-		};
-		robotsThread.start();
-	}*/
+	
+	private void drawRobots(Graphics2D g2){
+		int centerX = map.getMinXSize();
+		int centerY = map.getMaxYSize();
+		int robotSize = (int) (blockSize*(Robot.ROBOT_SIZE / Map.SCALE));
+		g2.setColor(Color.MAGENTA);
+		for (Robot bot : robots){
+			PlayerPose2d pose =  bot.getPose();
+			Point rC = Map.convertPlayerToInternal(pose.getPx(), pose.getPy());
+			int angle = (int) Math.toDegrees(pose.getPa());
+			int startAngle = angle + (360-300)/2;
+			g2.fillArc((centerX + rC.x-1) * blockSize-robotSize/2, (centerY - rC.y) * blockSize-robotSize/2, robotSize, robotSize, startAngle, 300);
+		}
+	}
 
 	public Map getMap() {
 		return map;
