@@ -38,16 +38,16 @@ public class Robot{
 
 	public static final int COLLECTION_SLEEP = 3;
 	public static final int SENSE_SLEEP = 5;
-	public static final int MOVE_SLEEP = 14;
+	public static final int MOVE_SLEEP = 5;
 	public static final int TURN_SLEEP = 5;
 	public static final double TURN_RATE = 0.5;
 	public static final double TURN_RATE_SLOW = 0.1;
 	public static final double TURN_RATE_LIMIT = 0.3;// Below this, turn slowly
 	public static final double SPEED_RATE = 0.5;
-	public static final double TARGET_THRESHOLD = 0.05;
+	public static final double TARGET_THRESHOLD = 0.085;
 	public static final double HEADING_THRESHOLD = 0.05;
-	public static final double ROBOT_SIZE = 0.5;
-	
+	public static final double ROBOT_SIZE = 0.50;
+
 	public Object moveLock = new Object();
 
 	public double x;
@@ -92,11 +92,11 @@ public class Robot{
 		collectionThread();
 		senseThread();
 	}
-	
+
 	public double[] getSonar(){
 		return sonarValues;
 	}
-	
+
 	public double[] getFiducial() {
 		throw new UnsupportedOperationException("Not Implemented Yet!");
 	}
@@ -119,11 +119,11 @@ public class Robot{
 					if (sonar.isDataReady()) {
 						sonarValues = sonar.getData().getRanges();
 					}
-					
+
 					if(fiducial.isDataReady()){
 						fiducialsInView = fiducial.getData().getFiducials();
-	                }
-					
+					}
+
 					try {
 						sleep(COLLECTION_SLEEP);
 					} catch (InterruptedException e) {
@@ -235,7 +235,7 @@ public class Robot{
 			} catch (InterruptedException e) {
 			}
 		}
-			pos2D.setSpeed(0, 0);// Remove for speed?
+		pos2D.setSpeed(0, 0);// Remove for speed?
 	}
 
 	/**
@@ -246,9 +246,9 @@ public class Robot{
 	 */
 	public void move(Point target) {
 		synchronized (moveLock){
-		double px = target.x * Map.SCALE;// convert to Player coords
-		double py = target.y * Map.SCALE;
-		move(new PlayerPose2d(px, py, 0));
+			double px = target.x * Map.SCALE;// convert to Player coords
+			double py = target.y * Map.SCALE;
+			move(new PlayerPose2d(px, py, 0));
 		}
 	}
 
@@ -261,30 +261,42 @@ public class Robot{
 	 */
 	public void move(PlayerPose2d pose) {
 		synchronized (moveLock){
-		double px = pose.getPx();
-		double py = pose.getPy();
-		
-		while (true) {
-			if (Math.abs(px - x) < TARGET_THRESHOLD
-					&& Math.abs(py - y) < TARGET_THRESHOLD) {
-				pos2D.setSpeed(0, 0);
-				break;// target reached
-			}
-			/*
-			 * Decide which way to turn, to never turn more than 1/2 circle.
-			 */
-			double targetYaw = targetYaw(px, py);
-			turn(targetYaw);
-			double difference  = Math.sqrt(Math.pow(Math.abs(px -x) + Math.abs(py-y),2));
-					
-			pos2D.setSpeed(difference/2 * Math.PI, 0);
+			double px = pose.getPx();
+			double py = pose.getPy();
+			Point target =  new Point((int)px,(int)py);
+			
+			while (true) {
+				if ((Math.abs(px - x) < TARGET_THRESHOLD
+						&& Math.abs(py - y) < TARGET_THRESHOLD) || !search.AStarSearch.isAvailableCell(target, map) || 
+						isTooCloseToWall() ) {
+					pos2D.setSpeed(0, 0);
+					break;// target reached
+				}
+				/*
+				 * Decide which way to turn, to never turn more than 1/2 circle.
+				 */
+				double targetYaw = targetYaw(px, py);
+				turn(targetYaw);
+				double difference  = Math.sqrt(Math.pow(Math.abs(px -x) + Math.abs(py-y),2));
 
-			try {
-				Thread.sleep(MOVE_SLEEP);
-			} catch (InterruptedException e) {
+				pos2D.setSpeed(difference/2 * Math.PI, 0);
+
+				try {
+					Thread.sleep(MOVE_SLEEP);
+				} catch (InterruptedException e) {
+				}
 			}
 		}
-		}
+	}
+
+	private boolean isTooCloseToWall() {
+		double threshold = 0.6;
+			if(sonarValues[0] < threshold || sonarValues[1] < threshold || sonarValues[15] < threshold)
+			{
+				return true;
+			}
+		
+		return false;
 	}
 
 	/**
@@ -295,42 +307,48 @@ public class Robot{
 	 */
 	public void move(char direction, double distance) {
 		synchronized (moveLock){
-		PlayerPose2d pos = new PlayerPose2d();
+			PlayerPose2d pos = new PlayerPose2d();
 
-		switch (direction) {
-		case 'u':
-			pos.setPx(x);
-			pos.setPy(y + distance);
-			pos.setPa(Math.PI / 2);
-			break;
-		case 'd':
-			pos.setPx(x);
-			pos.setPy(y - distance);
-			pos.setPa(-Math.PI / 2);
-			break;
-		case 'l':
-			pos.setPx(x - distance);
-			pos.setPy(y);
-			pos.setPa(Math.PI);
-			break;
-		case 'r':
-			pos.setPx(x + distance);
-			pos.setPy(y);
-			pos.setPa(0);
-			break;
+			switch (direction) {
+			case 'u':
+				pos.setPx(x);
+				pos.setPy(y + distance);
+				pos.setPa(Math.PI / 2);
+				break;
+			case 'd':
+				pos.setPx(x);
+				pos.setPy(y - distance);
+				pos.setPa(-Math.PI / 2);
+				break;
+			case 'l':
+				pos.setPx(x - distance);
+				pos.setPy(y);
+				pos.setPa(Math.PI);
+				break;
+			case 'r':
+				pos.setPx(x + distance);
+				pos.setPy(y);
+				pos.setPa(0);
+				break;
 
-		}
+			}
 
-		move(pos);
+			move(pos);
 		}
 
 	}
 
 	public void explore() {
 		System.out.println("Explore request received");
-		ExploreTest.exploreRobot(map, this, Map.convertPlayerToInternal(x, y));
-	}
+		final Robot robot = this;
+		Thread thr = new Thread(){
+			public void run(){
+				ExploreTest.exploreRobot(map, robot, Map.convertPlayerToInternal(x, y));
+			}
+		};
+		thr.start();
 
+	}
 	/**
 	 * Picks up an object
 	 * 

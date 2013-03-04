@@ -1,6 +1,7 @@
 package explore;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.List;
 
 import robot.Robot;
@@ -40,8 +41,10 @@ public class ExploreTest {
 		System.out.println("Exploration started");
 		List<Point> path = null;
 		do {
+			//scan(robot);
 			path = AStarSearch.dSearch(map, start);
 			if (path != null) {
+				if(path.size() > 3)path = optimizePath(path);
 				for (int i = 1; i<path.size();i++){
 					Point p = path.get(i);
 					robot.move(p);
@@ -65,6 +68,29 @@ public class ExploreTest {
 			}
 		} while (path != null);
 		System.out.println("Exploration finished");
+	}
+
+	private static List<Point> optimizePath(List<Point> path) {
+		List<Point> result = new ArrayList<Point>();
+		int lastGradient = 100;
+		for(int i = 1; i< path.size(); i++)
+		{
+			Point current = path.get(i);
+			Point last = path.get(i-1);
+			
+			int gradient;
+			if(current.x - last.x > 0) gradient = (int) ((current.y - last.y) / (current.x - last.x));
+			else gradient = 0;
+			if(gradient != lastGradient || i == path.size() -1) result.add(last);
+			
+			lastGradient = gradient;
+		}
+		return result;
+	}
+
+	private static void scan(Robot robot) {
+		for(int i = 0; i < 4; i++)robot.turn(robot.yaw + Math.PI/i);
+		
 	}
 
 }

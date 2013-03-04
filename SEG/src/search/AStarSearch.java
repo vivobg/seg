@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import robot.Robot;
+
+import mainApp.Utilities;
 import map.Map;
 
 public class AStarSearch {
@@ -43,14 +46,14 @@ public class AStarSearch {
 		HashMap<Point, Point> cameFrom = new HashMap<Point,Point>(); //Used in path reconstruction
 		HashMap<Point,Integer> gScore = new HashMap<Point,Integer>();
 		HashMap<Point,Integer> fScore = new HashMap<Point,Integer>();
-		
+
 		openSet.add(source);//Start from source
-		
+
 		gScore.put(source, 0); //score starts at 0
 		fScore.put(source, Hcost(source,target,ASEARCH));//est total cost (no point to do 0 + cost)
-		
-		
-		
+
+
+
 		while(!openSet.isEmpty())
 		{
 			Point current = getLowest(openSet,fScore);
@@ -60,38 +63,38 @@ public class AStarSearch {
 				// return optimisePath(map, reconstructPath(cameFrom, current));
 				return reconstructPath(cameFrom, current);
 			}
-			
+
 			openSet.remove(current);
 			closedSet.add(current);
-			
+
 			for(Point neighbour : getAdjacentPoints(map,current,ASEARCH))
 			{
-				
+
 				if(closedSet.contains(neighbour))
 					continue;
-				
+
 				int tScore = gScore.get(current) + Gcost(current, neighbour);
-				
+
 				if(!openSet.contains(neighbour) || (gScore.containsKey(neighbour) && tScore < gScore.get(neighbour)) )
 				{
 					cameFrom.put(neighbour, current);
 					gScore.put(neighbour, tScore);
 					fScore.put(neighbour, gScore.get(neighbour) + Hcost(neighbour, target, ASEARCH));
-					
+
 					if(!openSet.contains(neighbour))
 					{
 						openSet.add(neighbour);
 					}
 				}
 			}
-			
+
 		}
 		return null;
-		
+
 	}
-	
-	
-	
+
+
+
 
 	private static int Hcost(Point source, Point target, boolean ASEARCH) {
 		//Incase we want to change the cost function
@@ -99,7 +102,7 @@ public class AStarSearch {
 		else return 0;
 		//return 0;
 	}
-	
+
 	/**
 	 * Calculates the cost for adjacent points.
 	 * CAUTION!!! Only use it for adjacent points.
@@ -107,13 +110,13 @@ public class AStarSearch {
 	 * @param target
 	 * @return 7 if diagonal, 5 otherwise
 	 */
-			
+
 	private static int Gcost(Point source, Point target){
 		if (isDiagonal(source, target)) return 7;
 		else return 5;
-		
+
 	}
-	
+
 	private static boolean isDiagonal(Point s, Point t){
 		if (s.x == t.x || s.y == t.y)return false;
 		else return true;
@@ -149,15 +152,15 @@ public class AStarSearch {
 				}
 			}
 		}
-		
-		
+
+
 		return  lowest;
 	}
 
 	private static int euclidDist(Point source, Point target) {
 		int dx = target.x - source.x;
 		int dy = target.y - source.y;
-		
+
 		int dist = (int) Math.sqrt(Math.pow(dx + dy, 2));
 		return dist;
 	}
@@ -174,17 +177,36 @@ public class AStarSearch {
 				if(!p.equals(adjPoint)  )
 				{
 					if(ASEARCH && map.isEmpty(i, j)){
-						possiblePoints.add(adjPoint);
+						if(isAvailableCell(adjPoint,map))possiblePoints.add(adjPoint);
 					}
-					else if( !ASEARCH && (map.isEmpty(i, j) || map.isUnexplored(i, j)) )possiblePoints.add(adjPoint); 
+					else if( !ASEARCH && (map.isEmpty(i, j) || map.isUnexplored(i, j)) )
+					{
+						if(isAvailableCell(adjPoint,map))possiblePoints.add(adjPoint); 
+					}
 				}
 			}
 		}
-		
+
 		return possiblePoints;
-		
+
 	}
 
+	public static boolean isAvailableCell(Point adjPoint, Map map) {
+		//int scale = 2; //for Testing
+		int scale = (int) Math.ceil( (Robot.ROBOT_SIZE / Map.SCALE ));
+		for(int i = adjPoint.x - scale; i <= adjPoint.x + scale; i++)
+		{
+			for(int j = adjPoint.y - scale; j<=adjPoint.y + scale; j++)
+			{
+				if(map.isOccupied(i, j)) 
+				{
+					//System.out.println(map.getValue(i, j));
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 	private static List<Point> optimisePath(Map map, List<Point> path) {
 		if (path.size() > 2) {
 			for (int i = 0; i < path.size() - 2; i++) {
@@ -200,7 +222,7 @@ public class AStarSearch {
 
 		return path;
 	}
-	
+
 	/**
 	 * Draws a line onto the map, with the given internal map coordinates
 	 * 

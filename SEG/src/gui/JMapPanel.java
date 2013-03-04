@@ -40,7 +40,7 @@ public class JMapPanel extends JPanel implements Observer {
 	 * 
 	 */
 	private static final long serialVersionUID = -1361469152515719114L;
-	public static final int blockSize = 5;
+	public static final int blockSize = 2;
 	public static final int minWidth = 800;
 	public static final int minHeight = 800;
 	public static final Color COLOR_WALL = Color.BLACK;
@@ -423,11 +423,11 @@ public class JMapPanel extends JPanel implements Observer {
 		ExploreTest.explore(map, new Point(5-200, 45));
 		*/
 		Robot robot = new Robot(map,0);
-		Robot robot2 = new Robot(map,1);
-		Robot robot3 = new Robot(map,2);
+		//Robot robot2 = new Robot(map,1);
+		//Robot robot3 = new Robot(map,2);
 		jMapPanel.addRobot(robot);
-		jMapPanel.addRobot(robot2);
-		jMapPanel.addRobot(robot3);
+		//jMapPanel.addRobot(robot2);
+		//jMapPanel.addRobot(robot3);
 		new GarbageManager(robot);
 		new RobotControl(robot).setVisible(true);
 
