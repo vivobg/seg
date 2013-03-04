@@ -26,7 +26,6 @@ public class JMapPanel extends JPanel{
 	 * 
 	 */
 	private static final long serialVersionUID = -1361469152515719114L;
-
 	public static final long REFRESH_RATE = 50;
 	public static final int minWidth = 800;
 	public static final int minHeight = 800;
@@ -226,6 +225,7 @@ public class JMapPanel extends JPanel{
 		map.addRobot(robot);
 		map.addRobot(robot2);
 		map.addRobot(robot3);
+
 		new GarbageManager(robot);
 		SwingUtilities.invokeLater(new Runnable() {
 

@@ -51,14 +51,19 @@ public class GarbageManager {
 				while(true){
 					if (robot.fiducialsInView != null) {
 						for(int i = 0; i < robot.fiducialsInView.length; i++ ){
-							double Py = robot.fiducialsInView[i].getPose().getPy();
-							// +0.2 accounts for the fiducial sensor being slightly forward on the robot.
-							double Px = robot.fiducialsInView[i].getPose().getPx() + 0.2;
-							double distance = Math.sqrt(Py*Py + Px*Px);
-							double diffX = Math.cos(robot.yaw + Math.atan(Py / Px)) * distance;
-							double diffY = Math.sin(robot.yaw + Math.atan(Py / Px)) * distance;
-							
-							addItem(new GarbageItem(Map.convertPlayerToInternal(robot.x + diffX, robot.y + diffY),false));
+							try {
+								double Py = robot.fiducialsInView[i].getPose().getPy();
+								// +0.2 accounts for the fiducial sensor being slightly forward on the robot.
+								double Px = robot.fiducialsInView[i].getPose().getPx() + 0.2;
+								double distance = Math.sqrt(Py*Py + Px*Px);
+								double diffX = Math.cos(robot.yaw + Math.atan(Py / Px)) * distance;
+								double diffY = Math.sin(robot.yaw + Math.atan(Py / Px)) * distance;
+								
+								addItem(new GarbageItem(Map.convertPlayerToInternal(robot.x + diffX, robot.y + diffY),false));
+							} catch (ArrayIndexOutOfBoundsException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
 					}
 	
@@ -77,8 +82,8 @@ public class GarbageManager {
 			public void run() {
 				while(true){
 					for(int i = 0; i < garbageToCollectList.size(); i++ )
-					System.out.println(garbageToCollectList.get(i).getPoint().toString());
-					System.out.println("*** " + "garbageToCollectList Size is " + garbageToCollectList.size() + " ***");
+					//System.out.println(garbageToCollectList.get(i).getPoint().toString());
+					//System.out.println("*** " + "garbageToCollectList Size is " + garbageToCollectList.size() + " ***");
 					try {
 						sleep(1000);
 					} catch (InterruptedException e) {
