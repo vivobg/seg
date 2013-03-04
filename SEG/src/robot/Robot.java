@@ -328,7 +328,14 @@ public class Robot{
 
 	public void explore() {
 		System.out.println("Explore request received");
-		ExploreTest.exploreRobot(map, this, Map.convertPlayerToInternal(x, y));
+		final Robot robot = this;
+		Thread thr = new Thread(){
+			public void run(){
+				ExploreTest.exploreRobot(map, robot, Map.convertPlayerToInternal(x, y));
+			}
+		};
+		thr.start();
+
 	}
 
 	/**
