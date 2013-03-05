@@ -10,7 +10,7 @@
 
 ###Robot
 
-+ Blocking move() methods (do not return from method until target reached, or move cancelled), without freezing the GUI (separate thread?)
++ ~~Blocking move() methods (do not return from method until target reached, or move cancelled), without freezing the GUI (separate thread?)~~
 + Extend the Robot class to be Observable
 + Subscribe the GUI to listen to Robot(s) for updates of robot position
 
@@ -21,13 +21,13 @@
 
 ###Path-finding
 
-+ Remove unneeded nodes from path, to speed up robot navigation
++ ~~Remove unneeded nodes from path, to speed up robot navigation~~
 
 ###Garbage
 
 + Align robot with garbage
 + Pick/drop garbage
-+ Create a garbage class to keep track of garbage objects
++ ~~Create a garbage class to keep track of garbage objects~~
 + Extend class with Observable, to update observers on garbage move/collection
 + Subscribe GUI to Garbage objects, to redraw the GUI on move/collection
 
