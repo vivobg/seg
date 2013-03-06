@@ -6,7 +6,10 @@ package map;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Observable;
+
+import robot.Robot;
 
 /**
  * Provides a dynamic 2D grid of byte. It is based on ArrayLists, and is
@@ -19,6 +22,7 @@ import java.util.Observable;
 public class Map extends Observable {
 	
 	public HashMap<Point,Boolean> garbageList;
+	public List<Robot> robotList;
 
 	//Fiducially explored cells have the sign flipped.
 	public static final byte UNEXPLORED = 1;
@@ -43,9 +47,18 @@ public class Map extends Observable {
 		posArray = new ArrayList<VerticalArray>();
 		negArray = new ArrayList<VerticalArray>();
 		garbageList = new HashMap<Point, Boolean>();
+		robotList = new ArrayList<Robot>();
 		setValue(0, 0, Map.UNEXPLORED);
 		setValue(1, 1, Map.UNEXPLORED);
 		setValue(-1, -1, Map.UNEXPLORED);
+	}
+	
+	public void addRobot(Robot r){
+		robotList.add(r);
+	}
+	
+	public List<Robot> getRobotList(){
+		return robotList;
 	}
 
 	public static Point convertPlayerToInternal(double x, double y) {
