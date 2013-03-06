@@ -54,7 +54,7 @@ public class JMapPanel extends JPanel implements Observer {
 	private Map map;
 	private BuffImg img;
 	
-	private List<Robot> robots;
+	//private List<Robot> robots;
 
 	JMapPanel(Map map) {
 		img = new BuffImg(1, 1, BufferedImage.TYPE_INT_RGB);
@@ -64,7 +64,7 @@ public class JMapPanel extends JPanel implements Observer {
 		g2.dispose();
 		this.map = map;
 		this.map.addObserver(this);
-		robots = new ArrayList<Robot>();
+		//robots = new ArrayList<Robot>();
 		SwingUtilities.invokeLater(new Runnable(){
 			@Override
 			public void run() {
@@ -100,7 +100,7 @@ public class JMapPanel extends JPanel implements Observer {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.drawImage(img, null, 0, 0);
 		
-		drawRobots(g2);
+		//drawRobots(g2);
 		
 		
 		g2.dispose();
@@ -246,11 +246,11 @@ public class JMapPanel extends JPanel implements Observer {
 		this.repaint();
 
 	}
-	
+	/*
 	public void addRobot(Robot r){
 		robots.add(r);
-	}
-	
+	}*/
+	/*
 	private void drawRobots(Graphics2D g2){
 		int centerX = map.getMinXSize();
 		int centerY = map.getMaxYSize();
@@ -263,7 +263,7 @@ public class JMapPanel extends JPanel implements Observer {
 			int startAngle = angle + (360-300)/2;
 			g2.fillArc((centerX + rC.x-1) * blockSize-robotSize/2, (centerY - rC.y) * blockSize-robotSize/2, robotSize, robotSize, startAngle, 300);
 		}
-	}
+	}*/
 
 	public Map getMap() {
 		return map;
@@ -406,9 +406,9 @@ public class JMapPanel extends JPanel implements Observer {
 		Robot robot = new Robot(map,0);
 		Robot robot2 = new Robot(map,1);
 		Robot robot3 = new Robot(map,2);
-		jMapPanel.addRobot(robot);
-		jMapPanel.addRobot(robot2);
-		jMapPanel.addRobot(robot3);
+		//jMapPanel.addRobot(robot);
+		//jMapPanel.addRobot(robot2);
+		//jMapPanel.addRobot(robot3);
 		new GarbageManager(robot);
 		new RobotControl(robot).setVisible(true);
 
