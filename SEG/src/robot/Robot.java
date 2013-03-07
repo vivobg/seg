@@ -45,6 +45,7 @@ public class Robot{
 	public static final double HEADING_THRESHOLD = 0.05;
 	public static final double ROBOT_SIZE = 0.50;
 	public boolean isFollowing = false;
+	public List<Point> currentOptimizedPath;
 	public List<Point> currentPath;
 
 	public Object moveLock = new Object();
