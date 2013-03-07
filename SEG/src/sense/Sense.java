@@ -15,10 +15,10 @@ public class Sense {
 	public static void sonarScan(Map map, Robot robot) {
 		PlayerPose2d pose = robot.getPose();
 		double[] sonarValues = robot.getSonar();
-		Point start = Map.convertPlayerToInternal(pose.getPx(), pose.getPy());
+		//Point start = Map.convertPlayerToInternal(pose.getPx(), pose.getPy());
 		if (sonarValues != null) {
 			for (int i = 0; i < sonarValues.length; i++) {
-				senseSonarSensor(map, start, sonarValues[i],
+				senseSonarSensor(map, pose.getPx(), pose.getPy(), sonarValues[i],
 						pose.getPa() + i * Math.toRadians(360 / 16));
 			}
 		}
@@ -41,15 +41,20 @@ public class Sense {
 		throw new UnsupportedOperationException("Not Implemented Yet!");
 	}
 
-	private static void senseSonarSensor(Map map, Point s, double distance,
+	private static void senseSonarSensor(Map map, double sX, double sY, double distance,
 			double angle) {
-		double distance2 = distance / Map.SCALE; // Convert distance to internal
+		/*double distance2 = distance / Map.SCALE; // Convert distance to internal
 													// map
 		// units;
-		Point t = new Point((int) Math.floor(distance2 * Math.cos(angle)),
-				(int) Math.floor(distance2 * Math.sin(angle)));
-		t.x += s.x;
-		t.y += s.y;
+	    Point t = new Point((int) Math.floor(distance2 * Math.cos(angle)),
+				(int) Math.floor(distance2 * Math.sin(angle))); */
+		
+		double tX = distance * Math.cos(angle);
+		double tY = distance * Math.sin(angle);
+		tX += sX;
+		tY += sY;
+		Point s = Map.convertPlayerToInternal(sX,sY);
+		Point t = Map.convertPlayerToInternal(tX,tY);
 		boolean WALL = distance < 5 ? true : false;
 		Bresenham.line(map, s.x, s.y, t.x, t.y, WALL);
 

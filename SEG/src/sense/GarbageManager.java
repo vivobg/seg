@@ -16,16 +16,18 @@ public class GarbageManager {
 
 	public static ArrayList<GarbageItem> garbageToCollectList;
 	public static final int FIDUCIAL_SLEEP = 1000;
-	
+
 	private Robot robot;
-	
+
 	public GarbageManager(Robot robot){
 		//it will only be instantiated once because it's static
-		garbageToCollectList = new ArrayList<GarbageItem>();
+		if(garbageToCollectList == null)
+			garbageToCollectList = new ArrayList<GarbageItem>();
+
 		this.robot = robot;
-		
+
 		fiducialsInViewThread();
-		printGarbageToCollectList();
+		//printGarbageToCollectList();
 	}
 
 	public void addItem(GarbageItem garbageItem){
@@ -58,7 +60,7 @@ public class GarbageManager {
 								double distance = Math.sqrt(Py*Py + Px*Px);
 								double diffX = Math.cos(robot.yaw + Math.atan(Py / Px)) * distance;
 								double diffY = Math.sin(robot.yaw + Math.atan(Py / Px)) * distance;
-								
+
 								addItem(new GarbageItem(Map.convertPlayerToInternal(robot.x + diffX, robot.y + diffY),false));
 							} catch (ArrayIndexOutOfBoundsException e) {
 								// TODO Auto-generated catch block
@@ -66,7 +68,7 @@ public class GarbageManager {
 							}
 						}
 					}
-	
+
 					try {
 						sleep(FIDUCIAL_SLEEP);
 					} catch (InterruptedException e) {
@@ -76,14 +78,15 @@ public class GarbageManager {
 		};
 		collection.start();
 	}
-	
+
 	private void printGarbageToCollectList() {
 		Thread collection = new Thread() {
 			public void run() {
 				while(true){
 					for(int i = 0; i < garbageToCollectList.size(); i++ )
-					//System.out.println(garbageToCollectList.get(i).getPoint().toString());
-					//System.out.println("*** " + "garbageToCollectList Size is " + garbageToCollectList.size() + " ***");
+						System.out.println(garbageToCollectList.get(i).getPoint().toString());
+
+					System.out.println("*** " + "garbageToCollectList Size is " + garbageToCollectList.size() + " ***");
 					try {
 						sleep(1000);
 					} catch (InterruptedException e) {

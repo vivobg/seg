@@ -5,8 +5,9 @@ package robot;
 
 import java.awt.Point;
 import java.util.List;
-
-import javaclient3.FiducialInterface;
+import explore.ExploreTest;
+import map.Map;
+import sense.Sense;
 import javaclient3.GripperInterface;
 import javaclient3.PlayerClient;
 import javaclient3.PlayerException;
@@ -14,13 +15,14 @@ import javaclient3.Position2DInterface;
 import javaclient3.RangerInterface;
 import javaclient3.structures.PlayerConstants;
 import javaclient3.structures.PlayerPose2d;
+import javaclient3.FiducialInterface;
 import javaclient3.structures.fiducial.PlayerFiducialItem;
 import map.Map;
 import sense.Sense;
 import explore.ExploreTest;
 
 /**
- * @author Albert
+ * 
  * 
  *Generic robot class provides the interface with player/stage
  * 
@@ -119,8 +121,12 @@ public class Robot{
 
 					if(fiducial.isDataReady()){
 						fiducialsInView = fiducial.getData().getFiducials();
+	                }
+					
+					if(gripper.isDataReady()){
+						System.out.println(gripper.getData().getState());
 					}
-
+					
 					try {
 						sleep(COLLECTION_SLEEP);
 					} catch (InterruptedException e) {

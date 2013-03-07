@@ -220,12 +220,11 @@ public class JMapPanel extends JPanel{
 		ExploreTest.explore(map, new Point(5-200, 45));
 		*/
 		final Robot robot = new Robot(map, 0);
-		Robot robot2 = new Robot(map,1);
-		Robot robot3 = new Robot(map,2);
+		//Robot robot2 = new Robot(map,1);
+		//Robot robot3 = new Robot(map,2);
 		map.addRobot(robot);
-		map.addRobot(robot2);
-		map.addRobot(robot3);
-
+		//map.addRobot(robot2);
+		//map.addRobot(robot3);
 		new GarbageManager(robot);
 		SwingUtilities.invokeLater(new Runnable() {
 
