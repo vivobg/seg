@@ -47,7 +47,11 @@ public class ExploreTest {
 				if(path.size() > 3)path = optimizePath(path);
 				for (int i = 1; i<path.size();i++){
 					Point p = path.get(i);
+					Point end = path.get(path.size()-1);
 					robot.move(p);
+					if (!map.isEmpty(end.x, end.y)){
+						break;
+					}
 					try {
 						
 						Thread.sleep(30);
