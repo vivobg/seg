@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 
 import map.Map;
@@ -33,18 +32,12 @@ public class JMapPanel extends JPanel{
 	public static final int minHeight = 800;
 
 	private Map map;
-	private static int panelSize = (int) (50 / Map.SCALE * DrawObjects.blockSize);
+	public static final int panelSize = (int) (50 / Map.SCALE * DrawObjects.blockSize);
 
 	JMapPanel(Map map) {
 		this.map = map;
-		SwingUtilities.invokeLater(new Runnable(){
-			@Override
-			public void run() {
-				JMapPanel.this.setSize(panelSize, panelSize);
-			}
-		});
+		JMapPanel.this.setSize(panelSize, panelSize);
 		updateThread();
-		
 	}
 
 	/**
@@ -60,8 +53,6 @@ public class JMapPanel extends JPanel{
 	public Dimension getMinimumSize() {
 		return getPreferredSize();
 	}
-	
-
 
 	@Override
 	public void paintComponent(Graphics g) {
@@ -93,7 +84,6 @@ public class JMapPanel extends JPanel{
 
 						JMapPanel.this.revalidate();
 						JMapPanel.this.repaint();
-
 					}
 					
 				});
@@ -103,16 +93,10 @@ public class JMapPanel extends JPanel{
 						e.printStackTrace();
 					}
 				}
-				
 			}
-			
 		};
 		update.start();
-		
-		
 	}
-
-	
 
 	public Map getMap() {
 		return map;
@@ -127,57 +111,40 @@ public class JMapPanel extends JPanel{
 	 */
 	public static void main(String[] args) {
 		final Map map = new Map();
-		MapChange mc = new MapChange(map);
-		mc.setVisible(true);
-		JFrame frame = new JFrame("Map GUI");
-
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLayout(new BorderLayout());
-		final JMapPanel jMapPanel = new JMapPanel(map);
-		JPanel p = new JPanel(new GridBagLayout()) {
-			private static final long serialVersionUID = 466462159608863092L;
+		SwingUtilities.invokeLater(new Runnable(){
 
 			@Override
-			public Dimension getPreferredSize() {
-				// Dimension size = new Dimension(minWidth, minHeight);
-				Dimension child = jMapPanel.getPreferredSize();
-				int width = child.width > minWidth ? child.width : minWidth;
-				int height = child.height > minHeight ? child.height
-						: minHeight;
+			public void run() {
 
-				return new Dimension(width, height);
-			}
+				JFrame frame = new JFrame("Map GUI");
 
-			@Override
-			public Dimension getMinimumSize() {
-				return getPreferredSize();
-			}
-		};
-		p.setBackground(DrawObjects.COLOR_UNEXPLORED);
-		p.add(jMapPanel, new GridBagConstraints());
-		JScrollPane scr = new JScrollPane(p);
-		// scr.getViewport().setViewPosition(JMapPanel.center);
-		frame.add(scr, BorderLayout.CENTER);
-		// frame.add(jMapPanel);
+				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				frame.setLayout(new BorderLayout());
+				final JMapPanel jMapPanel = new JMapPanel(map);
+				final JScrollPane scrMap = new JScrollPane(jMapPanel);
+				frame.add(scrMap, BorderLayout.CENTER);
+				// frame.add(jMapPanel);
 
-		JButton btn = new JButton("Random values");
-		btn.addActionListener(new ActionListener() {
+				JButton btn = new JButton("Center View");
+				btn.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				for (int i = -14; i < 15; i += 1) {
-					map.setValue(i, (int) (Math.random() * 40 + 10),
-							Map.OCCUPIED);
-					map.setValue(i, (int) -(Math.random() * 40 + 10), Map.EMPTY);
-				}
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						JViewport vp = scrMap.getViewport();
+						Dimension vs = vp.getExtentSize();
+						vp.setViewPosition(new Point(JMapPanel.panelSize / 2
+								- vs.width / 2, JMapPanel.panelSize / 2
+								- vs.height / 2));
+					}
+				});
 
+				frame.add(btn, BorderLayout.SOUTH);
+
+				frame.pack();
+				frame.setVisible(true);
 			}
 		});
 
-		frame.add(btn, BorderLayout.SOUTH);
-
-		frame.pack();
-		frame.setVisible(true);
 
 		/*
 		 * map.setValue(0, 50, Map.OCCUPIED); map.setValue(0, -50,
@@ -253,14 +220,20 @@ public class JMapPanel extends JPanel{
 
 		ExploreTest.explore(map, new Point(5-200, 45));
 		*/
-		Robot robot = new Robot(map,0);
+		final Robot robot = new Robot(map, 0);
 		Robot robot2 = new Robot(map,1);
 		Robot robot3 = new Robot(map,2);
 		map.addRobot(robot);
 		map.addRobot(robot2);
 		map.addRobot(robot3);
 		new GarbageManager(robot);
-		new RobotControl(robot).setVisible(true);
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				new RobotControl(robot).setVisible(true);
+			}
+		});
 
 		map.addGarbage(new GarbageItem(new Point(1, 1), false));
 		map.addGarbage(new GarbageItem(new Point(-70, 40), false));
