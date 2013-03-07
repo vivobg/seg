@@ -3,6 +3,7 @@ package gui;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.util.List;
 
 import javaclient3.structures.PlayerPose2d;
 import map.Map;
@@ -124,24 +125,33 @@ public class DrawObjects {
 
 	}
 
-	/*
-	 * public void drawPath(List<Point> path) { int minX = map.getMinXSize();
-	 * int centerX = minX > 0 ? minX : 1;
-	 * 
-	 * int centerY = map.getMaxYSize(); if (path == null) return; Graphics2D g2
-	 * = (Graphics2D) this.getGraphics(); g2.setColor(COLOR_PATH); for (Point p
-	 * : path) { int x = p.x; int y = p.y; // System.out.println(x + " " + y);
-	 * g2.fillRect((centerX + x) * blockSize, (centerY - y) blockSize,
-	 * blockSize, blockSize); } g2.setColor(COLOR_PATH_START); Point start =
-	 * path.get(0); g2.fillRect((centerX + start.x) * blockSize, (centerY -
-	 * start.y) blockSize, blockSize, blockSize);
-	 * g2.setColor(COLOR_PATH_FINISH); Point finish = path.get(path.size() - 1);
-	 * g2.fillRect((centerX + finish.x) * blockSize, (centerY - finish.y)
-	 * blockSize, blockSize, blockSize); g2.dispose(); this.revalidate();
-	 * this.repaint();
-	 * 
-	 * }
-	 */
+	public static void drawPaths(Map map, Graphics2D g2, Point size) {
+
+		Point center = new Point(size.x / 2 / BLOCK_SIZE, size.y / 2
+				/ BLOCK_SIZE);
+		for (Robot bot : map.robotList) {
+			List<Point> opPath = bot.currentPath;
+			if (opPath == null || !bot.isFollowing)
+				continue;
+			g2.setColor(COLOR_PATH);
+			for (Point p : opPath) {
+				int x = p.x;
+				int y = p.y; // System.out.println(x + " " + y);
+				g2.fillRect((center.x + x) * BLOCK_SIZE, (center.y - y)
+						* BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+			}
+			g2.setColor(COLOR_PATH_START);
+			Point start = opPath.get(0);
+			g2.fillRect((center.x + start.x) * BLOCK_SIZE, (center.y - start.y)
+					* BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+			g2.setColor(COLOR_PATH_FINISH);
+			Point finish = opPath.get(opPath.size() - 1);
+			g2.fillRect((center.x + finish.x) * BLOCK_SIZE,
+					(center.y - finish.y) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+
+		}
+	}
+
 
 	/**
 	 * Draw robots with the given graphics context

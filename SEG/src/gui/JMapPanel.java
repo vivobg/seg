@@ -63,6 +63,7 @@ public class JMapPanel extends JPanel{
 		DrawObjects.drawMapDeep(map, g2, size);
 		DrawObjects.drawRobots(map, g2, size);
 		DrawObjects.drawGarbage(map, g2, size);
+		DrawObjects.drawPaths(map, g2, size);
 		g2.dispose();
 
 	}
