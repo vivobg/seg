@@ -2,9 +2,9 @@ package sense;
 
 import java.awt.Point;
 
-import robot.Robot;
-import map.Map;
 import javaclient3.structures.PlayerPose2d;
+import map.Map;
+import robot.Robot;
 
 public class Sense {
 	/**
@@ -13,8 +13,12 @@ public class Sense {
 	 * @param robot
 	 */
 	public static void sonarScan(Map map, Robot robot) {
-		PlayerPose2d pose = robot.getPose();
-		double[] sonarValues = robot.getSonar();
+		PlayerPose2d pose;
+		double[] sonarValues = null;
+		synchronized(robot.sensorLock){
+			pose = new PlayerPose2d(robot.x, robot.y, robot.yaw);
+			if(robot.getSonar() != null) sonarValues = robot.getSonar().clone();
+		}
 		//Point start = Map.convertPlayerToInternal(pose.getPx(), pose.getPy());
 		if (sonarValues != null) {
 			for (int i = 0; i < sonarValues.length; i++) {
@@ -48,7 +52,7 @@ public class Sense {
 		// units;
 	    Point t = new Point((int) Math.floor(distance2 * Math.cos(angle)),
 				(int) Math.floor(distance2 * Math.sin(angle))); */
-		
+		// distance = Math.min(distance, 3);
 		double tX = distance * Math.cos(angle);
 		double tY = distance * Math.sin(angle);
 		tX += sX;
@@ -59,7 +63,7 @@ public class Sense {
 		Bresenham.line(map, s.x, s.y, t.x, t.y, WALL);
 
 	}
-	
+
 	private static void updateFiducialExplored(Map map, Robot robot){
 		throw new UnsupportedOperationException("Not Implemented Yet!");
 	}

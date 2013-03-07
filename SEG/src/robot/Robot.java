@@ -44,11 +44,13 @@ public class Robot{
 	public static final double TARGET_THRESHOLD = 0.085;
 	public static final double HEADING_THRESHOLD = 0.05;
 	public static final double ROBOT_SIZE = 0.50;
+	private static final double TURN_360 = 0.01;
 	public boolean isFollowing = false;
 	public List<Point> currentOptimizedPath;
 	public List<Point> currentPath;
 
 	public Object moveLock = new Object();
+	public Object sensorLock = new Object();
 
 	public double x;
 	public double y;
@@ -90,6 +92,15 @@ public class Robot{
 		}
 		robot.runThreaded(-1, -1);
 		collectionThread();
+
+		//makes the robot do a 360 scan (HACK)
+		Thread do360 = new Thread(){
+			public void run(){
+				do360();
+			}
+		};
+		// do360.start();
+
 		senseThread();
 	}
 
@@ -109,27 +120,28 @@ public class Robot{
 			public void run() {
 
 				while (true) {
+					synchronized(sensorLock){
+						if (pos2D.isDataReady()) {
+							x = pos2D.getX();
+							y = pos2D.getY();
+							yaw = pos2D.getYaw();
+						}
 
-					if (pos2D.isDataReady()) {
-						x = pos2D.getX();
-						y = pos2D.getY();
-						yaw = pos2D.getYaw();
-					}
+						if (sonar.isDataReady()) {
+							sonarValues = sonar.getData().getRanges();
+						}
 
-					if (sonar.isDataReady()) {
-						sonarValues = sonar.getData().getRanges();
-					}
+						if(fiducial.isDataReady()){
+							fiducialsInView = fiducial.getData().getFiducials();
+						}
 
-					if(fiducial.isDataReady()){
-						fiducialsInView = fiducial.getData().getFiducials();
-	                }
-					
-					if(gripper.isDataReady()){
-						if(gripper.getData().getBeams() > 0){
-							gripper.close();
+						if(gripper.isDataReady()){
+							if(gripper.getData().getBeams() > 0){
+								gripper.close();
+							}
 						}
 					}
-					
+
 					try {
 						sleep(COLLECTION_SLEEP);
 					} catch (InterruptedException e) {
@@ -214,7 +226,7 @@ public class Robot{
 	 *            whether to stop the robot after turning (faster if false when
 	 *            moving)
 	 */
-	public void turn(double targetYaw) {
+	public void turn(double targetYaw, double rate) {
 		while (Math.abs(targetYaw - yaw) > HEADING_THRESHOLD
 				&& Math.abs(targetYaw - yaw) < 2 * Math.PI - HEADING_THRESHOLD) {
 
@@ -226,12 +238,12 @@ public class Robot{
 
 			if (a > 0) {
 				if (a > TURN_RATE_LIMIT)
-					pos2D.setSpeed(0, TURN_RATE);// left
+					pos2D.setSpeed(0, rate);// left
 				else
 					pos2D.setSpeed(0, TURN_RATE_SLOW);// left
 			} else {
 				if (a < -TURN_RATE_LIMIT)
-					pos2D.setSpeed(0, -TURN_RATE);// right
+					pos2D.setSpeed(0, -rate);// right
 				else
 					pos2D.setSpeed(0, -TURN_RATE_SLOW);// right
 			}
@@ -242,6 +254,25 @@ public class Robot{
 			}
 		}
 		pos2D.setSpeed(0, 0);// Remove for speed?
+	}
+
+	public void turn(double targetYaw){
+		turn(targetYaw, TURN_RATE);
+	}
+
+	public void do360(){
+		//for (int i=0;i<4;i++)
+		//turn(Math.toRadians(120) + yaw, TURN_360);
+		//double initialYaw = yaw;
+		pos2D.setSpeed(0, TURN_360);
+		try {
+			Thread.sleep((long) (Math.toRadians(30)/TURN_360 * 1000));
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		pos2D.setSpeed(0, 0);
+		//turn(initialYaw);
 	}
 
 	/**
@@ -270,7 +301,7 @@ public class Robot{
 			double px = pose.getPx();
 			double py = pose.getPy();
 			Point target =  new Point((int)px,(int)py);
-			
+
 			while (true) {
 				if ((Math.abs(px - x) < TARGET_THRESHOLD
 						&& Math.abs(py - y) < TARGET_THRESHOLD) || !search.AStarSearch.isAvailableCell(target, map) || 
@@ -297,11 +328,11 @@ public class Robot{
 
 	private boolean isTooCloseToWall() {
 		double threshold = 0.6;
-			if(sonarValues[0] < threshold || sonarValues[1] < threshold || sonarValues[15] < threshold)
-			{
-				return true;
-			}
-		
+		if(sonarValues[0] < threshold || sonarValues[1] < threshold || sonarValues[15] < threshold)
+		{
+			return true;
+		}
+
 		return false;
 	}
 
