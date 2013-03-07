@@ -4,10 +4,9 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+import map.Map;
 import robot.Robot;
 import search.AStarSearch;
-
-import map.Map;
 
 public class ExploreTest {
 
@@ -45,6 +44,8 @@ public class ExploreTest {
 			path = AStarSearch.dSearch(map, start);
 			if (path != null) {
 				if(path.size() > 3)path = optimizePath(path);
+				robot.currentPath = path;
+				robot.isFollowing = true;
 				for (int i = 1; i<path.size();i++){
 					Point p = path.get(i);
 					Point end = path.get(path.size()-1);
@@ -71,7 +72,9 @@ public class ExploreTest {
 				}
 			}
 		} while (path != null);
+		robot.isFollowing = false;
 		System.out.println("Exploration finished");
+
 	}
 
 	private static List<Point> optimizePath(List<Point> path) {
