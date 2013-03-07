@@ -10,21 +10,18 @@ import javaclient3.structures.fiducial.PlayerFiducialItem;
  * @author Albert
  * 
  * GarbageItemManager is constructed with a Robot. It then adds that robots fiducialy discovered
- * GarbageItems to garbageToCollectList 
+ * GarbageItems to map.garbageListArray 
  */
 public class GarbageManager {
 
-	public static ArrayList<GarbageItem> garbageToCollectList;
 	public static final int FIDUCIAL_SLEEP = 1000;
 
 	private Robot robot;
-
-	public GarbageManager(Robot robot){
-		//it will only be instantiated once because it's static
-		if(garbageToCollectList == null)
-			garbageToCollectList = new ArrayList<GarbageItem>();
-
+	private Map map;
+	
+	public GarbageManager(Robot robot, Map map){
 		this.robot = robot;
+		this.map = map;
 
 		fiducialsInViewThread();
 		//printGarbageToCollectList();
@@ -34,15 +31,18 @@ public class GarbageManager {
 
 		//check if garbage has already been added
 		boolean garbageItemAlreadyExists = false;
-		for(int i = 0; i < garbageToCollectList.size(); i++){
-			if(garbageItem.getPoint().equals(garbageToCollectList.get(i).getPoint())){
+		//calculates how many tiles a garbage item takes up. They appear to take up 0.2 player units.
+		int threshold = (int) (0.2 / Map.SCALE);
+		for(int i = 0; i < map.garbageListArray.size(); i++){
+			if(Math.abs(garbageItem.getPoint().getX() - map.garbageListArray.get(i).getPoint().getX()) <= threshold &&
+					Math.abs(garbageItem.getPoint().getY() - map.garbageListArray.get(i).getPoint().getY()) <= threshold){
 				garbageItemAlreadyExists = true;
 				break;
 			}
 		}
 
 		if(!garbageItemAlreadyExists){
-			garbageToCollectList.add(garbageItem);
+			map.garbageListArray.add(garbageItem);
 		}
 
 	}
@@ -83,10 +83,10 @@ public class GarbageManager {
 		Thread collection = new Thread() {
 			public void run() {
 				while(true){
-					for(int i = 0; i < garbageToCollectList.size(); i++ )
-						System.out.println(garbageToCollectList.get(i).getPoint().toString());
+					for(int i = 0; i < map.garbageListArray.size(); i++ )
+						System.out.println(map.garbageListArray.get(i).getPoint().toString());
 
-					System.out.println("*** " + "garbageToCollectList Size is " + garbageToCollectList.size() + " ***");
+					System.out.println("*** " + "map.garbageListArray Size is " + map.garbageListArray.size() + " ***");
 					try {
 						sleep(1000);
 					} catch (InterruptedException e) {

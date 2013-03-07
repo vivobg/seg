@@ -226,7 +226,7 @@ public class JMapPanel extends JPanel{
 		map.addRobot(robot);
 		//map.addRobot(robot2);
 		//map.addRobot(robot3);
-		new GarbageManager(robot);
+		new GarbageManager(robot,map);
 		SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
@@ -234,10 +234,6 @@ public class JMapPanel extends JPanel{
 				new RobotControl(robot, map).setVisible(true);
 			}
 		});
-
-		map.addGarbage(new GarbageItem(new Point(1, 1), false));
-		map.addGarbage(new GarbageItem(new Point(-70, 40), false));
-		map.addGarbage(new GarbageItem(new Point(50, -50), false));
 
 	}
 

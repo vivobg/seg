@@ -125,7 +125,9 @@ public class Robot{
 	                }
 					
 					if(gripper.isDataReady()){
-						// System.out.println(gripper.getData().getState());
+						if(gripper.getData().getBeams() > 0){
+							gripper.close();
+						}
 					}
 					
 					try {

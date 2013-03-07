@@ -62,28 +62,6 @@ public class Map{
 		return robotList;
 	}
 
-	public void addGarbage(GarbageItem garbageItem) {
-
-		// check if garbage has already been added
-		boolean garbageItemAlreadyExists = false;
-		for (int i = 0; i < garbageListArray.size(); i++) {
-			if (garbageItem.getPoint().equals(
-					garbageListArray.get(i).getPoint())) {
-				garbageItemAlreadyExists = true;
-				break;
-			}
-		}
-
-		if (!garbageItemAlreadyExists) {
-			garbageListArray.add(garbageItem);
-		}
-
-	}
-
-	public List<GarbageItem> getGarbageList() {
-		return garbageListArray;
-	}
-
 	public static Point convertPlayerToInternal(double x, double y) {
 		int xi = (int) Math.round(x / Map.SCALE);
 		int yi = (int) Math.round(y / Map.SCALE);
