@@ -7,9 +7,9 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Observable;
 
 import robot.Robot;
+import sense.GarbageItem;
 
 /**
  * Provides a dynamic 2D grid of byte. It is based on ArrayLists, and is
@@ -19,10 +19,10 @@ import robot.Robot;
  * @author Vilian Atmadzhov
  * 
  */
-public class Map extends Observable {
-	
-	public HashMap<Point,Boolean> garbageList;
+public class Map{
 	public List<Robot> robotList;
+	public List<GarbageItem> garbageListArray;// GUI code based on this
+	public HashMap<Point, Boolean> garbageList;// Abdi's code based on this
 
 	//Fiducially explored cells have the sign flipped.
 	public static final byte UNEXPLORED = 1;
@@ -47,6 +47,7 @@ public class Map extends Observable {
 		posArray = new ArrayList<VerticalArray>();
 		negArray = new ArrayList<VerticalArray>();
 		garbageList = new HashMap<Point, Boolean>();
+		garbageListArray = new ArrayList<GarbageItem>();
 		robotList = new ArrayList<Robot>();
 		setValue(0, 0, Map.UNEXPLORED);
 		setValue(1, 1, Map.UNEXPLORED);
@@ -59,6 +60,28 @@ public class Map extends Observable {
 	
 	public List<Robot> getRobotList(){
 		return robotList;
+	}
+
+	public void addGarbage(GarbageItem garbageItem) {
+
+		// check if garbage has already been added
+		boolean garbageItemAlreadyExists = false;
+		for (int i = 0; i < garbageListArray.size(); i++) {
+			if (garbageItem.getPoint().equals(
+					garbageListArray.get(i).getPoint())) {
+				garbageItemAlreadyExists = true;
+				break;
+			}
+		}
+
+		if (!garbageItemAlreadyExists) {
+			garbageListArray.add(garbageItem);
+		}
+
+	}
+
+	public List<GarbageItem> getGarbageList() {
+		return garbageListArray;
 	}
 
 	public static Point convertPlayerToInternal(double x, double y) {
@@ -159,9 +182,7 @@ public class Map extends Observable {
 			array.add(new VerticalArray(y, value));
 		}
 
-		boolean grown = updateMinMaxY(x, y);
-		setChanged();
-		notifyObservers(new CoordVal(x, y, value, grown));
+		updateMinMaxY(x, y);
 	}
 	/**
 	 * Set a cell as explored by the fiducial sensor or not
@@ -169,7 +190,7 @@ public class Map extends Observable {
 	 * @param y Vertical Coordinate
 	 * @param explored Explored or Not
 	 */
-	public void setFiducialExplored(int x, int y){
+	public synchronized void setFiducialExplored(int x, int y) {
 		byte val = getValue(x, y);
 		if (val > 0) val *= -1;	
 		updateMap(x, y, val);
@@ -186,7 +207,7 @@ public class Map extends Observable {
 	 * @param value
 	 *            the value to set in the given location, assumes positive value
 	 */
-	public void setValue(int x, int y, byte value) {
+	public synchronized void setValue(int x, int y, byte value) {
 		//Preserve fiducial status
 		if (isFiducialExplored(x, y)) value *=-1;
 		updateMap(x, y, value);

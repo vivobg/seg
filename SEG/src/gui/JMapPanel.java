@@ -1,7 +1,6 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -10,13 +9,6 @@ import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-
-import javaclient3.structures.PlayerPose2d;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -24,53 +16,34 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-import explore.ExploreTest;
-
-import robot.Robot;
-import search.AStarSearch;
-import search.SearchTest;
-import sense.GarbageManager;
-import map.CoordVal;
 import map.Map;
-import map.VerticalArray;
+import robot.Robot;
+import sense.GarbageItem;
+import sense.GarbageManager;
 
-public class JMapPanel extends JPanel implements Observer {
+public class JMapPanel extends JPanel{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -1361469152515719114L;
-	public static final int blockSize = 5;
+
+	public static final long REFRESH_RATE = 50;
 	public static final int minWidth = 800;
 	public static final int minHeight = 800;
-	public static final Color COLOR_WALL = Color.BLACK;
-	public static final Color COLOR_EMPTY = Color.WHITE;
-	public static final Color COLOR_UNEXPLORED = Color.GRAY;
-	// Too close to a wall
-	public static final Color COLOR_UNWALKABLE = Color.RED;
-	public static final Color COLOR_PATH = Color.ORANGE;
-	public static final Color COLOR_PATH_START = Color.GREEN;
-	public static final Color COLOR_PATH_FINISH = Color.MAGENTA;
+
 	private Map map;
-	private BuffImg img;
-	
-	//private List<Robot> robots;
+	private static int panelSize = (int) (50 / Map.SCALE * DrawObjects.blockSize);
 
 	JMapPanel(Map map) {
-		img = new BuffImg(1, 1, BufferedImage.TYPE_INT_RGB);
-		Graphics2D g2 = img.createGraphics();
-		g2.setColor(COLOR_UNEXPLORED);
-		g2.fillRect(0, 0, img.getWidth(), img.getHeight());
-		g2.dispose();
 		this.map = map;
-		this.map.addObserver(this);
-		//robots = new ArrayList<Robot>();
 		SwingUtilities.invokeLater(new Runnable(){
 			@Override
 			public void run() {
-				updateImage();
+				JMapPanel.this.setSize(panelSize, panelSize);
 			}
 		});
+		updateThread();
 		
 	}
 
@@ -80,190 +53,66 @@ public class JMapPanel extends JPanel implements Observer {
 	 */
 	@Override
 	public Dimension getPreferredSize() {
-		// return new
-		// Dimension(img.getWidth()>minWidth?img.getWidth():minWidth,img.getHeight()>minHeight?img.getHeight():minHeight);
-		return new Dimension(img.getWidth(), img.getHeight());
+		return new Dimension(panelSize, panelSize);
 	}
 
 	@Override
 	public Dimension getMinimumSize() {
 		return getPreferredSize();
 	}
+	
 
-	/**
-	 * Draw the generated Buffered Image
-	 * 
-	 **/
+
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
-		g2.drawImage(img, null, 0, 0);
-		
-		//drawRobots(g2);
-		
-		
+		Point size = new Point(panelSize, panelSize);
+		DrawObjects.clear(g2, size);
+		// drawMap(g2, size);
+		DrawObjects.drawMapDeep(map, g2, size);
+		DrawObjects.drawRobots(map, g2, size);
+		DrawObjects.drawGarbage(map, g2, size);
 		g2.dispose();
+
 	}
 
 	/**
-	 * Update and repaint the component on each map update
+	 * Update and repaint the component every N milliseconds
 	 */
-	@Override
-	public void update(Observable o, Object arg) {
-		final CoordVal cv = (CoordVal) arg;
-		SwingUtilities.invokeLater(new Runnable(){
-
+	public void updateThread() {
+		Thread update = new Thread(){
 			@Override
-			public void run() {
-				UpdateImage(cv);
-				JMapPanel.this.repaint();
-				JMapPanel.this.revalidate();
+			public void run(){
+				while (true){
+
+				SwingUtilities.invokeLater(new Runnable(){
+
+					@Override
+					public void run() {
+
+						JMapPanel.this.revalidate();
+						JMapPanel.this.repaint();
+
+					}
+					
+				});
+					try {
+						Thread.sleep(REFRESH_RATE);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				
 			}
 			
-		});
+		};
+		update.start();
+		
 		
 	}
 
-	private synchronized void growImage() {
-		int width = map.getMaxXSize() + map.getMinXSize();
-		int height = map.getMaxYSize() + map.getMinYSize();
-		int centerX = map.getMinXSize();
-		int centerY = map.getMaxYSize();
-		// System.out.println(width);
-		// if image is smaller than map
-		if (img.getWidth() < width * blockSize
-				|| img.getHeight() < (height + 1) * blockSize) {
-			BuffImg biggerImg = new BuffImg((width - 1) * blockSize + 1,
-					(height + 1) * blockSize + 1, BufferedImage.TYPE_INT_RGB);
-			Graphics2D bg2 = biggerImg.createGraphics();
-			bg2.setColor(COLOR_UNEXPLORED);
-			bg2.fillRect(0, 0, biggerImg.getWidth(), biggerImg.getHeight());
-			bg2.drawImage(img, null, (centerX - img.minX) * blockSize,
-					(centerY - img.MaxY) * blockSize);
-			biggerImg.MaxY = centerY;
-			biggerImg.minX = centerX;
-			img = biggerImg;
-			bg2.dispose();
-		}
-	}
-
-	private synchronized void UpdateImage(CoordVal cv) {
-		if (cv.grown)
-			growImage();
-		int centerX = map.getMinXSize();
-		int centerY = map.getMaxYSize();
-
-		Graphics2D g2 = img.createGraphics();
-		g2.setColor(COLOR_EMPTY);
-		if (map.isEmpty(cv.x, cv.y))
-			g2.setColor(COLOR_EMPTY);
-		else if (map.isUnexplored(cv.x, cv.y))
-			g2.setColor(COLOR_UNEXPLORED);
-		else if (map.isOccupied(cv.x, cv.y))
-			g2.setColor(COLOR_WALL);
-		else
-			g2.setColor(COLOR_UNWALKABLE);
-		g2.fillRect((centerX + cv.x - 1) * blockSize, (centerY - cv.y)
-				* blockSize, blockSize, blockSize);
-		g2.dispose();
-	}
-
-	private synchronized void updateImage() {
-		// if image is smaller than map
-		growImage();
-		int minX = map.getMinXSize();
-		// int maxY = map.getMaxYSize();
-		int centerX = minX > 0 ? minX : 1;
-
-		int centerY = map.getMaxYSize();
-
-		Graphics2D g2 = img.createGraphics();
-
-		// positive X
-		for (int x = 0; x < map.getMaxXSize(); x++) {
-			VerticalArray vert = map.getVertical(x);
-			for (int y = (vert.getNegSize() - 1) * -1; y < vert.getPosSize(); y++) {
-				if (map.isEmpty(x, y))
-					g2.setColor(COLOR_EMPTY);
-				else if (map.isUnexplored(x, y))
-					g2.setColor(COLOR_UNEXPLORED);
-				else if (map.isOccupied(x, y))
-					g2.setColor(COLOR_WALL);
-				else
-					g2.setColor(COLOR_UNWALKABLE);
-				g2.fillRect((centerX + x - 1) * blockSize, (centerY - y)
-						* blockSize, blockSize, blockSize);
-			}
-
-		}
-		// Negative X
-		for (int x = 1; x < map.getMinXSize(); x++) {
-			VerticalArray vert = map.getVertical(-x);
-			for (int y = (vert.getNegSize() - 1) * -1; y < vert.getPosSize(); y++) {
-				if (map.isEmpty(x, y))
-					g2.setColor(COLOR_EMPTY);
-				else if (map.isUnexplored(x, y))
-					g2.setColor(COLOR_UNEXPLORED);
-				else if (map.isOccupied(x, y))
-					g2.setColor(COLOR_WALL);
-				else
-					g2.setColor(COLOR_UNWALKABLE);
-				g2.fillRect((centerX - x) * blockSize, (centerY - y)
-						* blockSize, blockSize, blockSize);
-			}
-		}
-		g2.dispose();
-	}
-
-	public synchronized void drawPath(List<Point> path) {
-		growImage();
-		int minX = map.getMinXSize();
-		int centerX = minX > 0 ? minX : 1;
-
-		int centerY = map.getMaxYSize();
-		if (path == null)
-			return;
-		Graphics2D g2 = img.createGraphics();
-		g2.setColor(COLOR_PATH);
-		for (Point p : path) {
-			int x = p.x;
-			int y = p.y;
-			// System.out.println(x + " " + y);
-			g2.fillRect((centerX + x - 1) * blockSize, (centerY - y)
-					* blockSize, blockSize, blockSize);
-		}
-		g2.setColor(COLOR_PATH_START);
-		Point start = path.get(0);
-		g2.fillRect((centerX + start.x - 1) * blockSize, (centerY - start.y)
-				* blockSize, blockSize, blockSize);
-		g2.setColor(COLOR_PATH_FINISH);
-		Point finish = path.get(path.size() - 1);
-		g2.fillRect((centerX + finish.x - 1) * blockSize, (centerY - finish.y)
-				* blockSize, blockSize, blockSize);
-		g2.dispose();
-		this.revalidate();
-		this.repaint();
-
-	}
-	/*
-	public void addRobot(Robot r){
-		robots.add(r);
-	}*/
-	/*
-	private void drawRobots(Graphics2D g2){
-		int centerX = map.getMinXSize();
-		int centerY = map.getMaxYSize();
-		int robotSize = (int) (blockSize*(Robot.ROBOT_SIZE / Map.SCALE));
-		g2.setColor(Color.MAGENTA);
-		for (Robot bot : robots){
-			PlayerPose2d pose =  bot.getPose();
-			Point rC = Map.convertPlayerToInternal(pose.getPx(), pose.getPy());
-			int angle = (int) Math.toDegrees(pose.getPa());
-			int startAngle = angle + (360-300)/2;
-			g2.fillArc((centerX + rC.x-1) * blockSize-robotSize/2, (centerY - rC.y) * blockSize-robotSize/2, robotSize, robotSize, startAngle, 300);
-		}
-	}*/
+	
 
 	public Map getMap() {
 		return map;
@@ -304,9 +153,10 @@ public class JMapPanel extends JPanel implements Observer {
 				return getPreferredSize();
 			}
 		};
-		p.setBackground(COLOR_UNEXPLORED);
+		p.setBackground(DrawObjects.COLOR_UNEXPLORED);
 		p.add(jMapPanel, new GridBagConstraints());
 		JScrollPane scr = new JScrollPane(p);
+		// scr.getViewport().setViewPosition(JMapPanel.center);
 		frame.add(scr, BorderLayout.CENTER);
 		// frame.add(jMapPanel);
 
@@ -406,11 +256,15 @@ public class JMapPanel extends JPanel implements Observer {
 		Robot robot = new Robot(map,0);
 		Robot robot2 = new Robot(map,1);
 		Robot robot3 = new Robot(map,2);
-		//jMapPanel.addRobot(robot);
-		//jMapPanel.addRobot(robot2);
-		//jMapPanel.addRobot(robot3);
+		map.addRobot(robot);
+		map.addRobot(robot2);
+		map.addRobot(robot3);
 		new GarbageManager(robot);
 		new RobotControl(robot).setVisible(true);
+
+		map.addGarbage(new GarbageItem(new Point(1, 1), false));
+		map.addGarbage(new GarbageItem(new Point(-70, 40), false));
+		map.addGarbage(new GarbageItem(new Point(50, -50), false));
 
 	}
 
