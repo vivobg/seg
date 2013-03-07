@@ -51,7 +51,7 @@ public class ExploreTest {
 					Point p = path.get(i);
 					Point end = path.get(path.size()-1);
 					robot.move(p);
-					if (!map.isEmpty(end.x, end.y)){
+					if (!map.isUnexplored(end.x, end.y)) {
 						break;
 					}
 					try {
@@ -96,7 +96,7 @@ public class ExploreTest {
 		return result;
 	}
 
-	private static void scan(Robot robot) {
+	public static void scan(Robot robot) {
 		for(int i = 0; i < 4; i++)robot.turn(robot.yaw + Math.PI/i);
 		
 	}
