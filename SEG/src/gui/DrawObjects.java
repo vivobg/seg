@@ -11,7 +11,7 @@ import robot.Robot;
 import sense.GarbageItem;
 
 public class DrawObjects {
-	public static final int blockSize = 5;
+	public static final int BLOCK_SIZE = 5;
 	public static final Color COLOR_WALL = Color.BLACK;
 	public static final Color COLOR_EMPTY = Color.WHITE;
 	public static final Color COLOR_UNEXPLORED = Color.GRAY;
@@ -52,7 +52,7 @@ public class DrawObjects {
 		int maxX = map.getMaxXSize();
 		int maxY = map.getMaxYSize();
 
-		Point center = new Point(size.x / 2 / blockSize, size.y / 2 / blockSize);
+		Point center = new Point(size.x / 2 / BLOCK_SIZE, size.y / 2 / BLOCK_SIZE);
 
 		// Iterate from lowest to highest X
 		for (int x = -minX; x <= maxX; x++) {
@@ -66,8 +66,8 @@ public class DrawObjects {
 					g2.setColor(COLOR_WALL);
 				else
 					g2.setColor(COLOR_UNWALKABLE);
-				g2.fillRect((center.x + x - 1) * blockSize, (center.y - y)
-						* blockSize, blockSize, blockSize);
+				g2.fillRect((center.x + x - 1) * BLOCK_SIZE, (center.y - y)
+						* BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
 
 			}
 		}
@@ -86,7 +86,7 @@ public class DrawObjects {
 	 */
 	public static void drawMapDeep(Map map, Graphics2D g2, Point size) {
 
-		Point center = new Point(size.x / 2 / blockSize, size.y / 2 / blockSize);
+		Point center = new Point(size.x / 2 / BLOCK_SIZE, size.y / 2 / BLOCK_SIZE);
 
 		// positive X
 		for (int x = 0; x < map.getMaxXSize(); x++) {
@@ -100,8 +100,8 @@ public class DrawObjects {
 					g2.setColor(COLOR_WALL);
 				else
 					g2.setColor(COLOR_UNWALKABLE);
-				g2.fillRect((center.x + x) * blockSize, (center.y - y)
-						* blockSize, blockSize, blockSize);
+				g2.fillRect((center.x + x) * BLOCK_SIZE, (center.y - y)
+						* BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
 			}
 
 		}
@@ -117,8 +117,8 @@ public class DrawObjects {
 					g2.setColor(COLOR_WALL);
 				else
 					g2.setColor(COLOR_UNWALKABLE);
-				g2.fillRect((center.x - x) * blockSize, (center.y - y)
-						* blockSize, blockSize, blockSize);
+				g2.fillRect((center.x - x) * BLOCK_SIZE, (center.y - y)
+						* BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
 			}
 		}
 
@@ -150,10 +150,10 @@ public class DrawObjects {
 	 *            The graphics object to draw with
 	 */
 	public static void drawRobots(Map map, Graphics2D g2, Point size) {
-		Point center = new Point(size.x / 2 / blockSize, size.y / 2 / blockSize);
+		Point center = new Point(size.x / 2 / BLOCK_SIZE, size.y / 2 / BLOCK_SIZE);
 		// int centerX = map.getMinXSize();
 		// int centerY = map.getMaxYSize();
-		int robotSize = (int) (blockSize * (Robot.ROBOT_SIZE / Map.SCALE));
+		int robotSize = (int) (BLOCK_SIZE * (Robot.ROBOT_SIZE / Map.SCALE));
 		for (int i = 0; i < map.robotList.size(); i++) {
 			Robot bot = map.robotList.get(i);
 			g2.setColor(ROBOT_COLORS[i]);
@@ -161,25 +161,25 @@ public class DrawObjects {
 			Point rC = Map.convertPlayerToInternal(pose.getPx(), pose.getPy());
 			int angle = (int) Math.toDegrees(pose.getPa());
 			int startAngle = angle + (360 - 300) / 2;
-			g2.fillArc((center.x + rC.x) * blockSize - robotSize / 2,
-					(center.y - rC.y) * blockSize - robotSize / 2, robotSize,
+			g2.fillArc((center.x + rC.x) * BLOCK_SIZE - robotSize / 2,
+					(center.y - rC.y) * BLOCK_SIZE - robotSize / 2, robotSize,
 					robotSize, startAngle, 300);
 			g2.setColor(Color.BLACK);
-			g2.drawArc((center.x + rC.x) * blockSize - robotSize / 2,
-					(center.y - rC.y) * blockSize - robotSize / 2, robotSize,
+			g2.drawArc((center.x + rC.x) * BLOCK_SIZE - robotSize / 2,
+					(center.y - rC.y) * BLOCK_SIZE - robotSize / 2, robotSize,
 					robotSize, startAngle, 300);
 		}
 	}
 
 	public static void drawGarbage(Map map, Graphics2D g2, Point size) {
-		Point center = new Point(size.x / 2 / blockSize, size.y / 2 / blockSize);
-		int garbageSize = (int) (blockSize * (GARBAGE_SIZE / Map.SCALE));
+		Point center = new Point(size.x / 2 / BLOCK_SIZE, size.y / 2 / BLOCK_SIZE);
+		int garbageSize = (int) (BLOCK_SIZE * (GARBAGE_SIZE / Map.SCALE));
 		g2.setColor(GARGABE_COLOR);
 		for (int i = 0; i < map.garbageListArray.size(); i++) {
 			GarbageItem garbage = map.garbageListArray.get(i);
-			g2.fillOval((center.x + garbage.getPoint().x) * blockSize
+			g2.fillOval((center.x + garbage.getPoint().x) * BLOCK_SIZE
 					- garbageSize / 2, (center.y - garbage.getPoint().y)
-					* blockSize - garbageSize / 2, garbageSize, garbageSize);
+					* BLOCK_SIZE - garbageSize / 2, garbageSize, garbageSize);
 		}
 	}
 }

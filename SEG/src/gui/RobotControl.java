@@ -2,8 +2,6 @@ package gui;
 
 import java.awt.GridLayout;
 import java.awt.Point;
-
-import robot.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -12,16 +10,21 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import map.Map;
+import robot.Robot;
+
 public class RobotControl extends JFrame{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -576449275784661972L;
 	private Robot robot;
+	private Map map;
 	
-	public RobotControl(Robot robot){
+	public RobotControl(Robot robot, Map map) {
 		super("Robot control");
 		this.robot = robot;
+		this.map = map;
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		initWidgets();
 	}
@@ -36,8 +39,9 @@ public class RobotControl extends JFrame{
 		JButton jbtnLeft = new JButton("Move Left");
 		JButton jbtnRight = new JButton("Move Right");
 		JButton jbtnExplore = new JButton("Explore");
+		JButton jbtnSave = new JButton("Save Map");
 		//jbtnExplore.setEnabled(false);
-		this.setLayout(new GridLayout(4, 3));
+		this.setLayout(new GridLayout(5, 3));
 		this.add(new JLabel("X:(INT x) "));
 		this.add(jtX);
 		this.add(jbtnUp);
@@ -51,6 +55,8 @@ public class RobotControl extends JFrame{
 		this.add(jbtn);
 		this.add(jbtnExplore);
 		this.add(jbtnRight);
+
+		this.add(jbtnSave);
 		this.pack();
 		jbtn.addActionListener(new ActionListener() {
 			
@@ -60,7 +66,7 @@ public class RobotControl extends JFrame{
 				final int y = Integer.valueOf(jtY.getText());
 				Thread moveThread = new Thread(){
 					public void run(){
-						Point target = map.Map.convertPlayerToInternal(x,y);
+						Point target = Map.convertPlayerToInternal(x, y);
 						robot.move(target);
 					}
 				};
@@ -123,6 +129,16 @@ public class RobotControl extends JFrame{
 		jbtnLeft.addActionListener(moveRobot);
 		jbtnRight.addActionListener(moveRobot);
 		
+		jbtnSave.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				long time = System.currentTimeMillis();
+				Save.toPNG(map, time + ".png");
+
+			}
+		});
+
 	}
 
 }

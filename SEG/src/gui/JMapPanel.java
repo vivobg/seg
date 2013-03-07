@@ -32,7 +32,7 @@ public class JMapPanel extends JPanel{
 	public static final int minHeight = 800;
 
 	private Map map;
-	public static final int panelSize = (int) (50 / Map.SCALE * DrawObjects.blockSize);
+	public static final int panelSize = (int) (50 / Map.SCALE * DrawObjects.BLOCK_SIZE);
 
 	JMapPanel(Map map) {
 		this.map = map;
@@ -231,7 +231,7 @@ public class JMapPanel extends JPanel{
 
 			@Override
 			public void run() {
-				new RobotControl(robot).setVisible(true);
+				new RobotControl(robot, map).setVisible(true);
 			}
 		});
 
