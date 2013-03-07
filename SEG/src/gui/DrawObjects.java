@@ -3,6 +3,7 @@ package gui;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.List;
 
 import javaclient3.structures.PlayerPose2d;
@@ -19,6 +20,7 @@ public class DrawObjects {
 	// Too close to a wall
 	public static final Color COLOR_UNWALKABLE = Color.RED.darker();
 	public static final Color COLOR_PATH = Color.ORANGE;
+	public static final Color COLOR_PATH_OPTIMIZED = Color.ORANGE.darker();
 	public static final Color COLOR_PATH_START = Color.GREEN;
 	public static final Color COLOR_PATH_FINISH = Color.MAGENTA;
 	public static final Color[] ROBOT_COLORS = { Color.RED, Color.YELLOW,
@@ -130,6 +132,8 @@ public class DrawObjects {
 		Point center = new Point(size.x / 2 / BLOCK_SIZE, size.y / 2
 				/ BLOCK_SIZE);
 		for (Robot bot : map.robotList) {
+
+			// Unoptimized path
 			List<Point> opPath = bot.currentPath;
 			if (opPath == null || !bot.isFollowing)
 				continue;
@@ -149,7 +153,45 @@ public class DrawObjects {
 			g2.fillRect((center.x + finish.x) * BLOCK_SIZE,
 					(center.y - finish.y) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
 
+			// Optimized path
+			opPath = bot.currentOptimizedPath;
+			if (opPath == null || !bot.isFollowing)
+				continue;
+			g2.setColor(COLOR_PATH_OPTIMIZED);
+			for (int i = 0; i < opPath.size() - 1; i++) {
+				Point s = opPath.get(i);
+				Point t = opPath.get(i + 1);
+				List<Point> missing = line(s.x, s.y, t.x, t.y);
+				for (Point p : missing) {
+					g2.fillRect((center.x + p.x) * BLOCK_SIZE, (center.y - p.y)
+							* BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+				}
+			}
 		}
+	}
+
+	public static List<Point> line(int x0, int y0, int x1, int y1) {
+
+		int dx = Math.abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
+		int dy = Math.abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
+		int err = (dx > dy ? dx : -dy) / 2, e2;
+
+		List<Point> points = new ArrayList<Point>();
+		for (;;) {
+			points.add(new Point(x0, y0));
+			if (x0 == x1 && y0 == y1)
+				break;
+			e2 = err;
+			if (e2 > -dx) {
+				err -= dy;
+				x0 += sx;
+			}
+			if (e2 < dy) {
+				err += dx;
+				y0 += sy;
+			}
+		}
+		return points;
 	}
 
 
