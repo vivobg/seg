@@ -283,7 +283,7 @@ public class Robot{
 				turn(targetYaw);
 				double difference  = Math.sqrt(Math.pow(Math.abs(px -x) + Math.abs(py-y),2));
 
-				pos2D.setSpeed(difference/2 * Math.PI, 0);
+				pos2D.setSpeed(Math.min(1, difference / 2 * Math.PI), 0);
 
 				try {
 					Thread.sleep(MOVE_SLEEP);
