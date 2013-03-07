@@ -5,9 +5,8 @@ package robot;
 
 import java.awt.Point;
 import java.util.List;
-import explore.ExploreTest;
-import map.Map;
-import sense.Sense;
+
+import javaclient3.FiducialInterface;
 import javaclient3.GripperInterface;
 import javaclient3.PlayerClient;
 import javaclient3.PlayerException;
@@ -15,7 +14,6 @@ import javaclient3.Position2DInterface;
 import javaclient3.RangerInterface;
 import javaclient3.structures.PlayerConstants;
 import javaclient3.structures.PlayerPose2d;
-import javaclient3.FiducialInterface;
 import javaclient3.structures.fiducial.PlayerFiducialItem;
 import map.Map;
 import sense.Sense;
@@ -46,6 +44,8 @@ public class Robot{
 	public static final double TARGET_THRESHOLD = 0.085;
 	public static final double HEADING_THRESHOLD = 0.05;
 	public static final double ROBOT_SIZE = 0.50;
+	public boolean isFollowing = false;
+	public List<Point> currentPath;
 
 	public Object moveLock = new Object();
 
