@@ -42,9 +42,10 @@ public class ExploreTest {
 		do {
 			//scan(robot);
 			path = AStarSearch.dSearch(map, start);
+			robot.currentPath = path;
 			if (path != null) {
 				if(path.size() > 3)path = optimizePath(path);
-				robot.currentPath = path;
+				robot.currentOptimizedPath = path;
 				robot.isFollowing = true;
 				for (int i = 1; i<path.size();i++){
 					Point p = path.get(i);
