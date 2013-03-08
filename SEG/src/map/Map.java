@@ -30,7 +30,7 @@ public class Map{
 	public static final byte UNWALKABLE = 3;
 	public static final byte OCCUPIED 	= 4;
 	
-	public static final float TOO_CLOSE = 0.5f;// Player Units from wall
+	public static final float TOO_CLOSE = 0.8f;// Player Units from wall
 	public static final float SCALE = 0.1f;// Player units into 1 internal map
 											// unit
 	// how many cells away from wall are empty, but too close to the wall
