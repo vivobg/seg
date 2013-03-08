@@ -33,6 +33,7 @@ public class RobotControl extends JFrame{
 		final JTextField jtX = new JTextField(4);
 		final JTextField jtY = new JTextField(4);
 		final JTextField jtV = new JTextField(4);
+		jtV.setText("1");
 		JButton jbtn = new JButton("Move");
 		JButton jbtnUp = new JButton("Move Up");
 		JButton jbtnDown = new JButton("Move Down");
