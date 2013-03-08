@@ -44,33 +44,35 @@ public class ExploreTest {
 			path = AStarSearch.dSearch(map, start);
 			robot.currentPath = path;
 			if (path != null) {
-				if(path.size() > 3)path = optimizePath(path);
+				// if(path.size() > 3)path = optimizePath(path);
 				robot.currentOptimizedPath = path;
 				robot.isFollowing = true;
 				for (int i = 1; i<path.size();i++){
 					Point p = path.get(i);
 					Point end = path.get(path.size()-1);
-					robot.move(p);
-					if (!map.isUnexplored(end.x, end.y)) {
+
+					if (!map.isUnexplored(end.x, end.y)
+							|| !AStarSearch.isAvailableCell(end, map)) {
 						break;
 					}
-					try {
-						
-						Thread.sleep(30);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					robot.move(p);// Decide if worth moving, before moving
+					// try {
+					//
+					// Thread.sleep(30);
+					// } catch (InterruptedException e) {
+					// // TODO Auto-generated catch block
+					// e.printStackTrace();
+					// }
 				}
 				start = Map.convertPlayerToInternal(robot.x, robot.y);			
 
-				try {
-					
-					Thread.sleep(30);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				// try {
+				//
+				// Thread.sleep(30);
+				// } catch (InterruptedException e) {
+				// // TODO Auto-generated catch block
+				// e.printStackTrace();
+				// }
 			}
 		} while (path != null);
 		robot.isFollowing = false;
