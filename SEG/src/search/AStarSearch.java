@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import robot.Robot;
-
-import mainApp.Utilities;
 import map.Map;
+import robot.Robot;
 
 public class AStarSearch {
 	/**
@@ -73,7 +71,8 @@ public class AStarSearch {
 				if(closedSet.contains(neighbour))
 					continue;
 
-				int tScore = gScore.get(current) + Gcost(current, neighbour);
+				int tScore = gScore.get(current)
+						+ Gcost(current, neighbour, map);
 
 				if(!openSet.contains(neighbour) || (gScore.containsKey(neighbour) && tScore < gScore.get(neighbour)) )
 				{
@@ -111,9 +110,14 @@ public class AStarSearch {
 	 * @return 7 if diagonal, 5 otherwise
 	 */
 
-	private static int Gcost(Point source, Point target){
-		if (isDiagonal(source, target)) return 7;
-		else return 5;
+	private static int Gcost(Point source, Point target, Map map) {
+		int cost = 0;
+		if (map.isUnwalkable(target.x, target.y))
+			cost = 20;
+		if (isDiagonal(source, target))
+			return cost + 7;
+		else
+			return cost + 5;
 
 	}
 
@@ -177,11 +181,13 @@ public class AStarSearch {
 				if(!p.equals(adjPoint)  )
 				{
 					if(ASEARCH && map.isEmpty(i, j)){
-						if(isAvailableCell(adjPoint,map))possiblePoints.add(adjPoint);
+						// if(isAvailableCell(adjPoint,map))possiblePoints.add(adjPoint);
+						possiblePoints.add(adjPoint);
 					}
-					else if( !ASEARCH && (map.isEmpty(i, j) || map.isUnexplored(i, j)) )
+ else if (!ASEARCH && (!map.isOccupied(i, j)))
 					{
-						if(isAvailableCell(adjPoint,map))possiblePoints.add(adjPoint); 
+						if (isAvailableCell(adjPoint, map))
+							possiblePoints.add(adjPoint);
 					}
 				}
 			}
