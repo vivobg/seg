@@ -303,19 +303,20 @@ public class Robot{
 			Point target =  new Point((int)px,(int)py);
 
 			while (true) {
-				if ((Math.abs(px - x) < TARGET_THRESHOLD
-						&& Math.abs(py - y) < TARGET_THRESHOLD) || !search.AStarSearch.isAvailableCell(target, map) || 
-						isTooCloseToWall() ) {
+				if ((Math.abs(px - x) < TARGET_THRESHOLD && Math.abs(py - y) < TARGET_THRESHOLD)) {
 					pos2D.setSpeed(0, 0);
+					// System.out.println("BREAKING");
 					break;// target reached
 				}
+				System.out.println("Targeting");
 				/*
 				 * Decide which way to turn, to never turn more than 1/2 circle.
 				 */
 				double targetYaw = targetYaw(px, py);
+				// System.out.println("Turning");
 				turn(targetYaw);
 				double difference  = Math.sqrt(Math.pow(Math.abs(px -x) + Math.abs(py-y),2));
-
+				// System.out.println("MOVING");
 				pos2D.setSpeed(Math.min(1, difference / 2 * Math.PI), 0);
 
 				try {
