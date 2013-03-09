@@ -6,9 +6,9 @@
 + Draw robot paths
 + ~~Draw garbage objects~~
 + ~~Update object locations - see above~~ No longer required, due to changes in drawing logic
-+ Save floor plan to an image - PNG, due to lossy nature of JPG
-+ Center scrollpane viewport automatically
-+ Integrate all needed GUI forms into 1, for easier usage
++ ~~Save floor plan to an image - PNG, due to lossy nature of JPG~~
++ ~~Center scrollpane viewport automatically~~
++ ~~Integrate all needed GUI forms into 1, for easier usage~~
 + Differentiate between fiducially and non-fiducially explored cells (debugging)
 
 ###Robot
@@ -21,10 +21,11 @@
 
 + Explore garbage objects, not just the floor plan
 + Do not map other robots as occupied space
++ Blocking Control.explore() method, to meet CLI requirements
 
 ###Path-finding
 
-+ ~~Remove unneeded nodes from path, to speed up robot navigation~~
++ Remove unneeded nodes from path, to speed up robot navigation
 
 ###Garbage
 
