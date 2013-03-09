@@ -76,6 +76,9 @@ public class Control {
 					}
 				}
 			}
+			else if(args[i].equals("-gui")){
+				new NBGui(this).setVisible(true);
+			}
 			
 		}
 		
