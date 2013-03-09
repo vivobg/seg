@@ -2,6 +2,7 @@
 package mainApp;
 
 import garbage.GarbageCollection;
+import gui.Save;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -107,7 +108,7 @@ public class Control {
 	 * @param filename the filename to be used to save the map (filename+.extension)
 	 */
 	private void saveMap(String filename) {
-		// TODO Auto-generated method stub
+		Save.toPNG(map, filename);
 		
 	}
 
