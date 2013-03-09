@@ -59,7 +59,11 @@ public class NBGui extends javax.swing.JFrame {
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		setTitle("Team Babbage SEG Group Project");
-
+		addWindowListener(new java.awt.event.WindowAdapter() {
+			public void windowOpened(java.awt.event.WindowEvent evt) {
+				formWindowOpened(evt);
+			}
+		});
 		jpMainPanel.setBackground(new java.awt.Color(255, 0, 0));
 
 		jLabel1.setText("ROBOT MODE");
@@ -632,6 +636,14 @@ public class NBGui extends javax.swing.JFrame {
 	}
 
 	private void jMapPanelMouseClicked(java.awt.event.MouseEvent evt) {
+		centerMap();
+	}
+
+	private void formWindowOpened(java.awt.event.WindowEvent evt) {
+		centerMap();
+	}
+
+	private void centerMap() {
 		JViewport vp = jscrMap.getViewport();
 		Dimension vs = vp.getExtentSize();
 		vp.setViewPosition(new Point(JMapPanel.panelSize / 2 - vs.width / 2,
