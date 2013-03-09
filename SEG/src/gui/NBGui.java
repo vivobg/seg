@@ -1,16 +1,25 @@
 
 package gui;
 
+import java.awt.Dimension;
+import java.awt.Point;
+
+import javax.swing.JViewport;
+
+import map.Map;
+
 /**
  * 
  * @author Vilian
  */
 public class NBGui extends javax.swing.JFrame {
 
+	private Map map;
 	/**
 	 * Creates new form NBGui
 	 */
-	public NBGui() {
+	public NBGui(Map map) {
+		this.map = map;
 		initComponents();
 	}
 
@@ -46,7 +55,7 @@ public class NBGui extends javax.swing.JFrame {
 		jScrollPane1 = new javax.swing.JScrollPane();
 		jtConsole = new javax.swing.JTextPane();
 		jscrMap = new javax.swing.JScrollPane();
-		jMapPanel = new javax.swing.JPanel();
+		jMapPanel = new JMapPanel(map);
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		setTitle("Team Babbage SEG Group Project");
@@ -545,7 +554,11 @@ public class NBGui extends javax.swing.JFrame {
 		jscrMap.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
 		jMapPanel.setBackground(new java.awt.Color(128, 128, 128));
-
+		jMapPanel.addMouseListener(new java.awt.event.MouseAdapter() {
+			public void mouseClicked(java.awt.event.MouseEvent evt) {
+				jMapPanelMouseClicked(evt);
+			}
+		});
 		javax.swing.GroupLayout jMapPanelLayout = new javax.swing.GroupLayout(
 				jMapPanel);
 		jMapPanel.setLayout(jMapPanelLayout);
@@ -618,6 +631,13 @@ public class NBGui extends javax.swing.JFrame {
 		// TODO add your handling code here:
 	}
 
+	private void jMapPanelMouseClicked(java.awt.event.MouseEvent evt) {
+		JViewport vp = jscrMap.getViewport();
+		Dimension vs = vp.getExtentSize();
+		vp.setViewPosition(new Point(JMapPanel.panelSize / 2 - vs.width / 2,
+				JMapPanel.panelSize / 2 - vs.height / 2));
+	}
+
 	/**
 	 * @param args
 	 *            the command line arguments
@@ -658,7 +678,7 @@ public class NBGui extends javax.swing.JFrame {
 		/* Create and display the form */
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				new NBGui().setVisible(true);
+				new NBGui(new Map()).setVisible(true);
 			}
 		});
 	}
@@ -675,7 +695,8 @@ public class NBGui extends javax.swing.JFrame {
 	private javax.swing.JLabel jLabel7;
 	private javax.swing.JLabel jLabel8;
 	private javax.swing.JLabel jLabel9;
-	private javax.swing.JPanel jMapPanel;
+	// private javax.swing.JPanel jMapPanel;
+	private JMapPanel jMapPanel;
 	private javax.swing.JRadioButton jRadMulti;
 	private javax.swing.JRadioButton jRadSolo;
 	private javax.swing.JScrollPane jScrollPane1;
