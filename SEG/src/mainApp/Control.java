@@ -3,20 +3,18 @@ package mainApp;
 
 import garbage.GarbageCollection;
 
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
 import map.Map;
-
 import robot.Robot;
 
 
 public class Control {
 	Map map;
-	ArrayList<Robot> robots  = new ArrayList<Robot>();
-	ArrayList<Point> garbage  = new ArrayList<Point>();
+	// ArrayList<Robot> robots = new ArrayList<Robot>();
+	// ArrayList<Point> garbage = new ArrayList<Point>();
 	BotMode botMode = BotMode.Solo;
 	public Control(String[] args)
 	{
@@ -30,7 +28,7 @@ public class Control {
 		
 		for(int i = 0; i< 3; i++)//TODO: Change to autodetect number of robots available
 		{
-			robots.add(new Robot(map,i));
+			map.robotList.add(new Robot(map, i));
 		}
 	}
 
@@ -74,7 +72,7 @@ public class Control {
 		
 	}
 
-	private void collect(int x1, int y1, int x2, int y2) {
+	public void collect(int x1, int y1, int x2, int y2) {
 		
 		Rectangle collectionArea = new Rectangle(x1,y1,x2-x1,y2-y1);
 		GarbageCollection.setCollectionArea(collectionArea);
@@ -82,22 +80,28 @@ public class Control {
 		List<Robot> availableBots = new ArrayList<Robot>();
 		if(botMode == BotMode.Solo)
 		{
-			 availableBots.add(robots.get(0));
+			availableBots.add(map.robotList.get(0));
 		}
-		else availableBots = robots;
+ else
+			availableBots = map.robotList;
 		
 		GarbageCollection.collect(map, availableBots, new Rectangle());
 		
 	}
 
-	private void switchToMulti() {
+	public void switchToMulti() {
 		botMode = BotMode.Multi;
 		
 	}
-	private void switchToSolo() {
+
+	public void switchToSolo() {
 		botMode = BotMode.Solo;
 	}
 	
+	public Map getMap() {
+		return map;
+	}
+
 	/**
 	 * 
 	 * @param filename the filename to be used to save the map (filename+.extension)
@@ -111,10 +115,10 @@ public class Control {
 	{	
 		if(botMode == BotMode.Solo)
 		{
-			robots.get(0).explore(); //Only use the first bot
+			map.robotList.get(0).explore(); // Only use the first bot
 		}
 		else{
-			for(Robot bot : robots)
+			for (Robot bot : map.robotList)
 			{
 				bot.explore();
 			}
