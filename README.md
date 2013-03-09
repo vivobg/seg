@@ -32,7 +32,7 @@
 + Align robot with garbage
 + Pick/drop garbage
 + ~~Create a garbage class to keep track of garbage objects~~
-+ Extend class with Observable, to update observers on garbage move/collection
++ ~~Extend class with Observable, to update observers on garbage move/collection~~
 + ~~Subscribe GUI to Garbage objects, to redraw the GUI on move/collection~~ No longer needed, GUI polls garbage position as needed
 
 ###Multi-robot control
