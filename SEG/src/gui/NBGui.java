@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 
 import javax.swing.JViewport;
+import javax.swing.SwingUtilities;
 
 import mainApp.Control;
 import map.Map;
@@ -29,11 +30,18 @@ public class NBGui extends javax.swing.JFrame {
 		initComponents();
 	}
 	
-	public void printToGuiConsole(String text, String color){
-		String formatText = "<br><span color='#008000'> $: </span>" + "<span color='" + color + "'>" + text + "</span";
-		buf.append(formatText);
-		jtConsole.setText(buf.toString());
-		System.out.println(jtConsole.getText());
+	public void printToGuiConsole(final String text, final String color){
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				String formatText = "<br><span color='#008000'> $: </span>" + "<span color='" + color + "'>" + text + "</span";
+				buf.append(formatText);
+				jtConsole.setText(buf.toString());
+				
+			}
+		});
+		
 	}
 
 	private void initComponents() {
