@@ -668,7 +668,6 @@ public class NBGui extends javax.swing.JFrame {
 	 *            the command line arguments
 	 */
 	public static void main(String args[]) {
-		final String[] arguments = args;
 		/* Set the Nimbus look and feel */
 		// <editor-fold defaultstate="collapsed"
 		// desc=" Look and feel setting code (optional) ">
@@ -704,7 +703,7 @@ public class NBGui extends javax.swing.JFrame {
 		/* Create and display the form */
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				new NBGui(new Control(arguments)).setVisible(true);
+				new NBGui(new Control()).setVisible(true);
 			}
 		});
 	}

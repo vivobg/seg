@@ -2,6 +2,7 @@
 package mainApp;
 
 import garbage.GarbageCollection;
+import gui.NBGui;
 import gui.Save;
 
 import java.awt.Rectangle;
@@ -17,11 +18,13 @@ public class Control {
 	// ArrayList<Robot> robots = new ArrayList<Robot>();
 	// ArrayList<Point> garbage = new ArrayList<Point>();
 	BotMode botMode = BotMode.Solo;
+	public Control(){
+		this.map = new Map();
+		setupRobots();
+	}
 	public Control(String[] args)
 	{
-		map = new Map();
-		
-		setupRobots();
+		this();
 		processArgs(args);
 	}
 	
