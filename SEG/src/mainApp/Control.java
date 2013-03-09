@@ -139,6 +139,14 @@ public class Control {
 		}
 		
 	}
+	/**
+	 * Print given text to console and GUI, if one is used.
+	 * @param text
+	 */
+	public void println(String text){
+		System.out.println(text);
+		if (gui!=null) gui.printToGuiConsole(text, "#0000C0");
+	}
 
 	
 }
