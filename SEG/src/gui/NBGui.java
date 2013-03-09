@@ -17,6 +17,7 @@ public class NBGui extends javax.swing.JFrame {
 
 	private Map map;
 	private Control control;
+	private StringBuffer buf;
 	/**
 	 * Creates new form NBGui
 	 */
@@ -24,7 +25,15 @@ public class NBGui extends javax.swing.JFrame {
 		this.control = control;
 		this.map = control.getMap();
 		this.control.gui = this;
+		this.buf = new StringBuffer();
 		initComponents();
+	}
+	
+	public void printToGuiConsole(String text, String color){
+		String formatText = "<br><span color='#008000'> $: </span>" + "<span color='" + color + "'>" + text + "</span";
+		buf.append(formatText);
+		jtConsole.setText(buf.toString());
+		System.out.println(jtConsole.getText());
 	}
 
 	private void initComponents() {
@@ -651,6 +660,7 @@ public class NBGui extends javax.swing.JFrame {
 
 	private void jMapPanelMouseClicked(java.awt.event.MouseEvent evt) {
 		centerMap();
+		control.println("Map centered at " + System.currentTimeMillis());
 	}
 
 	private void formWindowOpened(java.awt.event.WindowEvent evt) {
