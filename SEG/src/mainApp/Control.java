@@ -15,6 +15,7 @@ import robot.Robot;
 
 public class Control {
 	Map map;
+	public NBGui gui = null;
 	// ArrayList<Robot> robots = new ArrayList<Robot>();
 	// ArrayList<Point> garbage = new ArrayList<Point>();
 	BotMode botMode = BotMode.Solo;
