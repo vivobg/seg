@@ -6,6 +6,7 @@ import java.awt.Point;
 
 import javax.swing.JViewport;
 
+import mainApp.Control;
 import map.Map;
 
 /**
@@ -15,11 +16,13 @@ import map.Map;
 public class NBGui extends javax.swing.JFrame {
 
 	private Map map;
+	private Control control;
 	/**
 	 * Creates new form NBGui
 	 */
-	public NBGui(Map map) {
-		this.map = map;
+	public NBGui(Control control) {
+		this.control = control;
+		this.map = control.getMap();
 		initComponents();
 	}
 
@@ -616,23 +619,29 @@ public class NBGui extends javax.swing.JFrame {
 	}// </editor-fold>
 
 	private void jbtnExploreActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
+		control.explore();
 	}
 
 	private void jRadSoloActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
+		control.switchToSolo();
 	}
 
 	private void jRadMultiActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
+		control.switchToMulti();
 	}
 
 	private void jbtnCollectActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
+		int x1 = Integer.valueOf(jtX1.getText());
+		int x2 = Integer.valueOf(jtX2.getText());
+		int y1 = Integer.valueOf(jtY1.getText());
+		int y2 = Integer.valueOf(jtY2.getText());
+		control.collect(x1, y1, x2, y2);
+		System.out.println("WARNING: integer collection area");
+
 	}
 
 	private void jbtnSaveActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
+		Save.toPNG(map, jtFilename.getText() + ".png");
 	}
 
 	private void jMapPanelMouseClicked(java.awt.event.MouseEvent evt) {
@@ -655,6 +664,7 @@ public class NBGui extends javax.swing.JFrame {
 	 *            the command line arguments
 	 */
 	public static void main(String args[]) {
+		final String[] arguments = args;
 		/* Set the Nimbus look and feel */
 		// <editor-fold defaultstate="collapsed"
 		// desc=" Look and feel setting code (optional) ">
@@ -690,7 +700,7 @@ public class NBGui extends javax.swing.JFrame {
 		/* Create and display the form */
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				new NBGui(new Map()).setVisible(true);
+				new NBGui(new Control(arguments)).setVisible(true);
 			}
 		});
 	}
