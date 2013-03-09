@@ -13,7 +13,7 @@ import robot.Robot;
 import sense.GarbageItem;
 
 public class DrawObjects {
-	public static final int BLOCK_SIZE = 4;
+	public static final int BLOCK_SIZE = 3;
 	public static final Color COLOR_WALL = Color.BLACK;
 	public static final Color COLOR_EMPTY = Color.WHITE;
 	public static final Color COLOR_UNEXPLORED = Color.GRAY;
