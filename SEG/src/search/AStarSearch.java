@@ -58,8 +58,8 @@ public class AStarSearch {
 			if((ASEARCH && current.equals(target))|| (!ASEARCH && map.isUnexplored(current.x, current.y)))
 				//if we are are at the target, stop search and return path
 			{
-				// return optimisePath(map, reconstructPath(cameFrom, current));
-				return reconstructPath(cameFrom, current);
+				return optimisePath(map, reconstructPath(cameFrom, current));
+				//return reconstructPath(cameFrom, current);
 			}
 
 			openSet.remove(current);
@@ -214,19 +214,36 @@ public class AStarSearch {
 		return true;
 	}
 	private static List<Point> optimisePath(Map map, List<Point> path) {
-		if (path.size() > 2) {
-			for (int i = 0; i < path.size() - 2; i++) {
-				int j = 2;
-				while (j < path.size()) {
-					boolean line = lineofSight(map, path.get(i), path.get(j));
-					if (line)
-						path.remove(i + 1);
-					else break;
+		List<Point> opti = new ArrayList<Point>();
+		Point node = path.get(0);
+		Point lastNode;
+		int index = 0;
+		System.out.println("Path Length = " + path.size());
+		opti.add(new Point(node));
+		while (index+1 < path.size()) {
+			for (int i = index+1; i < path.size(); i++) {
+				//Get the next node
+				lastNode = node;
+				node = path.get(i);
+				index = i;
+				Point optiEnd =opti.get(opti.size()-1);
+				//no line of sight: add, then break
+				// make sure lineOfSight works on !!!copies!!! of the Points
+				if (!lineofSight(map, optiEnd, node)) {
+					opti.add(lastNode);
+					System.out.println("NO Line of sight " + i);
+					break;
 				}
+				else System.out.println("Line of sight between " + opti.get(opti.size() - 1) + " and " + path.get(i));
+
+				// if ( ! lastVisible.equals(opti.get(opti.size()-1))){
+				
+				// }
 			}
+			opti.add(new Point(node));
 		}
 
-		return path;
+		return opti;
 	}
 
 	/**
@@ -246,8 +263,9 @@ public class AStarSearch {
 	 *            A flag to decide whether the line ends with a wall, or is
 	 *            completely empty
 	 */
-	public static boolean lineofSight(Map map, Point s, Point t) {
-
+	public static boolean lineofSight(Map map, Point source, Point target) {
+		Point s = new Point(source);
+		Point t = new Point(target);
 		int dx = Math.abs(t.x - s.x), sx = s.x < t.x ? 1 : -1;
 		int dy = Math.abs(t.y - s.y), sy = s.y < t.y ? 1 : -1;
 		int err = (dx > dy ? dx : -dy) / 2, e2;
@@ -268,7 +286,7 @@ public class AStarSearch {
 			}
 		}
 
-		for (int i = 1; i < points.size(); i++) {
+		for (int i = 0; i < points.size(); i++) {
 			Point node = points.get(i);
 			if (!map.isEmpty(node.x, node.y))
 				return false;
