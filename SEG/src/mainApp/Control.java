@@ -61,11 +61,16 @@ public class Control {
 			{
 				if(i + 4 < args.length)
 				{
-					int x1 = Integer.parseInt(args[i+1]);
-					int y1 = Integer.parseInt(args[i+2]);
-					int x2 = Integer.parseInt(args[i+3]);
-					int y2 = Integer.parseInt(args[i+4]);
+					try{
+					double x1 = Double.parseDouble(args[i+1]);
+					double y1 = Double.parseDouble(args[i+2]);
+					double x2 = Double.parseDouble(args[i+3]);
+					double y2 = Double.parseDouble(args[i+4]);
 					collect(x1,y1,x2,y2);
+					}
+					catch (NumberFormatException e){
+						e.printStackTrace();
+					}
 				}
 			}
 			
@@ -73,20 +78,21 @@ public class Control {
 		
 	}
 
-	public void collect(int x1, int y1, int x2, int y2) {
+	public void collect(double x1, double y1, double x2, double y2) {
 		
-		Rectangle collectionArea = new Rectangle(x1,y1,x2-x1,y2-y1);
-		GarbageCollection.setCollectionArea(collectionArea);
+		//Rectangle collectionArea = new Rectangle(x1,y1,x2-x1,y2-y1);
+		//GarbageCollection.setCollectionArea(collectionArea);
 		
 		List<Robot> availableBots = new ArrayList<Robot>();
 		if(botMode == BotMode.Solo)
 		{
 			availableBots.add(map.robotList.get(0));
 		}
- else
+		else
 			availableBots = map.robotList;
 		
-		GarbageCollection.collect(map, availableBots, new Rectangle());
+		//GarbageCollection.collect(map, availableBots, new Rectangle());
+		throw new RuntimeException("Not Implemented Yet Exception");
 		
 	}
 

@@ -631,12 +631,16 @@ public class NBGui extends javax.swing.JFrame {
 	}
 
 	private void jbtnCollectActionPerformed(java.awt.event.ActionEvent evt) {
-		int x1 = Integer.valueOf(jtX1.getText());
-		int x2 = Integer.valueOf(jtX2.getText());
-		int y1 = Integer.valueOf(jtY1.getText());
-		int y2 = Integer.valueOf(jtY2.getText());
-		control.collect(x1, y1, x2, y2);
-		System.out.println("WARNING: integer collection area");
+		try{
+			double x1 = Double.parseDouble(jtX1.getText());
+			double y1 = Double.parseDouble(jtX2.getText());
+			double x2 = Double.parseDouble(jtY1.getText());
+			double y2 = Double.parseDouble(jtY2.getText());
+			control.collect(x1, y1, x2, y2);
+		} catch (NumberFormatException e){
+			e.printStackTrace();
+		}
+		
 
 	}
 
