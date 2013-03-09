@@ -33,7 +33,7 @@ public class Control {
 		
 		for(int i = 0; i< 3; i++)//TODO: Change to autodetect number of robots available
 		{
-			map.robotList.add(new Robot(map, i));
+			map.robotList.add(new Robot(this, i));
 		}
 	}
 

@@ -15,6 +15,7 @@ import javaclient3.RangerInterface;
 import javaclient3.structures.PlayerConstants;
 import javaclient3.structures.PlayerPose2d;
 import javaclient3.structures.fiducial.PlayerFiducialItem;
+import mainApp.Control;
 import map.Map;
 import sense.Sense;
 import explore.ExploreTest;
@@ -26,7 +27,6 @@ import explore.ExploreTest;
  * 
  */
 public class Robot{
-
 	PlayerClient robot = null;
 	Position2DInterface pos2D = null;
 	RangerInterface sonar = null;
@@ -56,6 +56,8 @@ public class Robot{
 	public double y;
 	public double yaw;
 	private Map map;
+	private Control control;
+	public final int index;
 	private double[] sonarValues;
 	public PlayerFiducialItem[] fiducialsInView;
 
@@ -67,13 +69,15 @@ public class Robot{
 		return new PlayerPose2d(x,y,yaw);
 	}
 
-	public Robot(Map map) {
+	public Robot(Control control) {
 
-		this(map, 0);
+		this(control, 0);
 	}
 
-	public Robot(Map map, int index) {
-		this.map = map;
+	public Robot(Control control, int index) {
+		this.control = control;
+		this.index = index;
+		this.map = this.control.getMap();
 
 		// Set up service proxies
 		try {
@@ -308,7 +312,7 @@ public class Robot{
 					// System.out.println("BREAKING");
 					break;// target reached
 				}
-				System.out.println("Targeting");
+				//System.out.println("Targeting");
 				/*
 				 * Decide which way to turn, to never turn more than 1/2 circle.
 				 */

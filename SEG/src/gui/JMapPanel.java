@@ -15,6 +15,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 
+import mainApp.Control;
 import map.Map;
 import robot.Robot;
 import sense.GarbageItem;
@@ -110,7 +111,8 @@ public class JMapPanel extends JPanel{
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		final Map map = new Map();
+		final Control control = new Control();
+		final Map map = control.getMap();
 		SwingUtilities.invokeLater(new Runnable(){
 
 			@Override
@@ -220,7 +222,7 @@ public class JMapPanel extends JPanel{
 
 		ExploreTest.explore(map, new Point(5-200, 45));
 		*/
-		final Robot robot = new Robot(map, 0);
+		final Robot robot = new Robot(control, 0);
 		//Robot robot2 = new Robot(map,1);
 		//Robot robot3 = new Robot(map,2);
 		map.addRobot(robot);
