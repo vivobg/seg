@@ -12,12 +12,14 @@ import java.util.List;
 
 import map.Map;
 import robot.Robot;
+import sense.GarbageManager;
 
 
 public class Control {
 	Map map;
 	public Gui gui = null;
         public NBGui nbgui = null;
+        public GarbageManager gbMan;
 	// ArrayList<Robot> robots = new ArrayList<Robot>();
 	// ArrayList<Point> garbage = new ArrayList<Point>();
 	BotMode botMode = BotMode.Solo;
@@ -37,6 +39,7 @@ public class Control {
 		{
 			map.robotList.add(new Robot(this, i));
 		}
+		if (map.robotList.size() > 0 ) gbMan = new GarbageManager(map.robotList.get(0),map);
 	}
 
 	private void processArgs(String[] args) {
