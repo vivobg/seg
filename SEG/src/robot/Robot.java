@@ -16,6 +16,7 @@ import javaclient3.structures.PlayerConstants;
 import javaclient3.structures.PlayerPose2d;
 import javaclient3.structures.fiducial.PlayerFiducialItem;
 import mainApp.Control;
+import javaclient3.structures.gripper.PlayerGripperData;
 import map.Map;
 import sense.Sense;
 import explore.ExploreTest;
@@ -30,8 +31,9 @@ public class Robot{
 	PlayerClient robot = null;
 	Position2DInterface pos2D = null;
 	RangerInterface sonar = null;
-	GripperInterface gripper = null;
 	FiducialInterface fiducial = null;
+	public GripperInterface gripper = null;
+	public PlayerGripperData gripperData = null;
 
 	public static final int COLLECTION_SLEEP = 3;
 	public static final int SENSE_SLEEP = 5;
@@ -59,6 +61,7 @@ public class Robot{
 	private Control control;
 	public final int index;
 	private double[] sonarValues;
+	
 	public PlayerFiducialItem[] fiducialsInView;
 
 	/**
@@ -67,6 +70,10 @@ public class Robot{
 	 */
 	public PlayerPose2d getPose(){
 		return new PlayerPose2d(x,y,yaw);
+	}
+	
+	public Point getPoint(){
+		return Map.convertPlayerToInternal(x, y);
 	}
 
 	public Robot(Control control) {
@@ -140,9 +147,7 @@ public class Robot{
 						}
 
 						if(gripper.isDataReady()){
-							if(gripper.getData().getBeams() > 0){
-								gripper.close();
-							}
+							gripperData = gripper.getData();
 						}
 					}
 
