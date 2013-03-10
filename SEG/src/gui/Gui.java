@@ -103,6 +103,7 @@ public class Gui extends javax.swing.JFrame {
         jbtnSave = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jbtnSaveMapInstance = new javax.swing.JButton();
+        jbtnDeleteMapInstance = new javax.swing.JButton();
         jIntConsole = new javax.swing.JInternalFrame();
         jScrollPane1 = new javax.swing.JScrollPane();
         jtConsole = new javax.swing.JTextPane();
@@ -147,11 +148,11 @@ public class Gui extends javax.swing.JFrame {
         jIntMap.getContentPane().setLayout(jIntMapLayout);
         jIntMapLayout.setHorizontalGroup(
             jIntMapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jscrMap, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
+            .addComponent(jscrMap, javax.swing.GroupLayout.DEFAULT_SIZE, 1009, Short.MAX_VALUE)
         );
         jIntMapLayout.setVerticalGroup(
             jIntMapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jscrMap, javax.swing.GroupLayout.DEFAULT_SIZE, 658, Short.MAX_VALUE)
+            .addComponent(jscrMap, javax.swing.GroupLayout.DEFAULT_SIZE, 751, Short.MAX_VALUE)
         );
 
         jIntMap.setBounds(320, 60, 690, 690);
@@ -393,10 +394,17 @@ public class Gui extends javax.swing.JFrame {
             }
         });
 
-        jbtnSaveMapInstance.setText("Save Map Instance");
+        jbtnSaveMapInstance.setText("Save Map");
         jbtnSaveMapInstance.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbtnSaveMapInstanceActionPerformed(evt);
+            }
+        });
+
+        jbtnDeleteMapInstance.setText("Delete Map");
+        jbtnDeleteMapInstance.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnDeleteMapInstanceActionPerformed(evt);
             }
         });
 
@@ -405,14 +413,18 @@ public class Gui extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jbtnSaveMapInstance, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jbtnSaveMapInstance, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jbtnDeleteMapInstance, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jbtnSaveMapInstance)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jbtnSaveMapInstance)
+                    .addComponent(jbtnDeleteMapInstance))
                 .addContainerGap())
         );
 
@@ -553,15 +565,27 @@ public class Gui extends javax.swing.JFrame {
             ObjectOutputStream o = new ObjectOutputStream(fos);
             //Write map instance to disk
             o.writeObject(control.getMap());
+             this.printToGuiConsole("Map instance saved.", "#00C000");
             
         } catch (FileNotFoundException ex) {
             this.printToGuiConsole("Error writing Map instance. File not found.", "#FF0000");
         } catch (IOException ex) {
             this.printToGuiConsole("Error writing Map instance. IO Exception.", "#FF0000");
-            //this.printToGuiConsole(ex.get, "#FF0000");
         }
        
     }//GEN-LAST:event_jbtnSaveMapInstanceActionPerformed
+
+    private void jbtnDeleteMapInstanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnDeleteMapInstanceActionPerformed
+           File f = new File("map.instance");
+           if(f.exists()) {
+               f.delete();
+               this.printToGuiConsole("Map instance deleted.", "#FF8000");
+           }
+           else {
+                 this.printToGuiConsole("No saved Map instance. Nothing to delete.", "#00C000");
+           }
+       
+    }//GEN-LAST:event_jbtnDeleteMapInstanceActionPerformed
 
     /**
      * @param args the command line arguments
@@ -618,6 +642,7 @@ public class Gui extends javax.swing.JFrame {
     private javax.swing.JRadioButton jRadSolo;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton jbtnCollect;
+    private javax.swing.JButton jbtnDeleteMapInstance;
     private javax.swing.JButton jbtnExplore;
     private javax.swing.JButton jbtnSave;
     private javax.swing.JButton jbtnSaveMapInstance;
