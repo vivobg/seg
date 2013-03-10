@@ -215,6 +215,7 @@ public class AStarSearch {
 	}
 	private static List<Point> optimisePath(Map map, List<Point> path) {
 		List<Point> opti = new ArrayList<Point>();
+		if (path!=null && path.size() > 2){
 		Point node = path.get(0);
 		Point lastNode;
 		int index = 0;
@@ -242,8 +243,12 @@ public class AStarSearch {
 			}
 			opti.add(new Point(node));
 		}
-
 		return opti;
+		}
+		
+		return path;
+
+		
 	}
 
 	/**
