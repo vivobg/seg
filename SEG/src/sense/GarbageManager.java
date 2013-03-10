@@ -14,7 +14,7 @@ import javaclient3.structures.fiducial.PlayerFiducialItem;
  */
 public class GarbageManager {
 
-	public static final int FIDUCIAL_SLEEP = 1000;
+	public static final int FIDUCIAL_SLEEP = 100;
 
 	private Robot robot;
 	private Map map;
