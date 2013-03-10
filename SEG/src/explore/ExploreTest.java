@@ -44,7 +44,7 @@ public class ExploreTest {
 			path = AStarSearch.dSearch(map, start);
 			robot.currentPath = path;
 			if (path != null) {
-				// if(path.size() > 3)path = optimizePath(path);
+				if(path.size() > 3)path = optimizePath2(path);
 				robot.currentOptimizedPath = path;
 				robot.isFollowing = true;
 				for (int i = 1; i<path.size();i++){
@@ -97,7 +97,59 @@ public class ExploreTest {
 		}
 		return result;
 	}
+	
+	
+	private static List<Point> optimizePath2(List<Point> path) {
+		List<Point> result = new ArrayList<Point>();
 
+		Point initialP = path.get(0);
+		Point finalP = path.get(path.size()-1);
+		result.add(initialP);
+		Point coordA;
+		Point coordB;
+		
+
+		for (int i = 2; i < path.size()-1; i++){
+
+			 coordA = path.get(i-1);
+			 coordB = path.get(i);
+
+
+			if (coordA.x ==coordB.x || coordA.y == coordB.y){
+				//skip node
+			}else{
+				result.add(coordA);
+				for (int c = 0; i < path.size(); i++){
+					
+				coordA = path.get(i-1);
+			    coordB = path.get(i);
+
+					
+				if (coordA.x != coordB.x & coordA.y != coordB.y){
+					//skip nodes
+				}else {
+					result.add(coordA);
+					break;
+				}
+				
+				
+				
+				}
+			}
+	}
+	result.add(finalP);
+	
+	
+	System.out.println("Original Path  " + path.size());
+	System.out.println("Optimized Path  " + result.size());
+
+	return result;
+}
+
+		
+		
+		
+		
 	public static void scan(Robot robot) {
 		for(int i = 0; i < 4; i++)robot.turn(robot.yaw + Math.PI/i);
 		
