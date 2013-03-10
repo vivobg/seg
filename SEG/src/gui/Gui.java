@@ -152,8 +152,6 @@ public class Gui extends javax.swing.JFrame {
         }
 
         jIntCollection.setIconifiable(true);
-        jIntCollection.setMaximizable(true);
-        jIntCollection.setResizable(true);
         jIntCollection.setTitle("Collection");
         jIntCollection.setVisible(true);
 
@@ -270,8 +268,6 @@ public class Gui extends javax.swing.JFrame {
         jDesktopPane1.add(jIntCollection, javax.swing.JLayeredPane.PALETTE_LAYER);
 
         jIntMode.setIconifiable(true);
-        jIntMode.setMaximizable(true);
-        jIntMode.setResizable(true);
         jIntMode.setTitle("Mode");
         jIntMode.setVisible(true);
 
@@ -339,8 +335,6 @@ public class Gui extends javax.swing.JFrame {
         jDesktopPane1.add(jIntMode, javax.swing.JLayeredPane.PALETTE_LAYER);
 
         jIntExplore.setIconifiable(true);
-        jIntExplore.setMaximizable(true);
-        jIntExplore.setResizable(true);
         jIntExplore.setTitle("Explore");
         jIntExplore.setVisible(true);
 
@@ -372,8 +366,6 @@ public class Gui extends javax.swing.JFrame {
         jDesktopPane1.add(jIntExplore, javax.swing.JLayeredPane.PALETTE_LAYER);
 
         jIntSave.setIconifiable(true);
-        jIntSave.setMaximizable(true);
-        jIntSave.setResizable(true);
         jIntSave.setTitle("Save");
         jIntSave.setVisible(true);
 
