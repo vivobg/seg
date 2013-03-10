@@ -83,8 +83,33 @@ public class Control {
 				}
 			}
 			else if(args[i].equals("-gui")){
-				//new NBGui(this).setVisible(true);
-                                new Gui(this).setVisible(true);
+				
+                //Enable Nimbus Look and Feel, if available.
+				try {
+		            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+		                if ("Nimbus".equals(info.getName())) {
+		                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+		                    break;
+		                }
+		            }
+		        } catch (ClassNotFoundException ex) {
+		            java.util.logging.Logger.getLogger(Gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+		        } catch (InstantiationException ex) {
+		            java.util.logging.Logger.getLogger(Gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+		        } catch (IllegalAccessException ex) {
+		            java.util.logging.Logger.getLogger(Gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+		        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+		            java.util.logging.Logger.getLogger(Gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+		        }
+		       
+		        /* Create and display the GUI */
+		        java.awt.EventQueue.invokeLater(new Runnable() {
+		            public void run() {
+		                new Gui(Control.this).setVisible(true);
+		              //new NBGui(Control.this).setVisible(true);
+		            }
+		        });
+				
 			}
 			
 		}
