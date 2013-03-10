@@ -1,6 +1,9 @@
 package sense;
 
 import robot.Robot;
+import search.AStarSearch;
+
+import java.util.List;
 import java.awt.Point;
 import java.util.ArrayList;
 import map.Map;
@@ -16,15 +19,20 @@ public class GarbageManager {
 
 	public static final int FIDUCIAL_SLEEP = 100;
 
+	public static final int GO_FETCH_SLEEP = 1000;
+
+	private static final int GRIPPER_THRESHOLD = (int) (1 / Map.SCALE);
+
 	private Robot robot;
 	private Map map;
-	
+
 	public GarbageManager(Robot robot, Map map){
 		this.robot = robot;
 		this.map = map;
 
 		fiducialsInViewThread();
-		//printGarbageToCollectList();
+		printGarbageToCollectList();
+		goFetchGarbage();
 	}
 
 	public void addItem(GarbageItem garbageItem){
@@ -74,6 +82,51 @@ public class GarbageManager {
 					} catch (InterruptedException e) {
 					}
 				}
+			}
+		};
+		collection.start();
+	}
+
+	private void goFetchGarbage() {
+		Thread collection = new Thread() {
+			public void run() {
+				while(true){
+					
+					if(map.garbageListArray.size() == 5){
+						for(int i = 0; i < map.garbageListArray.size(); i++){
+							
+							Point garbagePoint = map.garbageListArray.get(i).getPoint();
+							
+							List<Point> list = AStarSearch.aSearch(map, 
+									robot.getPoint(),
+									new Point(garbagePoint.x, garbagePoint.y));
+							
+							for (int j = 0; j < list.size(); j++) {
+								robot.move(list.get(j));
+								if (robot.gripperData.getBeams() > 0 &&
+										Math.abs(robot.getPoint().x - garbagePoint.x) < GRIPPER_THRESHOLD &&
+										Math.abs(robot.getPoint().y - garbagePoint.y) < GRIPPER_THRESHOLD) {
+									robot.gripper.close();
+									break;
+								}
+							}
+							System.out.println("IM HERE");
+							
+							list = AStarSearch.aSearch(map, 
+									robot.getPoint(),
+									new Point(-7, 3));
+							
+							for (int k = 0; k < list.size(); k++)
+								robot.move(list.get(k));
+							
+							robot.gripper.open();
+						}
+					}
+					try {
+						sleep(GO_FETCH_SLEEP);
+					} catch (InterruptedException e) {
+					}
+				}	
 			}
 		};
 		collection.start();
