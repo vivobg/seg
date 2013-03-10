@@ -92,15 +92,15 @@ public class GarbageManager {
 			public void run() {
 				while(true){
 					
-					if(map.garbageListArray.size() == 5){
+					if(map.garbageListArray.size() == 2){
 						for(int i = 0; i < map.garbageListArray.size(); i++){
 							
 							Point garbagePoint = map.garbageListArray.get(i).getPoint();
 							
 							List<Point> list = AStarSearch.aSearch(map, 
 									robot.getPoint(),
-									new Point(garbagePoint.x, garbagePoint.y));
-							
+									garbagePoint);
+							System.out.println(list.size());
 							for (int j = 0; j < list.size(); j++) {
 								robot.move(list.get(j));
 								if (robot.gripperData.getBeams() > 0 &&
@@ -110,12 +110,11 @@ public class GarbageManager {
 									break;
 								}
 							}
-							System.out.println("IM HERE");
 							
 							list = AStarSearch.aSearch(map, 
 									robot.getPoint(),
-									new Point(-7, 3));
-							
+									Map.convertPlayerToInternal(-9, -4));
+							System.out.println(list.size());
 							for (int k = 0; k < list.size(); k++)
 								robot.move(list.get(k));
 							
@@ -136,8 +135,8 @@ public class GarbageManager {
 		Thread collection = new Thread() {
 			public void run() {
 				while(true){
-					for(int i = 0; i < map.garbageListArray.size(); i++ )
-						System.out.println(map.garbageListArray.get(i).getPoint().toString());
+					//for(int i = 0; i < map.garbageListArray.size(); i++ )
+					//	System.out.println(map.garbageListArray.get(i).getPoint().toString());
 
 					System.out.println("*** " + "map.garbageListArray Size is " + map.garbageListArray.size() + " ***");
 					try {
