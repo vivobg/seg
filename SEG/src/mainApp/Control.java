@@ -2,6 +2,7 @@
 package mainApp;
 
 import garbage.GarbageCollection;
+import gui.Gui;
 import gui.NBGui;
 import gui.Save;
 
@@ -15,7 +16,8 @@ import robot.Robot;
 
 public class Control {
 	Map map;
-	public NBGui gui = null;
+	public Gui gui = null;
+        public NBGui nbgui = null;
 	// ArrayList<Robot> robots = new ArrayList<Robot>();
 	// ArrayList<Point> garbage = new ArrayList<Point>();
 	BotMode botMode = BotMode.Solo;
@@ -39,6 +41,9 @@ public class Control {
 
 	private void processArgs(String[] args) {
 		//java MainApp -solo -explore -map map1 -multi -collect 1 1 2 0 -map map2
+                if (args.length == 0) {
+                    args = new String[]{"-gui"};
+                }
 		for(int i = 0; i < args.length; i++)
 		{
 			if(args[i].equals("-solo"))
@@ -78,7 +83,8 @@ public class Control {
 				}
 			}
 			else if(args[i].equals("-gui")){
-				new NBGui(this).setVisible(true);
+				//new NBGui(this).setVisible(true);
+                                new Gui(this).setVisible(true);
 			}
 			
 		}
@@ -146,6 +152,7 @@ public class Control {
 	public void println(String text){
 		System.out.println(text);
 		if (gui!=null) gui.printToGuiConsole(text, "#0000C0");
+                if (nbgui!=null) nbgui.printToGuiConsole(text, "#0000C0");
 	}
 
 	

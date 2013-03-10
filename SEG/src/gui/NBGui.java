@@ -25,7 +25,7 @@ public class NBGui extends javax.swing.JFrame {
 	public NBGui(Control control) {
 		this.control = control;
 		this.map = control.getMap();
-		this.control.gui = this;
+		this.control.nbgui = this;
 		this.buf = new StringBuffer();
 		initComponents();
 	}
