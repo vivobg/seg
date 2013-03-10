@@ -4,6 +4,7 @@
 package map;
 
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,11 +20,49 @@ import sense.GarbageItem;
  * @author Vilian Atmadzhov
  * 
  */
-public class Map{
-	public List<Robot> robotList;
-	public List<GarbageItem> garbageListArray;// GUI code based on this
-	public HashMap<Point, Boolean> garbageList;// Abdi's code based on this
+public class Map implements Serializable{
+	public List<GarbageItem> getGarbageListArray() {
+		return garbageListArray;
+	}
 
+	public ArrayList<VerticalArray> getPosArray() {
+		return posArray;
+	}
+
+	public ArrayList<VerticalArray> getNegArray() {
+		return negArray;
+	}
+	public transient List<Robot> robotList;
+	public List<GarbageItem> garbageListArray;// GUI code based on this
+	public transient HashMap<Point, Boolean> garbageList;// Abdi's code based on this
+
+	public int getMinY() {
+		return minY;
+	}
+
+	public int getMaxY() {
+		return maxY;
+	}
+
+	public int getMinX() {
+		return minX;
+	}
+
+	public void setGarbageListArray(List<GarbageItem> garbageListArray) {
+		this.garbageListArray = garbageListArray;
+	}
+
+	public void setPosArray(ArrayList<VerticalArray> posArray) {
+		this.posArray = posArray;
+	}
+
+	public void setNegArray(ArrayList<VerticalArray> negArray) {
+		this.negArray = negArray;
+	}
+
+	public void setMaxX(int maxX) {
+		this.maxX = maxX;
+	}
 	//Fiducially explored cells have the sign flipped.
 	public static final byte UNEXPLORED = 1;
 	public static final byte EMPTY 		= 2;
@@ -293,6 +332,22 @@ public class Map{
 
 		}
 		System.out.println("Done negative X");
+	}
+
+	public int getMaxX() {
+		return maxX;
+	}
+
+	public void setMinY(int minY) {
+		this.minY = minY;
+	}
+
+	public void setMaxY(int maxY) {
+		this.maxY = maxY;
+	}
+
+	public void setMinX(int minX) {
+		this.minX = minX;
 	}
 
 }

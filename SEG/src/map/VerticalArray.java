@@ -3,6 +3,7 @@
  */
 package map;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -10,8 +11,12 @@ import java.util.Iterator;
  * @author Vilian Atmadzhov
  * 
  */
-public class VerticalArray {
+public class VerticalArray implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8012591684140451394L;	
 	private ArrayList<Byte> posArray;
 	private ArrayList<Byte> negArray;
 

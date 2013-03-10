@@ -7,6 +7,15 @@ package gui;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.beans.PropertyVetoException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JViewport;
@@ -92,6 +101,8 @@ public class Gui extends javax.swing.JFrame {
         jtFilename = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         jbtnSave = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jbtnSaveMapInstance = new javax.swing.JButton();
         jIntConsole = new javax.swing.JInternalFrame();
         jScrollPane1 = new javax.swing.JScrollPane();
         jtConsole = new javax.swing.JTextPane();
@@ -136,11 +147,11 @@ public class Gui extends javax.swing.JFrame {
         jIntMap.getContentPane().setLayout(jIntMapLayout);
         jIntMapLayout.setHorizontalGroup(
             jIntMapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jscrMap, javax.swing.GroupLayout.DEFAULT_SIZE, 1009, Short.MAX_VALUE)
+            .addComponent(jscrMap, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
         );
         jIntMapLayout.setVerticalGroup(
             jIntMapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jscrMap, javax.swing.GroupLayout.DEFAULT_SIZE, 751, Short.MAX_VALUE)
+            .addComponent(jscrMap, javax.swing.GroupLayout.DEFAULT_SIZE, 658, Short.MAX_VALUE)
         );
 
         jIntMap.setBounds(320, 60, 690, 690);
@@ -264,7 +275,7 @@ public class Gui extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jIntCollection.setBounds(10, 190, 300, 160);
+        jIntCollection.setBounds(10, 170, 300, 160);
         jDesktopPane1.add(jIntCollection, javax.swing.JLayeredPane.PALETTE_LAYER);
 
         jIntMode.setIconifiable(true);
@@ -331,7 +342,7 @@ public class Gui extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jIntMode.setBounds(10, 60, 140, 120);
+        jIntMode.setBounds(10, 50, 140, 120);
         jDesktopPane1.add(jIntMode, javax.swing.JLayeredPane.PALETTE_LAYER);
 
         jIntExplore.setIconifiable(true);
@@ -362,11 +373,11 @@ public class Gui extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jIntExplore.setBounds(170, 60, 140, 120);
+        jIntExplore.setBounds(170, 50, 140, 120);
         jDesktopPane1.add(jIntExplore, javax.swing.JLayeredPane.PALETTE_LAYER);
 
         jIntSave.setIconifiable(true);
-        jIntSave.setTitle("Save");
+        jIntSave.setTitle("Save Map");
         jIntSave.setVisible(true);
 
         jLabel8.setText("Filename:");
@@ -375,28 +386,54 @@ public class Gui extends javax.swing.JFrame {
 
         jLabel9.setText(".png");
 
-        jbtnSave.setText("SAVE");
+        jbtnSave.setText("SAVE IMAGE");
         jbtnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbtnSaveActionPerformed(evt);
             }
         });
 
+        jbtnSaveMapInstance.setText("Save Map Instance");
+        jbtnSaveMapInstance.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnSaveMapInstanceActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jbtnSaveMapInstance, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jbtnSaveMapInstance)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout jpSaveMapLayout = new javax.swing.GroupLayout(jpSaveMap);
         jpSaveMap.setLayout(jpSaveMapLayout);
         jpSaveMapLayout.setHorizontalGroup(
             jpSaveMapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpSaveMapLayout.createSequentialGroup()
+            .addGroup(jpSaveMapLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jpSaveMapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jbtnSave, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jpSaveMapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jpSaveMapLayout.createSequentialGroup()
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jtFilename, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
-                        .addGap(9, 9, 9)
-                        .addComponent(jLabel9)))
-                .addContainerGap())
+                        .addGroup(jpSaveMapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jbtnSave, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpSaveMapLayout.createSequentialGroup()
+                                .addComponent(jLabel8)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jtFilename, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                                .addGap(9, 9, 9)
+                                .addComponent(jLabel9)))
+                        .addContainerGap())))
         );
         jpSaveMapLayout.setVerticalGroup(
             jpSaveMapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -408,6 +445,8 @@ public class Gui extends javax.swing.JFrame {
                     .addComponent(jLabel9))
                 .addGap(27, 27, 27)
                 .addComponent(jbtnSave)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -425,10 +464,10 @@ public class Gui extends javax.swing.JFrame {
             .addGroup(jIntSaveLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jpSaveMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jIntSave.setBounds(10, 360, 300, 150);
+        jIntSave.setBounds(10, 330, 300, 190);
         jDesktopPane1.add(jIntSave, javax.swing.JLayeredPane.PALETTE_LAYER);
 
         jIntConsole.setIconifiable(true);
@@ -505,6 +544,25 @@ public class Gui extends javax.swing.JFrame {
         control.explore();
     }//GEN-LAST:event_jbtnExploreActionPerformed
 
+    private void jbtnSaveMapInstanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnSaveMapInstanceActionPerformed
+        try {
+        	File f = new File("map.instance");
+            //Write to file
+            FileOutputStream fos = new FileOutputStream(f);
+            //Write using ObjectOutputStream
+            ObjectOutputStream o = new ObjectOutputStream(fos);
+            //Write map instance to disk
+            o.writeObject(control.getMap());
+            
+        } catch (FileNotFoundException ex) {
+            this.printToGuiConsole("Error writing Map instance. File not found.", "#FF0000");
+        } catch (IOException ex) {
+            this.printToGuiConsole("Error writing Map instance. IO Exception.", "#FF0000");
+            //this.printToGuiConsole(ex.get, "#FF0000");
+        }
+       
+    }//GEN-LAST:event_jbtnSaveMapInstanceActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -555,12 +613,14 @@ public class Gui extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jMapPanel;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JRadioButton jRadMulti;
     private javax.swing.JRadioButton jRadSolo;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton jbtnCollect;
     private javax.swing.JButton jbtnExplore;
     private javax.swing.JButton jbtnSave;
+    private javax.swing.JButton jbtnSaveMapInstance;
     private javax.swing.JPanel jpCollection;
     private javax.swing.JPanel jpCollectionArea;
     private javax.swing.JPanel jpMode;

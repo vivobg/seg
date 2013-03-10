@@ -1,13 +1,14 @@
 package sense;
 
 import java.awt.Point;
+import java.io.Serializable;
 
 /**
  * @author Albert
  * 
  * GarbageItem contains a point and a isCollected boolean
  */
-public class GarbageItem {
+public class GarbageItem implements Serializable{
 
 	public Point point;   
 	public boolean isCollected;    

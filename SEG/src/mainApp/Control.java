@@ -7,6 +7,10 @@ import gui.NBGui;
 import gui.Save;
 
 import java.awt.Rectangle;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +29,36 @@ public class Control {
 	BotMode botMode = BotMode.Solo;
 	public Control(){
 		this.map = new Map();
+		try {
+            //Read map file
+            FileInputStream f = new FileInputStream("map.instance");
+            //Read using ObjectInputStream
+            ObjectInputStream o = new ObjectInputStream(f);
+            //Restore map instance from file
+            Object obj = o.readObject();
+            if (obj instanceof Map){
+                Map savedMap = (Map) obj;
+                map.setMaxX(savedMap.getMaxX());
+                map.setMaxY(savedMap.getMaxY());
+                map.setMinX(savedMap.getMinX());
+                map.setMinY(savedMap.getMinY());
+                map.setNegArray(savedMap.getNegArray());
+                map.setPosArray(savedMap.getPosArray());
+                map.setGarbageListArray(savedMap.getGarbageListArray());
+                this.println("Saved Map successfully loaded");
+            }
+            else {
+                this.println("Saved object is not an instance of Map");
+            }
+        } catch (FileNotFoundException ex) {
+            this.println("Error reading Map instance. File not found.");
+        } catch (IOException ex) {
+            this.println("Error reading Map instance. IO exception.");
+        } catch (ClassNotFoundException ex) {
+            this.println("Error reading Map instance. Class not found.");
+        }
+		
+		
 		setupRobots();
 	}
 	public Control(String[] args)
