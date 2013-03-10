@@ -58,8 +58,8 @@ public class AStarSearch {
 			if((ASEARCH && current.equals(target))|| (!ASEARCH && map.isUnexplored(current.x, current.y)))
 				//if we are are at the target, stop search and return path
 			{
-				return optimisePath(map, reconstructPath(cameFrom, current));
-				//return reconstructPath(cameFrom, current);
+				//return optimisePath(map, reconstructPath(cameFrom, current));
+				return reconstructPath(cameFrom, current);
 			}
 
 			openSet.remove(current);
@@ -213,13 +213,13 @@ public class AStarSearch {
 		}
 		return true;
 	}
-	private static List<Point> optimisePath(Map map, List<Point> path) {
+	public static List<Point> optimisePath(Map map, List<Point> path) {
 		List<Point> opti = new ArrayList<Point>();
 		if (path!=null && path.size() > 2){
 		Point node = path.get(0);
 		Point lastNode;
 		int index = 0;
-		System.out.println("Path Length = " + path.size());
+		//System.out.println("Path Length = " + path.size());
 		opti.add(new Point(node));
 		while (index+1 < path.size()) {
 			for (int i = index+1; i < path.size(); i++) {
@@ -232,10 +232,10 @@ public class AStarSearch {
 				// make sure lineOfSight works on !!!copies!!! of the Points
 				if (!lineofSight(map, optiEnd, node)) {
 					opti.add(lastNode);
-					System.out.println("NO Line of sight " + i);
+					//System.out.println("NO Line of sight " + i);
 					break;
 				}
-				else System.out.println("Line of sight between " + opti.get(opti.size() - 1) + " and " + path.get(i));
+				//else System.out.println("Line of sight between " + opti.get(opti.size() - 1) + " and " + path.get(i));
 
 				// if ( ! lastVisible.equals(opti.get(opti.size()-1))){
 				
