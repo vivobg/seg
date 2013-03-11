@@ -17,6 +17,7 @@ import javaclient3.structures.PlayerPose2d;
 import javaclient3.structures.fiducial.PlayerFiducialItem;
 import mainApp.Control;
 import map.Map;
+import search.AStarSearch;
 import sense.Sense;
 import explore.ExploreTest;
 
@@ -230,9 +231,11 @@ public class Robot{
 	 *            whether to stop the robot after turning (faster if false when
 	 *            moving)
 	 */
-	public void turn(double targetYaw, double rate) {
+	public void turn(double targetYaw, double rate, Point target, Point end) {
 		while (Math.abs(targetYaw - yaw) > HEADING_THRESHOLD
 				&& Math.abs(targetYaw - yaw) < 2 * Math.PI - HEADING_THRESHOLD) {
+			
+			if (!isValidMoveCondition(target, end)) break;
 
 			double a = targetYaw - yaw;
 			if (a > Math.PI)
@@ -258,6 +261,10 @@ public class Robot{
 			}
 		}
 		pos2D.setSpeed(0, 0);// Remove for speed?
+	}
+	
+	public void turn(double targetYaw, double rate){
+		turn(targetYaw, rate, null, null);
 	}
 
 	public void turn(double targetYaw){
@@ -286,11 +293,19 @@ public class Robot{
 	 *            Target in internal coordinates
 	 */
 	public void move(Point target) {
+		move(target, null);
+	}
+	
+	public void move(Point target, Point end){
 		synchronized (moveLock){
 			double px = target.x * Map.SCALE;// convert to Player coords
 			double py = target.y * Map.SCALE;
-			move(new PlayerPose2d(px, py, 0));
+			move(new PlayerPose2d(px, py, 0),end);
 		}
+	}
+
+	public void move(PlayerPose2d pose) {
+		move(pose, null);
 	}
 
 	/**
@@ -299,14 +314,27 @@ public class Robot{
 	 * 
 	 * @param pose
 	 *            Target in Player coordinates
+	 * @param end
+	 *            The end Point of the followed path
 	 */
-	public void move(PlayerPose2d pose) {
+	public void move(PlayerPose2d pose, Point end) {
 		synchronized (moveLock){
 			double px = pose.getPx();
 			double py = pose.getPy();
 			Point target =  new Point((int)px,(int)py);
 
 			while (true) {
+				//pos2D.setSpeed(0, 0);
+//				if (!map.isUnexplored(target.x, target.y) ||
+//						!AStarSearch.isAvailableCell(target, map) ||
+//						(end!=null
+//						&& (!map.isUnexplored(end.x, end.y)
+//						|| !AStarSearch.isAvailableCell(end, map)))) {
+//					pos2D.setSpeed(0, 0);
+//					break;
+//				}
+				if (!isValidMoveCondition(target, end)) break;
+				
 				if ((Math.abs(px - x) < TARGET_THRESHOLD && Math.abs(py - y) < TARGET_THRESHOLD)) {
 					pos2D.setSpeed(0, 0);
 					// System.out.println("BREAKING");
@@ -329,6 +357,16 @@ public class Robot{
 				}
 			}
 		}
+	}
+	
+	public boolean isValidMoveCondition(Point target, Point end){
+		if (target!=null && ((!target.equals(end) &&  false /*map.isUnexplored(target.x, target.y)*/) || !AStarSearch.isAvailableCell(target, map)) ||
+				(  end!=null && (!map.isUnexplored(end.x, end.y) || !AStarSearch.isAvailableCell(end, map))    )    ) {
+			pos2D.setSpeed(0, 0);
+			System.out.println("Breaking");
+			return false;
+		}
+		return true;
 	}
 
 	private boolean isTooCloseToWall() {
@@ -386,6 +424,8 @@ public class Robot{
 		Thread thr = new Thread(){
 			public void run(){
 				ExploreTest.exploreRobot(map, robot, Map.convertPlayerToInternal(x, y));
+				//map.filter();
+				//ExploreTest.exploreRobot(map, robot, Map.convertPlayerToInternal(x, y));
 			}
 		};
 		thr.start();

@@ -169,7 +169,7 @@ public class AStarSearch {
 		return dist;
 	}
 
-	private static List<Point> getAdjacentPoints(Map map, Point p , boolean ASEARCH)
+	public static List<Point> getAdjacentPoints(Map map, Point p , boolean ASEARCH)
 	{
 		List<Point> possiblePoints = new ArrayList<Point>();
 		
@@ -186,6 +186,7 @@ public class AStarSearch {
 					}
  else if (!ASEARCH && (!map.isOccupied(i, j)))
 					{
+	 					
 						if (isAvailableCell(adjPoint, map))
 							possiblePoints.add(adjPoint);
 					}

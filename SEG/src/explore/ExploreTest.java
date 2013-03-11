@@ -51,11 +51,11 @@ public class ExploreTest {
 					Point p = path.get(i);
 					Point end = path.get(path.size()-1);
 
-					if (!map.isUnexplored(end.x, end.y)
-							|| !AStarSearch.isAvailableCell(end, map)) {
-						break;
-					}
-					robot.move(p);// Decide if worth moving, before moving
+					// if (!map.isUnexplored(end.x, end.y)
+					// || !AStarSearch.isAvailableCell(end, map)) {
+					// break;
+					// }
+					robot.move(p, end);// Decide if worth moving, before moving
 					// try {
 					//
 					// Thread.sleep(30);
