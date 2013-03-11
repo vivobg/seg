@@ -1,0 +1,68 @@
+# insert the code of the .inc files here
+include "map1.inc"
+include "garbagecollector.inc"
+include "garbage.inc"
+
+# definition of the window
+window 
+(
+  
+   # size in pixels
+   size [1100 1100]
+   
+   # meters per pixel
+   scale 100
+
+   # show data
+   show_data 1
+)
+
+# instantiate a flooplan
+floorplan 
+(
+   name "floorplan"
+   bitmap "map1.png"
+   size [10 10 2]
+)
+
+# instantiate the robots
+garbagecollector
+(
+   name "garbagecollector0"
+   pose [-4 -4 0 90]
+   color "red"
+)
+
+garbagecollector
+(
+   name "garbagecollector1"
+   pose [-3 -4 0 90]
+   color "yellow"
+)
+
+garbagecollector
+(
+   name "garbagecollector2"
+   pose [-2 -4 0 90]
+   color "blue"
+)
+
+
+# instantiate garbage
+garbage-lowvalue
+(
+   name "lowvalue0"
+   pose [-4 -3.5 0 0]
+)
+
+garbage-medvalue
+(
+   name "medvalue0"
+   pose [-3 -2.5 0 0]
+)
+
+garbage-highvalue
+(
+   name "highvalue0"
+   pose [-1 -2 0 0]
+)
