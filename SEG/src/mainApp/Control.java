@@ -68,12 +68,17 @@ public class Control {
 	}
 	
 	private void setupRobots() {
-		
-		for(int i = 0; i< 3; i++)//TODO: Change to autodetect number of robots available
-		{
-			map.robotList.add(new Robot(this, i));
+		if (this.botMode.equals(BotMode.Solo) && map.robotList.size() == 0) {
+			map.robotList.add(new Robot(this, 0));
+			println("Robot 0 successfully initialised.");
+			new GarbageManager(map.robotList.get(0), map);
+		} else if (this.botMode.equals(BotMode.Multi)) {
+			for (int i = map.robotList.size(); i < 3; i++) {
+				map.robotList.add(new Robot(this, i));
+				println("Robot " + i + " successfully initialised.");
+				new GarbageManager(map.robotList.get(i), map);
+			}
 		}
-		if (map.robotList.size() > 0 ) gbMan = new GarbageManager(map.robotList.get(0),map);
 	}
 
 	private void processArgs(String[] args) {
@@ -173,11 +178,13 @@ public class Control {
 
 	public void switchToMulti() {
 		botMode = BotMode.Multi;
+		setupRobots();
 		
 	}
 
 	public void switchToSolo() {
 		botMode = BotMode.Solo;
+		setupRobots();
 	}
 	
 	public Map getMap() {
