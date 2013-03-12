@@ -37,7 +37,7 @@ public class ExploreTest {
 	}
 	
 	public static void exploreRobot(Map map,Robot robot, Point start) {
-		System.out.println("Exploration started");
+		//System.out.println("Exploration started");
 		List<Point> path = null;
 		do {
 			//scan(robot);
@@ -76,7 +76,7 @@ public class ExploreTest {
 			}
 		} while (path != null);
 		robot.isFollowing = false;
-		System.out.println("Exploration finished");
+		//System.out.println("Exploration finished");
 
 	}
 
