@@ -59,6 +59,7 @@ public class Bresenham {
 				if (!map.isOccupied(p.x, p.y))
 				map.setValue(p.x, p.y, Map.UNWALKABLE);
 			}
+			circle(map,x0, y0, Map.UNWALKABLE_CELLS);
 			map.setValue(x0, y0, Map.OCCUPIED);
 		} else {
 			for (Point p : points) {
@@ -66,6 +67,13 @@ public class Bresenham {
 				map.setValue(p.x, p.y, Map.EMPTY);
 			}
 		}
+	}
+
+	private static void circle(Map map, int x0, int y0, int radius) {
+		for(int y=-radius; y<=radius; y++)
+		    for(int x=-radius; x<=radius; x++)
+		        if(x*x+y*y <= radius*radius && !map.isOccupied(x0+x, y0+y))
+		            map.setValue(x0+x, y0+y, Map.UNWALKABLE);
 	}
 
 }
