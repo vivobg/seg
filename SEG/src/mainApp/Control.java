@@ -158,7 +158,7 @@ public class Control {
 		//Rectangle collectionArea = new Rectangle(x1,y1,x2-x1,y2-y1);
 		//GarbageCollection.setCollectionArea(collectionArea);
 		
-		List<Robot> availableBots = new ArrayList<Robot>();
+		/* List<Robot> availableBots = new ArrayList<Robot>();
 		if(botMode == BotMode.Solo)
 		{
 			availableBots.add(map.robotList.get(0));
@@ -167,7 +167,16 @@ public class Control {
 			availableBots = map.robotList;
 		
 		//GarbageCollection.collect(map, availableBots, new Rectangle());
-		throw new RuntimeException("Not Implemented Yet Exception");
+		throw new RuntimeException("Not Implemented Yet Exception"); */
+
+		if(botMode == BotMode.Solo)
+		{
+			gbMan.goFetchGarbage();
+		}
+		else
+			throw new RuntimeException("Collection Not Implemented For Multiple Robots Yet Exception");
+		
+		
 		
 	}
 
