@@ -101,7 +101,7 @@ public class Robot{
 		//makes the robot do a 360 scan (HACK)
 		Thread do360 = new Thread(){
 			public void run(){
-				do360();
+				do360SonarScan();
 			}
 		};
 		// do360.start();
@@ -271,19 +271,23 @@ public class Robot{
 		turn(targetYaw, TURN_RATE);
 	}
 
-	public void do360(){
+	public void do360SonarScan(){
 		//for (int i=0;i<4;i++)
 		//turn(Math.toRadians(120) + yaw, TURN_360);
 		//double initialYaw = yaw;
-		pos2D.setSpeed(0, TURN_360);
+		/*pos2D.setSpeed(0, TURN_360);
 		try {
 			Thread.sleep((long) (Math.toRadians(30)/TURN_360 * 1000));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		pos2D.setSpeed(0, 0);
+		pos2D.setSpeed(0, 0); */
 		//turn(initialYaw);
+		double yaw = this.yaw;
+		turn(yaw + Math.toRadians(12));
+		turn(yaw - Math.toRadians(12));
+		turn(yaw);
 	}
 
 	/**
