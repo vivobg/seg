@@ -140,8 +140,8 @@ public class ExploreTest {
 	result.add(finalP);
 	
 	
-	System.out.println("Original Path  " + path.size());
-	System.out.println("Optimized Path  " + result.size());
+	//System.out.println("Original Path  " + path.size());
+	//System.out.println("Optimized Path  " + result.size());
 
 	return result;
 }
