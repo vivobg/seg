@@ -42,8 +42,8 @@ public class Bresenham {
 				if (!map.isOccupied(p.x, p.y))
 				map.setValue(p.x, p.y, Map.UNWALKABLE);
 			}
-			circle(map,x0, y0, Map.UNWALKABLE_CELLS);
-			map.setValue(x0, y0, Map.OCCUPIED);
+			circle(map,x1, y1, Map.UNWALKABLE_CELLS);
+			map.setValue(x1, y1, Map.OCCUPIED);
 		} else {
 			for (Point p : points) {
 				if (!map.isOccupied(p.x, p.y) && !map.isUnwalkable(p.x, p.y))
