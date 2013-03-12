@@ -116,6 +116,10 @@ public class Robot{
 	public double[] getFiducial() {
 		throw new UnsupportedOperationException("Not Implemented Yet!");
 	}
+	
+	public Point getRobotPosition(){
+		return Map.convertPlayerToInternal(x, y);
+	}
 
 	/**
 	 * It retrieves x,y,yaw and sensor readings
@@ -325,7 +329,8 @@ public class Robot{
 		synchronized (moveLock){
 			double px = pose.getPx();
 			double py = pose.getPy();
-			Point target =  new Point((int)px,(int)py);
+			//Point target =  new Point((int)px,(int)py);
+			Point target =  Map.convertPlayerToInternal(px, py);
 
 			while (true) {
 				//pos2D.setSpeed(0, 0);
@@ -343,6 +348,14 @@ public class Robot{
 					pos2D.setSpeed(0, 0);
 					// System.out.println("BREAKING");
 					break;// target reached
+				}
+				
+				
+				
+				if (this.isFollowing && AStarSearch.lineofSight(map, this.getRobotPosition(), end) &&
+						(target.equals(end) &&
+						this.getRobotPosition().distance(target) < (4.5 / Map.SCALE))){
+					this.do360SonarScan();
 				}
 				//System.out.println("Targeting");
 				/*

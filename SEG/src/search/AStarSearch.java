@@ -6,6 +6,7 @@ import java.util.List;
 
 import map.Map;
 import robot.Robot;
+import sense.Bresenham;
 
 public class AStarSearch {
 	/**
@@ -200,7 +201,7 @@ public class AStarSearch {
 
 	public static boolean isAvailableCell(Point adjPoint, Map map) {
 		//int scale = 2; //for Testing
-		int scale = (int) Math.ceil( (Robot.ROBOT_SIZE / Map.SCALE ));
+		int scale = (int) Math.ceil( (0.2 / Map.SCALE ));
 		for(int i = adjPoint.x - scale; i <= adjPoint.x + scale; i++)
 		{
 			for(int j = adjPoint.y - scale; j<=adjPoint.y + scale; j++)
@@ -214,6 +215,7 @@ public class AStarSearch {
 		}
 		return true;
 	}
+	/*
 	public static List<Point> optimisePath(Map map, List<Point> path) {
 		List<Point> opti = new ArrayList<Point>();
 		if (path!=null && path.size() > 2){
@@ -250,7 +252,7 @@ public class AStarSearch {
 		return path;
 
 		
-	}
+	}*/
 
 	/**
 	 * Draws a line onto the map, with the given internal map coordinates
@@ -272,29 +274,13 @@ public class AStarSearch {
 	public static boolean lineofSight(Map map, Point source, Point target) {
 		Point s = new Point(source);
 		Point t = new Point(target);
-		int dx = Math.abs(t.x - s.x), sx = s.x < t.x ? 1 : -1;
-		int dy = Math.abs(t.y - s.y), sy = s.y < t.y ? 1 : -1;
-		int err = (dx > dy ? dx : -dy) / 2, e2;
 
-		List<Point> points = new ArrayList<Point>();
-		for (;;) {
-			points.add(new Point(s.x, s.y));
-			if (s.x == t.x && s.y == t.y)
-				break;
-			e2 = err;
-			if (e2 > -dx) {
-				err -= dy;
-				s.x += sx;
-			}
-			if (e2 < dy) {
-				err += dx;
-				s.y += sy;
-			}
-		}
+		List<Point> points = Bresenham.bresenhamLine(s.x, s.y, t.x, t.y);
+		
 
 		for (int i = 0; i < points.size(); i++) {
 			Point node = points.get(i);
-			if (!map.isEmpty(node.x, node.y))
+			if (!(map.isEmpty(node.x, node.y) || map.isUnwalkable(node.x, node.y)))
 				return false;
 		}
 		return true;
