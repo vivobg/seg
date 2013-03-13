@@ -36,14 +36,14 @@ public class Robot{
 
 	public static final int COLLECTION_SLEEP = 3;
 	public static final int SENSE_SLEEP = 5;
-	public static final int MOVE_SLEEP = 5;
-	public static final int TURN_SLEEP = 5;
+	public static final int MOVE_SLEEP = 10;
+	public static final int TURN_SLEEP = 7;
 	public static final double TURN_RATE = 0.5;
 	public static final double TURN_RATE_SLOW = 0.1;
 	public static final double TURN_RATE_LIMIT = 0.3;// Below this, turn slowly
 	public static final double SPEED_RATE = 0.5;
 	public static final double TARGET_THRESHOLD = 0.085;
-	public static final double HEADING_THRESHOLD = 0.05;
+	public static final double HEADING_THRESHOLD = 0.03;
 	public static final double ROBOT_SIZE = 0.50;
 	private static final double TURN_360 = 0.01;
 	public boolean isFollowing = false;
@@ -289,8 +289,8 @@ public class Robot{
 		pos2D.setSpeed(0, 0); */
 		//turn(initialYaw);
 		double yaw = this.yaw;
-		turn(yaw + Math.toRadians(12));
-		turn(yaw - Math.toRadians(12));
+		turn(yaw + Math.toRadians(15));
+		turn(yaw - Math.toRadians(15));
 		turn(yaw);
 	}
 
@@ -331,7 +331,7 @@ public class Robot{
 			double py = pose.getPy();
 			//Point target =  new Point((int)px,(int)py);
 			Point target =  Map.convertPlayerToInternal(px, py);
-
+			boolean do360 = true;
 			while (true) {
 				//pos2D.setSpeed(0, 0);
 //				if (!map.isUnexplored(target.x, target.y) ||
@@ -352,10 +352,12 @@ public class Robot{
 				
 				
 				
-				if (this.isFollowing && AStarSearch.lineofSight(map, this.getRobotPosition(), end) &&
-						(target.equals(end) &&
-						this.getRobotPosition().distance(target) < (4.5 / Map.SCALE))){
+				if (this.isFollowing && do360 && AStarSearch.lineofSight(map, this.getRobotPosition(), end) &&
+						(this.getRobotPosition().distance(end) < (2.5 / Map.SCALE))){
+					this.control.println("do360");
 					this.do360SonarScan();
+					if (isValidMoveCondition(target, end)) do360 = false;
+					else this.control.println("Jiggle worked!!!");
 				}
 				//System.out.println("Targeting");
 				/*
@@ -380,7 +382,7 @@ public class Robot{
 		if (target!=null && ((!target.equals(end) &&  false /*map.isUnexplored(target.x, target.y)*/) || !AStarSearch.isAvailableCell(target, map)) ||
 				(  end!=null && (!map.isUnexplored(end.x, end.y) || !AStarSearch.isAvailableCell(end, map))    )    ) {
 			pos2D.setSpeed(0, 0);
-			System.out.println("Breaking");
+			//System.out.println("Breaking");
 			return false;
 		}
 		return true;
