@@ -23,7 +23,7 @@ public class Sense {
 		if (sonarValues != null) {
 			for (int i = 0; i < sonarValues.length; i++) {
 				senseSonarSensor(map, pose.getPx(), pose.getPy(), sonarValues[i],
-						pose.getPa() + i * Math.toRadians(360 / 16));
+						pose.getPa() + i * Math.toRadians(360 / 16) , pose);
 			}
 		}
 	}
@@ -46,7 +46,7 @@ public class Sense {
 	}
 
 	private static void senseSonarSensor(Map map, double sX, double sY, double distance,
-			double angle) {
+			double angle,PlayerPose2d pose) {
 		/*double distance2 = distance / Map.SCALE; // Convert distance to internal
 													// map
 		// units;
@@ -60,7 +60,7 @@ public class Sense {
 		Point s = Map.convertPlayerToInternal(sX,sY);
 		Point t = Map.convertPlayerToInternal(tX,tY);
 		boolean WALL = distance < 5 ? true : false;
-		Bresenham.line(map, s.x, s.y, t.x, t.y, WALL);
+		Bresenham.line(map, s.x, s.y, t.x, t.y, WALL, pose);
 
 	}
 
