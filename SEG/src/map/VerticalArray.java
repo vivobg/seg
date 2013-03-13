@@ -17,20 +17,20 @@ public class VerticalArray implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 8012591684140451394L;	
-	private ArrayList<Byte> posArray;
-	private ArrayList<Byte> negArray;
+	private ArrayList<Float> posArray;
+	private ArrayList<Float> negArray;
 
 	public VerticalArray(){
 		
-		posArray=new ArrayList<Byte>();
-		negArray=new ArrayList<Byte>();
+		posArray=new ArrayList<Float>();
+		negArray=new ArrayList<Float>();
 		//negArray.add((byte) -123);
 		setValue(0, Map.UNEXPLORED);
 	}
 	
-	public VerticalArray(int y, byte value){
-		posArray=new ArrayList<Byte>();
-		negArray=new ArrayList<Byte>();
+	public VerticalArray(int y, float value){
+		posArray=new ArrayList<Float>();
+		negArray=new ArrayList<Float>();
 		//negArray.add((byte) -123);
 		setValue(0, Map.UNEXPLORED);
 		setValue(y, value);
@@ -45,7 +45,7 @@ public class VerticalArray implements Serializable{
 	 * @throws IndexOutOfBoundsException
 	 *             - if the index is out of range
 	 */
-	public byte getValue(int y) {
+	public float getValue(int y) {
 		if (y < 0) {
 			y = Math.abs(y);
 			return negArray.get(y);
@@ -63,9 +63,9 @@ public class VerticalArray implements Serializable{
 	 * @param value
 	 *            The value to write into the cell
 	 */
-	public void setValue(int y, byte value) {
+	public void setValue(int y, float value) {
 		
-		ArrayList<Byte> array;
+		ArrayList<Float> array;
 		if (y<0) array = negArray;
 		else array = posArray;
 		
@@ -141,7 +141,12 @@ public class VerticalArray implements Serializable{
 	 * @return True if above (>) occupied threshold, false otherwise
 	 */
 	public boolean isOccupied(int y) {
-		return getValue(y) == Map.OCCUPIED;
+		return Math.abs(getValue(y)) >= Map.OCCUPIED;
+	}
+	
+	public boolean isUnwalkable(int y){
+		float value = Math.abs(getValue(y));
+		return value >= Map.BUFFER && value < Map.OCCUPIED;
 	}
 
 	/**
@@ -151,7 +156,8 @@ public class VerticalArray implements Serializable{
 	 * @return True if below (<) empty threshold, false otherwise
 	 */
 	public boolean isEmpty(int y) {
-		return getValue(y) == Map.EMPTY;
+		float value = Math.abs(getValue(y));
+		return value >= Map.EMPTY && value < Map.BUFFER;
 	}
 
 	/**
@@ -162,7 +168,8 @@ public class VerticalArray implements Serializable{
 	 *         Empty)
 	 */
 	public boolean isUnexplored(int y) {
-		return (getValue(y) == Map.UNEXPLORED);
+		float value = Math.abs(getValue(y));
+		return value >= Map.UNEXPLORED && value < Map.EMPTY;
 	}
 	
 	public String toString(){
@@ -173,7 +180,7 @@ public class VerticalArray implements Serializable{
 			//sb.insert(offset, d)
 		}
 		sb.append("]");*/
-		Iterator<Byte> it= negArray.iterator();
+		Iterator<Float> it= negArray.iterator();
 		while (it.hasNext()){
 			sb.insert(1, it.next()+", ");
 			

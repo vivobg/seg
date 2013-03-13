@@ -40,7 +40,7 @@ public class Bresenham {
 					continue;
 				Point p = points.get(i);
 				if (!map.isOccupied(p.x, p.y))
-				map.setValue(p.x, p.y, Map.UNWALKABLE);
+				map.setValue(p.x, p.y, Map.BUFFER);
 			}
 			circle(map,x1, y1, Map.UNWALKABLE_CELLS);
 			map.setValue(x1, y1, Map.OCCUPIED);
@@ -79,7 +79,7 @@ public class Bresenham {
 		for(int y=-radius; y<=radius; y++)
 		    for(int x=-radius; x<=radius; x++)
 		        if(x*x+y*y <= radius*radius && !map.isOccupied(x0+x, y0+y))
-		            map.setValue(x0+x, y0+y, Map.UNWALKABLE);
+		            map.setValue(x0+x, y0+y, Map.BUFFER);
 	}
 
 }
