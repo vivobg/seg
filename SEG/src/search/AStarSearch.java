@@ -113,7 +113,7 @@ public class AStarSearch {
 
 	private static int Gcost(Point source, Point target, Map map) {
 		int cost = 0;
-		if (map.isUnwalkable(target.x, target.y))
+		if (map.isBuffer(target.x, target.y))
 			cost = 20;
 		if (isDiagonal(source, target))
 			return cost + 7;
@@ -280,7 +280,7 @@ public class AStarSearch {
 
 		for (int i = 0; i < points.size(); i++) {
 			Point node = points.get(i);
-			if (!(map.isEmpty(node.x, node.y) || map.isUnwalkable(node.x, node.y)))
+			if (!(map.isEmpty(node.x, node.y) || map.isBuffer(node.x, node.y)))
 				return false;
 		}
 		return true;

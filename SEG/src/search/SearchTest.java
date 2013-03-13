@@ -16,34 +16,34 @@ public class SearchTest {
 		{
 			for(int j = 0; j < 30; j++)
 			{
-				if (j==0 || j==29 || i==0 || i==29) map.setValue(i, j, Map.OCCUPIED);
-				else map.setValue(i, j, Map.EMPTY);
+				if (j==0 || j==29 || i==0 || i==29) map.setValue(i, j, Map.WALL,9);
+				else map.setValue(i, j, Map.EMPTY,9);
 			}
 		}
 		
 		for(int j = 10; j < 22; j++)
 		{
-			map.setValue(10, j, Map.OCCUPIED);
+			map.setValue(10, j, Map.WALL,9);
 			
 		}
 		for(int i = 10; i < 20; i++)
 		{
-			map.setValue(i, 10, Map.OCCUPIED);	
+			map.setValue(i, 10, Map.WALL,9);	
 		}
 		for(int i = 10; i < 29; i++)
 		{
-			map.setValue(19, i, Map.OCCUPIED);
+			map.setValue(19, i, Map.WALL,9);
 		}
 		
 		
 		
-		map.setValue(15, 15, Map.UNEXPLORED);
-		map.setValue(15, 14, Map.UNEXPLORED);
-		map.setValue(14, 14, Map.UNEXPLORED);
-		map.setValue(14, 15, Map.UNEXPLORED);
-		map.setValue(16, 16, Map.UNEXPLORED);
-		map.setValue(17, 17, Map.UNEXPLORED);
-		map.setValue(18, 18, Map.UNEXPLORED);
+		map.setValue(15, 15, Map.UNEXPLORED,9);
+		map.setValue(15, 14, Map.UNEXPLORED,9);
+		map.setValue(14, 14, Map.UNEXPLORED,9);
+		map.setValue(14, 15, Map.UNEXPLORED,9);
+		map.setValue(16, 16, Map.UNEXPLORED,9);
+		map.setValue(17, 17, Map.UNEXPLORED,9);
+		map.setValue(18, 18, Map.UNEXPLORED,9);
 		
 		printMap(map);
 		
