@@ -93,43 +93,31 @@ public class GarbageManager {
 	}
 
 	public void goFetchGarbage() {
-		Thread collection = new Thread() {
-			public void run() {
-				while(true){
-					for(int i = 0; i < map.garbageListArray.size(); i++){
+		for(int i = 0; i < map.garbageListArray.size(); i++){
 
-						Point garbagePoint = map.garbageListArray.get(i).getPoint();
+			Point garbagePoint = map.garbageListArray.get(i).getPoint();
 
-						List<Point> outboundlist = AStarSearch.aSearch(map, 
-								robot.getPoint(),
-								garbagePoint);
-						for (int j = 0; outboundlist != null && j < outboundlist.size(); j++) {
-							robot.move(outboundlist.get(j));
-							if (robot.gripperData.getBeams() > 0 &&
-									Math.abs(robot.getPoint().x - garbagePoint.x) < GRIPPER_THRESHOLD &&
-									Math.abs(robot.getPoint().y - garbagePoint.y) < GRIPPER_THRESHOLD){
-								robot.gripper.close();
-								break;
-							}
-						}
+			List<Point> outboundlist = AStarSearch.aSearch(map, 
+					robot.getPoint(),
+					garbagePoint);
+			for (int j = 0; outboundlist != null && j < outboundlist.size(); j++) {
+				robot.move(outboundlist.get(j));
+				if (robot.gripperData.getBeams() > 0 &&
+						Math.abs(robot.getPoint().x - garbagePoint.x) < GRIPPER_THRESHOLD &&
+						Math.abs(robot.getPoint().y - garbagePoint.y) < GRIPPER_THRESHOLD){
+					robot.gripper.close();
+					break;
+				}
 
-						List<Point> returnlist = AStarSearch.aSearch(map, 
-								robot.getPoint(),
-								Map.convertPlayerToInternal(-6, 0));
-						for (int k = 0; returnlist != null && k < returnlist.size(); k++)
-							robot.move(returnlist.get(k));
+				List<Point> returnlist = AStarSearch.aSearch(map, 
+						robot.getPoint(),
+						Map.convertPlayerToInternal(-6, 0));
+				for (int k = 0; returnlist != null && k < returnlist.size(); k++)
+					robot.move(returnlist.get(k));
 
-						robot.gripper.open();
-					}
-
-					try {
-						sleep(GO_FETCH_SLEEP);
-					} catch (InterruptedException e) {
-					}
-				}	
+				robot.gripper.open();
 			}
-		};
-		collection.start();
+		}
 	}
 
 	private void printGarbageToCollectList() {
