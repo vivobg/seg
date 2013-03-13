@@ -169,7 +169,7 @@ public class Gui extends javax.swing.JFrame {
 
         jLabel3.setText("x1:");
 
-        jtX1.setText("1.2");
+        jtX1.setText("-7");
 
         jLabel4.setText("x2:");
 
@@ -177,11 +177,11 @@ public class Gui extends javax.swing.JFrame {
 
         jLabel6.setText("y2:");
 
-        jtX2.setText("2.3");
+        jtX2.setText("-5");
 
-        jtY1.setText("3.4");
+        jtY1.setText("1");
 
-        jtY2.setText("4.5");
+        jtY2.setText("-1");
 
         javax.swing.GroupLayout jpCollectionAreaLayout = new javax.swing.GroupLayout(jpCollectionArea);
         jpCollectionArea.setLayout(jpCollectionAreaLayout);
@@ -535,8 +535,8 @@ public class Gui extends javax.swing.JFrame {
     private void jbtnCollectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnCollectActionPerformed
         try{
 			double x1 = Double.parseDouble(jtX1.getText());
-			double y1 = Double.parseDouble(jtX2.getText());
-			double x2 = Double.parseDouble(jtY1.getText());
+			double y1 = Double.parseDouble(jtY1.getText());
+			double x2 = Double.parseDouble(jtX2.getText());
 			double y2 = Double.parseDouble(jtY2.getText());
 			control.collect(x1, y1, x2, y2);
 		} catch (NumberFormatException e){
