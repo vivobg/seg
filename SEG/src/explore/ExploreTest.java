@@ -17,8 +17,8 @@ public class ExploreTest {
 			if (path != null) {
 				int size = path.size();
 				Point end = path.get(size - 1);
-				float found = Math.random() < 0.4 ? Map.EMPTY : Map.OCCUPIED;
-				map.setValue(end.x, end.y, found);
+				float found = Math.random() < 0.4 ? Map.EMPTY : Map.WALL;
+				map.setValue(end.x, end.y, found,5);
 				
 				if (found < 0.4) //Target cell is EMPTY, start from it.
 					start = path.get(size - 1);

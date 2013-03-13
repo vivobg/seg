@@ -141,12 +141,12 @@ public class VerticalArray implements Serializable{
 	 * @return True if above (>) occupied threshold, false otherwise
 	 */
 	public boolean isOccupied(int y) {
-		return Math.abs(getValue(y)) >= Map.OCCUPIED;
+		return Math.abs(getValue(y)) >= Map.WALL;
 	}
 	
 	public boolean isUnwalkable(int y){
 		float value = Math.abs(getValue(y));
-		return value >= Map.BUFFER && value < Map.OCCUPIED;
+		return value >= Map.BUFFER && value < Map.WALL;
 	}
 
 	/**
