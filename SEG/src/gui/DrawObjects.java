@@ -18,7 +18,7 @@ public class DrawObjects {
 	public static final Color COLOR_EMPTY = Color.WHITE;
 	public static final Color COLOR_UNEXPLORED = Color.GRAY;
 	// Too close to a wall
-	public static final Color COLOR_UNWALKABLE = Color.RED.darker();
+	public static final Color COLOR_UNWALKABLE = Color.CYAN;
 	public static final Color COLOR_PATH = Color.ORANGE;
 	public static final Color COLOR_PATH_OPTIMIZED = Color.ORANGE.darker();
 	public static final Color COLOR_PATH_START = Color.GREEN;
@@ -95,14 +95,24 @@ public class DrawObjects {
 		for (int x = 0; x < map.getMaxXSize(); x++) {
 			VerticalArray vert = map.getVertical(x);
 			for (int y = (vert.getNegSize() - 1) * -1; y < vert.getPosSize(); y++) {
-				if (map.isEmpty(x, y))
+				boolean draw = false;
+				if (map.isEmpty(x, y)){
 					g2.setColor(COLOR_EMPTY);
-				else if (map.isUnexplored(x, y))
+					draw = true;
+				}
+				else if (map.isUnexplored(x, y)){
 					g2.setColor(COLOR_UNEXPLORED);
-				else if (map.isOccupied(x, y))
+					draw = true;
+				}
+				else if (map.isOccupied(x, y)){
 					g2.setColor(COLOR_WALL);
-				else
+					draw = true;
+				}
+				else if (map.isBuffer(x, y)){
 					g2.setColor(COLOR_UNWALKABLE);
+					draw = true;
+				}
+				if (draw)
 				g2.fillRect((center.x + x) * BLOCK_SIZE, (center.y - y)
 						* BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
 			}
@@ -112,14 +122,24 @@ public class DrawObjects {
 		for (int x = 1; x < map.getMinXSize(); x++) {
 			VerticalArray vert = map.getVertical(-x);
 			for (int y = (vert.getNegSize() - 1) * -1; y < vert.getPosSize(); y++) {
-				if (map.isEmpty(-x, y))
+				boolean draw = false;
+				if (map.isEmpty(-x, y)){
 					g2.setColor(COLOR_EMPTY);
-				else if (map.isUnexplored(-x, y))
+					draw = true;
+				}
+				else if (map.isUnexplored(-x, y)){
 					g2.setColor(COLOR_UNEXPLORED);
-				else if (map.isOccupied(-x, y))
+					draw = true;
+				}
+				else if (map.isOccupied(-x, y)){
 					g2.setColor(COLOR_WALL);
-				else
+					draw = true;
+				}
+				else if(map.isBuffer(-x, y)){
 					g2.setColor(COLOR_UNWALKABLE);
+					draw = true;
+				}
+				if (draw)
 				g2.fillRect((center.x - x) * BLOCK_SIZE, (center.y - y)
 						* BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
 			}
