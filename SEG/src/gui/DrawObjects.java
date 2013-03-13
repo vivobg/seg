@@ -27,6 +27,7 @@ public class DrawObjects {
 			Color.BLUE };
 	public static final Color GARGABE_COLOR = Color.MAGENTA;
 	public static final float GARBAGE_SIZE = 0.2f;
+	public static final Color COLOR_PATH_FINISH_EXPLORED = Color.BLUE;
 
 	/**
 	 * Clear the given graphical context
@@ -168,17 +169,21 @@ public class DrawObjects {
 			Point start = opPath.get(0);
 			g2.fillRect((center.x + start.x) * BLOCK_SIZE, (center.y - start.y)
 					* BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-			g2.setColor(COLOR_PATH_FINISH);
+			
 			Point finish = opPath.get(opPath.size() - 1);
+			if (map.isUnexplored(finish.x, finish.y))
+				g2.setColor(COLOR_PATH_FINISH);
+			else g2.setColor(COLOR_PATH_FINISH_EXPLORED);
+			
 			g2.fillRect((center.x + finish.x) * BLOCK_SIZE,
 					(center.y - finish.y) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-
+			/*
 			// Optimized path
 			opPath = bot.currentOptimizedPath;
 			if (opPath == null || !bot.isFollowing)
 				continue;
 			g2.setColor(COLOR_PATH_OPTIMIZED);
-			for (int i = 0; i < opPath.size() - 1; i++) {
+			for (int i = 0; i < opPath.size()-1; i++) {
 				Point s = opPath.get(i);
 				Point t = opPath.get(i + 1);
 				List<Point> missing = line(s.x, s.y, t.x, t.y);
@@ -186,7 +191,7 @@ public class DrawObjects {
 					g2.fillRect((center.x + p.x) * BLOCK_SIZE, (center.y - p.y)
 							* BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
 				}
-			}
+			}*/
 		}
 	}
 
