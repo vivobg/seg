@@ -16,14 +16,12 @@ import java.util.List;
 
 import map.Map;
 import robot.Robot;
-import sense.GarbageManager;
 
 
 public class Control {
 	Map map;
 	public Gui gui = null;
         public NBGui nbgui = null;
-        public GarbageManager gbMan;
 	// ArrayList<Robot> robots = new ArrayList<Robot>();
 	// ArrayList<Point> garbage = new ArrayList<Point>();
 	BotMode botMode = BotMode.Solo;
@@ -71,12 +69,10 @@ public class Control {
 		if (this.botMode.equals(BotMode.Solo) && map.robotList.size() == 0) {
 			map.robotList.add(new Robot(this, 0));
 			println("Robot 0 successfully initialised.");
-			new GarbageManager(map.robotList.get(0), map);
 		} else if (this.botMode.equals(BotMode.Multi)) {
 			for (int i = map.robotList.size(); i < 3; i++) {
 				map.robotList.add(new Robot(this, i));
 				println("Robot " + i + " successfully initialised.");
-				new GarbageManager(map.robotList.get(i), map);
 			}
 		}
 	}
@@ -158,11 +154,12 @@ public class Control {
 		
 	}
 
-	public void collect(double x1, double y1, double x2, double y2) {
-		
+	public void collect(final double x1, final double y1, final double x2, final double y2) {
+		//commenting out Abdis GarbageCollection code
+		/*
 		//Rectangle collectionArea = new Rectangle(x1,y1,x2-x1,y2-y1);
 		//GarbageCollection.setCollectionArea(collectionArea);
-		
+
 		List<Robot> availableBots = new ArrayList<Robot>();
 		if(botMode == BotMode.Solo)
 		{
@@ -170,10 +167,23 @@ public class Control {
 		}
 		else
 			availableBots = map.robotList;
-		
+
 		//GarbageCollection.collect(map, availableBots, new Rectangle());
 		throw new RuntimeException("Not Implemented Yet Exception");
-		
+		 */
+
+		Thread soTheGUIDoesNotFreeze = new Thread(){
+			public void run() {
+				if(botMode == BotMode.Solo)
+				{
+					println("Garbage Collection Starting with Robot map.robotList.get(0) droping off at " +
+							x1 + "," + y1 + " and " + x2 + "," + y2);
+					map.robotList.get(0).goFetchGarbage(x1,y1,x2,y2);
+				}
+				else
+					throw new RuntimeException("Collection Not Implemented For Multiple Robots Yet Exception");
+			}
+		}; soTheGUIDoesNotFreeze.start();
 	}
 
 	public void switchToMulti() {
