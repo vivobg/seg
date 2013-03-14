@@ -23,7 +23,7 @@ public class Sense {
 		if (sonarValues != null) {
 			for (int i = 0; i < sonarValues.length; i++) {
 				senseSonarSensor(map, pose.getPx(), pose.getPy(), sonarValues[i],
-						pose.getPa() + i * Math.toRadians(360 / 16));
+						pose.getPa() +  Math.toRadians( i *360  / 16));
 			}
 		}
 	}
