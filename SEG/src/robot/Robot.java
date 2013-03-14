@@ -31,13 +31,13 @@ import explore.ExploreTest;
  */
 public class Robot{
 	PlayerClient robot = null;
-	Position2DInterface pos2D = null;
-	RangerInterface sonar = null;
+	public Position2DInterface pos2D = null;
+	public RangerInterface sonar = null;
 	GripperInterface gripper = null;
 	FiducialInterface fiducial = null;
 
-	public static final int COLLECTION_SLEEP = 1;
-	public static final int SENSE_SLEEP = 5;
+	public static final int COLLECTION_SLEEP = 5;
+	public static final int SENSE_SLEEP = 7;
 	public static final int MOVE_SLEEP = 5;
 	public static final int TURN_SLEEP = 5;
 	public static final double TURN_RATE = 0.5;
