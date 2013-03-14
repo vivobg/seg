@@ -34,7 +34,7 @@ public class Robot{
 	GripperInterface gripper = null;
 	FiducialInterface fiducial = null;
 
-	public static final int COLLECTION_SLEEP = 3;
+	public static final int COLLECTION_SLEEP = 2;
 	public static final int SENSE_SLEEP = 5;
 	public static final int MOVE_SLEEP = 10;
 	public static final int TURN_SLEEP = 7;
@@ -61,7 +61,10 @@ public class Robot{
 	public final int index;
 	private double[] sonarValues;
 	public PlayerFiducialItem[] fiducialsInView;
-
+	
+	private double totalJiggle = 0;
+	private int jiggleCount = 0;
+	private double jiggleAverage = 3;
 	/**
 	 * 
 	 * @return the current pose of the robot
@@ -332,6 +335,7 @@ public class Robot{
 			//Point target =  new Point((int)px,(int)py);
 			Point target =  Map.convertPlayerToInternal(px, py);
 			boolean do360 = true;
+			double distance360 = this.jiggleAverage;
 			while (true) {
 				//pos2D.setSpeed(0, 0);
 //				if (!map.isUnexplored(target.x, target.y) ||
@@ -353,11 +357,30 @@ public class Robot{
 				
 				
 				if (this.isFollowing && do360 && AStarSearch.lineofSight(map, this.getRobotPosition(), end) &&
-						(this.getRobotPosition().distance(end) < (2.5 / Map.SCALE))){
-					this.control.println("do360");
+						(this.getRobotPosition().distance(end) < (jiggleAverage / Map.SCALE))){
+					this.control.println("do360 at " + jiggleAverage);
 					this.do360SonarScan();
-					if (isValidMoveCondition(target, end)) do360 = false;
-					else this.control.println("Jiggle worked!!!");
+					
+					if (isValidMoveCondition(target, end)) {
+						distance360 = Math.max(distance360 - 0.2, 0);
+						jiggleCount++;
+						totalJiggle += distance360;
+						jiggleAverage = totalJiggle / jiggleCount;
+						this.control.println("Jiggle distance reduced to: "
+								+ jiggleAverage);
+						
+						if (distance360 < Map.SCALE)
+							do360 = false;
+					} else {
+						this.control.println("Jiggle worked!!!");
+						distance360 = Math.min(distance360 + 0.1, 4.5);
+						jiggleCount++;
+						totalJiggle += distance360;
+						jiggleAverage = totalJiggle / jiggleCount;
+						this.control.println("Jiggle distance increased to: "
+								+ jiggleAverage);
+					}
+					
 				}
 				//System.out.println("Targeting");
 				/*
