@@ -114,7 +114,7 @@ public class Bresenham {
 		for(int y=-radius; y<=radius; y++)
 		    for(int x=-radius; x<=radius; x++)
 				if (x * x + y * y <= radius * radius
-						&& !map.isOccupied(x0 + x, y0 + y)) {
+						&& !map.isOccupied(x0 + x, y0 + y) && !map.isFarWall(x0 + x, y0 + y)) {
 					// current distance or 9.5 - Buffer is calculated, not sensed.
 					double distance = Math.min(
 							map.getSonarDistance(x0 + x, y0 + y), 9.5);
