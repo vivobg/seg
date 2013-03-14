@@ -5,6 +5,7 @@ package robot;
 
 import java.awt.Point;
 import java.util.List;
+import java.util.Vector;
 
 import javaclient3.FiducialInterface;
 import javaclient3.GripperInterface;
@@ -49,6 +50,7 @@ public class Robot{
 	public boolean isFollowing = false;
 	public List<Point> currentOptimizedPath;
 	public List<Point> currentPath;
+	
 
 	public Object moveLock = new Object();
 	public Object sensorLock = new Object();
@@ -61,6 +63,7 @@ public class Robot{
 	public final int index;
 	private double[] sonarValues;
 	public PlayerFiducialItem[] fiducialsInView;
+	public RobotState Status;
 
 	/**
 	 * 
@@ -79,7 +82,7 @@ public class Robot{
 		this.control = control;
 		this.index = index;
 		this.map = this.control.getMap();
-
+		
 		// Set up service proxies
 		try {
 			robot = new PlayerClient("localhost", 6665);
@@ -105,8 +108,9 @@ public class Robot{
 			}
 		};
 		// do360.start();
-
+		
 		senseThread();
+		setStatus(RobotState.Idle);
 	}
 
 	public double[] getSonar(){
@@ -380,7 +384,7 @@ public class Robot{
 		if (target!=null && ((!target.equals(end) &&  false /*map.isUnexplored(target.x, target.y)*/) || !AStarSearch.isAvailableCell(target, map)) ||
 				(  end!=null && (!map.isUnexplored(end.x, end.y) || !AStarSearch.isAvailableCell(end, map))    )    ) {
 			pos2D.setSpeed(0, 0);
-			System.out.println("Breaking");
+			//System.out.println("Breaking");
 			return false;
 		}
 		return true;
@@ -440,17 +444,26 @@ public class Robot{
 		final Robot robot = this;
 		Thread thr = new Thread(){
 			public void run(){
+				setStatus(RobotState.Exploring);
 				ExploreTest.exploreRobot(map, robot, Map.convertPlayerToInternal(x, y));
 				//map.filter();
 				//ExploreTest.exploreRobot(map, robot, Map.convertPlayerToInternal(x, y));
 				Robot.this.control.println("Robot " + Robot.this.index + " finished exploration.");
+				setStatus(RobotState.Idle);
 			}
 		};
 		thr.start();
 
 
 	}
-
+	
+	private void setStatus(RobotState state) {
+		this.Status = state;
+		control.RobotStateChanged(this, state);
+		
+	}
+	
+	
 
 	/**
 	 * Picks up an object
