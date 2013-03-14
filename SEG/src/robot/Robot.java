@@ -403,7 +403,7 @@ public class Robot{
 	
 	public boolean isValidMoveCondition(Point target, Point end){
 		if (target!=null && ((!target.equals(end) &&  false /*map.isUnexplored(target.x, target.y)*/) || !AStarSearch.isAvailableCell(target, map)) ||
-				(  end!=null && (!map.isUnexplored(end.x, end.y) || !AStarSearch.isAvailableCell(end, map))    )    ) {
+				(  end!=null && (!(map.isUnexplored(end.x, end.y) || map.isFarWall(end.x, end.y)) || !AStarSearch.isAvailableCell(end, map))    )    ) {
 			pos2D.setSpeed(0, 0);
 			//System.out.println("Breaking");
 			return false;

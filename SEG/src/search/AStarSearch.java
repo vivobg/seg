@@ -56,7 +56,7 @@ public class AStarSearch {
 		while(!openSet.isEmpty())
 		{
 			Point current = getLowest(openSet,fScore);
-			if((ASEARCH && current.equals(target))|| (!ASEARCH && map.isUnexplored(current.x, current.y)))
+			if((ASEARCH && current.equals(target))|| (!ASEARCH && (map.isUnexplored(current.x, current.y) || map.isFarWall(current.x, current.y))))
 				//if we are are at the target, stop search and return path
 			{
 				//return optimisePath(map, reconstructPath(cameFrom, current));
@@ -115,6 +115,8 @@ public class AStarSearch {
 		int cost = 0;
 		if (map.isBuffer(target.x, target.y))
 			cost = 20;
+		else if (map.isFarWall(target.x, target.y))
+			cost = -2000;
 		if (isDiagonal(source, target))
 			return cost + 7;
 		else
@@ -278,9 +280,9 @@ public class AStarSearch {
 		List<Point> points = Bresenham.bresenhamLine(s.x, s.y, t.x, t.y);
 		
 
-		for (int i = 0; i < points.size(); i++) {
+		for (int i = 0; i < points.size()-1; i++) {
 			Point node = points.get(i);
-			if (!(map.isEmpty(node.x, node.y) || map.isBuffer(node.x, node.y)))
+			if (!(map.isEmpty(node.x, node.y) || map.isBuffer(node.x, node.y)) || map.isFarWall(node.x, node.y))
 				return false;
 		}
 		return true;
