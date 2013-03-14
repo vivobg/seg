@@ -37,7 +37,7 @@ public class Sense {
 
 
 				senseSonarSensor(robot, map, pose.getPx(), pose.getPy(), sonarValues[i],
-						Math.toRadians(Math.toDegrees(pose.getPa()) +  i * 22.5));
+						pose.getPa() + Math.toRadians(i * 22.5));
 
 			}
 		}
