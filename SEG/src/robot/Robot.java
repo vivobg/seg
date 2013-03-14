@@ -107,8 +107,9 @@ public class Robot{
 			}
 		};
 		// do360.start();
-
 		senseThread();
+
+		
 	}
 
 	public double[] getSonar(){
@@ -441,6 +442,7 @@ public class Robot{
 	}
 
 	public void explore() {
+		
 		this.control.println("Robot " + Robot.this.index + " started exploration.");
 		final Robot robot = this;
 		Thread thr = new Thread(){

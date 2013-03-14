@@ -50,7 +50,7 @@ public class ExploreTest {
 				robot.isFollowing = true;
 				for (int i = 1; i<path.size();i++){
 					
-					Sense.sensingAnotherRobot(map, robot);
+				
 					Point p = path.get(i);
 					Point end = path.get(path.size()-1);
 

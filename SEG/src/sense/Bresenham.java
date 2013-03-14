@@ -24,7 +24,7 @@ public class Bresenham {
 	 *            completely empty
 	 */
 	public static void line(Map map, int x0, int y0, int x1, int y1,
-			boolean WALL) {
+			boolean WALL, int robotIndex) {
 
 		ArrayList<Point> points = bresenhamLine(x0, y0, x1, y1);
 		
@@ -33,7 +33,7 @@ public class Bresenham {
 				Point p = points.get(i);
 				if (!map.isOccupied(p.x, p.y) && !map.isUnwalkable(p.x, p.y) )
 				map.setValue(p.x, p.y, Map.EMPTY);
-			}
+			}/*
 			for (int i = (int) (points.size() - Map.UNWALKABLE_CELLS); i < points
 					.size() - 1; i++) {
 				if (i < 0)
@@ -41,9 +41,11 @@ public class Bresenham {
 				Point p = points.get(i);
 				if (!map.isOccupied(p.x, p.y))
 				map.setValue(p.x, p.y, Map.UNWALKABLE);
+			}*/
+			if (!Sense.sensingAnotherRobot(map, map.robotList.get(robotIndex), new Point(x1,y1))){
+				circle(map,x1, y1, Map.UNWALKABLE_CELLS);
+				map.setValue(x1, y1, Map.OCCUPIED);
 			}
-			circle(map,x1, y1, Map.UNWALKABLE_CELLS);
-			map.setValue(x1, y1, Map.OCCUPIED);
 		} else {
 			for (Point p : points) {
 				if (!map.isOccupied(p.x, p.y) && !map.isUnwalkable(p.x, p.y))
@@ -75,7 +77,7 @@ public class Bresenham {
 		return points;
 	}
 
-	private static void circle(Map map, int x0, int y0, int radius) {
+	public static void circle(Map map, int x0, int y0, int radius) {
 		for(int y=-radius; y<=radius; y++)
 		    for(int x=-radius; x<=radius; x++)
 		        if(x*x+y*y <= radius*radius && !map.isOccupied(x0+x, y0+y))
