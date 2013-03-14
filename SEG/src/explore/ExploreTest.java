@@ -7,6 +7,7 @@ import java.util.List;
 import map.Map;
 import robot.Robot;
 import search.AStarSearch;
+import sense.Sense;
 
 public class ExploreTest {
 
@@ -48,6 +49,8 @@ public class ExploreTest {
 				robot.currentOptimizedPath = path;
 				robot.isFollowing = true;
 				for (int i = 1; i<path.size();i++){
+					
+					Sense.sensingAnotherRobot(map, robot);
 					Point p = path.get(i);
 					Point end = path.get(path.size()-1);
 

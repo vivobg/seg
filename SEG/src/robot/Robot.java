@@ -6,6 +6,9 @@ package robot;
 import java.awt.Point;
 import java.util.List;
 
+import explore.ExploreTest;
+import robot.Robot;
+
 import javaclient3.FiducialInterface;
 import javaclient3.GripperInterface;
 import javaclient3.PlayerClient;
@@ -19,7 +22,6 @@ import mainApp.Control;
 import map.Map;
 import search.AStarSearch;
 import sense.Sense;
-import explore.ExploreTest;
 
 /**
  * 
@@ -342,6 +344,9 @@ public class Robot{
 //					pos2D.setSpeed(0, 0);
 //					break;
 //				}
+				
+				
+				
 				if (!isValidMoveCondition(target, end)) break;
 				
 				if ((Math.abs(px - x) < TARGET_THRESHOLD && Math.abs(py - y) < TARGET_THRESHOLD)) {
@@ -440,6 +445,7 @@ public class Robot{
 		final Robot robot = this;
 		Thread thr = new Thread(){
 			public void run(){
+				
 				ExploreTest.exploreRobot(map, robot, Map.convertPlayerToInternal(x, y));
 				//map.filter();
 				//ExploreTest.exploreRobot(map, robot, Map.convertPlayerToInternal(x, y));
@@ -484,5 +490,9 @@ public class Robot{
 		}
 
 	}
+	
+	
+	
+	
 
 }

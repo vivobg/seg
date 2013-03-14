@@ -10,6 +10,7 @@ import javaclient3.structures.PlayerPose2d;
 import map.Map;
 import map.VerticalArray;
 import robot.Robot;
+import search.AStarSearch;
 import sense.GarbageItem;
 
 public class DrawObjects {
@@ -27,6 +28,7 @@ public class DrawObjects {
 			Color.BLUE };
 	public static final Color GARGABE_COLOR = Color.MAGENTA;
 	public static final float GARBAGE_SIZE = 0.2f;
+	public static final Color ROBOT_AREA_COLOR = Color.YELLOW.brighter();
 
 	/**
 	 * Clear the given graphical context
@@ -233,5 +235,20 @@ public class DrawObjects {
 					- garbageSize / 2, (center.y - garbage.getPoint().y)
 					* BLOCK_SIZE - garbageSize / 2, garbageSize, garbageSize);
 		}
+	}
+
+	public static void drawRobotArea(Map map, Graphics2D g2, Point size) {
+		// TODO Auto-generated method stub
+		
+		Point center = new Point(size.x / 2 / BLOCK_SIZE, size.y / 2 / BLOCK_SIZE);
+		//int robotSize = (int) (BLOCK_SIZE * (Robot.ROBOT_SIZE / Map.SCALE));
+		g2.setColor(ROBOT_AREA_COLOR);
+		Point robot1 = map.getRobotList().get(0).getRobotPosition();
+		List<Point> adjacentPoints = AStarSearch.getAdjacentPoints(map, robot1, true);
+
+	
+		
+		
+		
 	}
 }
