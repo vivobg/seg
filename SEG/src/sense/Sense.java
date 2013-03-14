@@ -15,15 +15,22 @@ public class Sense {
 	public static void sonarScan(Map map, Robot robot) {
 		PlayerPose2d pose;
 		double[] sonarValues = null;
-		synchronized(robot.sensorLock){
-			pose = new PlayerPose2d(robot.x, robot.y, robot.yaw);
-			if(robot.getSonar() != null) sonarValues = robot.getSonar().clone();
-		}
+
+		while(!robot.pos2D.isDataReady() ){};
+		pose = robot.pos2D.getData().getPos();
+		robot.x = pose.getPx();
+		robot.y = pose.getPy();
+		robot.yaw = pose.getPa();
+		
+		while(!robot.sonar.isDataReady() ){};
+		sonarValues = robot.sonar.getData().getRanges();
+		
+		
 		//Point start = Map.convertPlayerToInternal(pose.getPx(), pose.getPy());
 		if (sonarValues != null) {
 			for (int i = 0; i < sonarValues.length; i++) {
 				senseSonarSensor(map, pose.getPx(), pose.getPy(), sonarValues[i],
-						pose.getPa() +  Math.toRadians( i *360  / 16));
+						Math.toRadians(Math.toDegrees(pose.getPa()) +  i * 22.5));
 			}
 		}
 	}
