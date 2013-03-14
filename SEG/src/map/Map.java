@@ -284,6 +284,12 @@ public class Map implements Serializable{
 	public int getMinYSize() {
 		return minY;
 	}
+	
+	public boolean isFarWall(int x, int y) {
+		//return getValue(x, y) == Math.abs(Map.OCCUPIED);
+		float value  = Math.abs(getValue(x, y));
+		return value > Map.FAR_WALL;
+	}
 
 	public boolean isOccupied(int x, int y) {
 		//return getValue(x, y) == Math.abs(Map.OCCUPIED);

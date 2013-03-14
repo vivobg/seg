@@ -19,6 +19,7 @@ public class DrawObjects {
 	public static final Color COLOR_UNEXPLORED = Color.GRAY;
 	// Too close to a wall
 	public static final Color COLOR_UNWALKABLE = Color.CYAN;
+	public static final Color COLOR_FAR_WALL = Color.RED;
 	public static final Color COLOR_PATH = Color.ORANGE;
 	public static final Color COLOR_PATH_OPTIMIZED = Color.ORANGE.darker();
 	public static final Color COLOR_PATH_START = Color.GREEN;
@@ -113,6 +114,10 @@ public class DrawObjects {
 					g2.setColor(COLOR_UNWALKABLE);
 					draw = true;
 				}
+				else if (map.isFarWall(x, y)){
+					g2.setColor(COLOR_FAR_WALL);
+					draw = true;
+				}
 				if (draw)
 				g2.fillRect((center.x + x) * BLOCK_SIZE, (center.y - y)
 						* BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
@@ -138,6 +143,10 @@ public class DrawObjects {
 				}
 				else if(map.isBuffer(-x, y)){
 					g2.setColor(COLOR_UNWALKABLE);
+					draw = true;
+				}
+				else if (map.isFarWall(-x, y)){
+					g2.setColor(COLOR_FAR_WALL);
 					draw = true;
 				}
 				if (draw)
