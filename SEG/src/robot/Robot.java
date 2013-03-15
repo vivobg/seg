@@ -142,15 +142,16 @@ public class Robot{
 
 				while (true) {
 					synchronized(sensorLock){
-						if (pos2D.isDataReady()) {
+						if (pos2D.isDataReady() && sonar.isDataReady()) {
 							x = pos2D.getX();
 							y = pos2D.getY();
 							yaw = pos2D.getYaw();
+							sonarValues = sonar.getData().getRanges().clone();
 						}
 
-						if (sonar.isDataReady()) {
-							sonarValues = sonar.getData().getRanges();
-						}
+//						if (sonar.isDataReady()) {
+//							sonarValues = sonar.getData().getRanges();
+//						}
 
 						if(fiducial.isDataReady()){
 							fiducialsInView = fiducial.getData().getFiducials();

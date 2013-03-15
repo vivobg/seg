@@ -20,15 +20,18 @@ public class Sense {
 	public static void sonarScan(Map map, Robot robot) {
 		PlayerPose2d pose;
 		double[] sonarValues = null;
-
-		while(!robot.pos2D.isDataReady() ){};
-		pose = robot.pos2D.getData().getPos();
-		robot.x = pose.getPx();
-		robot.y = pose.getPy();
-		robot.yaw = pose.getPa();
-		
-		while(!robot.sonar.isDataReady() ){};
-		sonarValues = robot.sonar.getData().getRanges();
+		synchronized(robot.sensorLock){
+				pose = new PlayerPose2d(robot.x, robot.y, robot.yaw);
+				if(robot.getSonar() != null) sonarValues = robot.getSonar().clone();
+		}
+//		while(!robot.pos2D.isDataReady() ){};
+//		pose = robot.pos2D.getData().getPos();
+//		robot.x = pose.getPx();
+//		robot.y = pose.getPy();
+//		robot.yaw = pose.getPa();
+//		
+//		while(!robot.sonar.isDataReady() ){};
+//		sonarValues = robot.sonar.getData().getRanges();
 		
 		
 		//Point start = Map.convertPlayerToInternal(pose.getPx(), pose.getPy());
