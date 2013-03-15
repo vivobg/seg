@@ -202,7 +202,7 @@ public class AStarSearch {
 
 	public static boolean isAvailableCell(Point adjPoint, Map map) {
 		//int scale = 2; //for Testing
-		int scale = (int) Math.ceil( (0.2 / Map.SCALE ));
+		int scale = (int) Math.ceil( (0.3 / Map.SCALE ));
 		for(int i = adjPoint.x - scale; i <= adjPoint.x + scale; i++)
 		{
 			for(int j = adjPoint.y - scale; j<=adjPoint.y + scale; j++)
