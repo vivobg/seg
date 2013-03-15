@@ -19,7 +19,7 @@ public class DrawObjects {
 	public static final Color COLOR_UNEXPLORED = Color.GRAY;
 	// Too close to a wall
 	public static final Color COLOR_UNWALKABLE = Color.CYAN;
-	public static final Color COLOR_FAR_WALL = Color.RED;
+	public static final Color COLOR_FAR_WALL = Color.BLACK;
 	public static final Color COLOR_PATH = Color.ORANGE;
 	public static final Color COLOR_PATH_OPTIMIZED = Color.ORANGE.darker();
 	public static final Color COLOR_PATH_START = Color.GREEN;

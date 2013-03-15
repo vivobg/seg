@@ -358,28 +358,28 @@ public class Robot{
 				
 				if (this.isFollowing && do360 && AStarSearch.lineofSight(map, this.getRobotPosition(), end) &&
 						(this.getRobotPosition().distance(end) < (jiggleAverage / Map.SCALE))){
-					this.control.println("do360 at " + jiggleAverage);
-					this.do360SonarScan();
+					//this.control.println("do360 at " + jiggleAverage);
+					//this.do360SonarScan();
 					
-					if (isValidMoveCondition(target, end)) {
-						distance360 = Math.max(distance360 - 0.2, 0);
-						jiggleCount++;
-						totalJiggle += distance360;
-						jiggleAverage = totalJiggle / jiggleCount;
-						this.control.println("Jiggle distance reduced to: "
-								+ jiggleAverage);
-						
-						if (distance360 < Map.SCALE)
-							do360 = false;
-					} else {
-						this.control.println("Jiggle worked!!!");
-						distance360 = Math.min(distance360 + 0.1, 4.5);
-						jiggleCount++;
-						totalJiggle += distance360;
-						jiggleAverage = totalJiggle / jiggleCount;
-						this.control.println("Jiggle distance increased to: "
-								+ jiggleAverage);
-					}
+//					if (isValidMoveCondition(target, end)) {
+//						distance360 = Math.max(distance360 - 0.2, 0);
+//						jiggleCount++;
+//						totalJiggle += distance360;
+//						jiggleAverage = totalJiggle / jiggleCount;
+//						this.control.println("Jiggle distance reduced to: "
+//								+ jiggleAverage);
+//						
+//						if (distance360 < Map.SCALE)
+//							do360 = false;
+//					} else {
+//						this.control.println("Jiggle worked!!!");
+//						distance360 = Math.min(distance360 + 0.1, 4.5);
+//						jiggleCount++;
+//						totalJiggle += distance360;
+//						jiggleAverage = totalJiggle / jiggleCount;
+//						this.control.println("Jiggle distance increased to: "
+//								+ jiggleAverage);
+//					}
 					
 				}
 				//System.out.println("Targeting");
