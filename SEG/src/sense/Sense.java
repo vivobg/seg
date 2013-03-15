@@ -36,9 +36,9 @@ public class Sense {
 		
 		//Point start = Map.convertPlayerToInternal(pose.getPx(), pose.getPy());
 		if (sonarValues != null) {
-			for (int i = 0; i < sonarValues.length; i++) {
+			for (int i = 0; i < sonarValues.length-3; i++) {
 				senseSonarSensor(robot, map, pose.getPx(), pose.getPy(), sonarValues[i],
-						pose.getPa() + Math.toRadians(i * 22.5), pose);
+						pose.getPa() + Math.toRadians(-30 + i * 5), pose);
 
 			}
 		}
