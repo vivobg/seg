@@ -21,6 +21,10 @@ public class GarbageItem implements Serializable{
 	public Point getPoint() {
 		return this.point;
 	}
+	
+	public void setPoint(Point point) {
+		this.point = point;
+	}
 
 	public boolean getIsCollected () {
 		return this.isCollected;

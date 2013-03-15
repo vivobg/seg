@@ -6,6 +6,9 @@ package robot;
 import java.awt.Point;
 import java.util.List;
 
+import explore.ExploreTest;
+import robot.Robot;
+
 import javaclient3.FiducialInterface;
 import javaclient3.GripperInterface;
 import javaclient3.PlayerClient;
@@ -15,11 +18,12 @@ import javaclient3.RangerInterface;
 import javaclient3.structures.PlayerConstants;
 import javaclient3.structures.PlayerPose2d;
 import javaclient3.structures.fiducial.PlayerFiducialItem;
+import javaclient3.structures.gripper.PlayerGripperData;
 import mainApp.Control;
 import map.Map;
 import search.AStarSearch;
+import sense.GarbageItem;
 import sense.Sense;
-import explore.ExploreTest;
 
 /**
  * 
@@ -29,15 +33,15 @@ import explore.ExploreTest;
  */
 public class Robot{
 	PlayerClient robot = null;
-	Position2DInterface pos2D = null;
-	RangerInterface sonar = null;
+	public Position2DInterface pos2D = null;
+	public RangerInterface sonar = null;
 	GripperInterface gripper = null;
 	FiducialInterface fiducial = null;
 
-	public static final int COLLECTION_SLEEP = 2;
-	public static final int SENSE_SLEEP = 5;
-	public static final int MOVE_SLEEP = 10;
-	public static final int TURN_SLEEP = 7;
+	public static final int COLLECTION_SLEEP = 5;
+	public static final int SENSE_SLEEP = 7;
+	public static final int MOVE_SLEEP = 5;
+	public static final int TURN_SLEEP = 5;
 	public static final double TURN_RATE = 0.5;
 	public static final double TURN_RATE_SLOW = 0.1;
 	public static final double TURN_RATE_LIMIT = 0.3;// Below this, turn slowly
@@ -46,13 +50,13 @@ public class Robot{
 	public static final double HEADING_THRESHOLD = 0.03;
 	public static final double ROBOT_SIZE = 0.50;
 	private static final double TURN_360 = 0.01;
+	private static final int GRIPPER_THRESHOLD = (int) (0.8 / Map.SCALE);
+	public static final int FIDUCIAL_SLEEP = 100;
 	public boolean isFollowing = false;
 	public List<Point> currentOptimizedPath;
 	public List<Point> currentPath;
-
 	public Object moveLock = new Object();
 	public Object sensorLock = new Object();
-
 	public double x;
 	public double y;
 	public double yaw;
@@ -65,6 +69,11 @@ public class Robot{
 	private double totalJiggle = 0;
 	private int jiggleCount = 0;
 	private double jiggleAverage = 3;
+
+	public PlayerGripperData gripperData;
+	private boolean goFetchGarbageHasBeenCalled = false;
+
+
 	/**
 	 * 
 	 * @return the current pose of the robot
@@ -108,8 +117,8 @@ public class Robot{
 			}
 		};
 		// do360.start();
-
 		senseThread();
+		lookOutForGarbageThread();
 	}
 
 	public double[] getSonar(){
@@ -148,9 +157,7 @@ public class Robot{
 						}
 
 						if(gripper.isDataReady()){
-							if(gripper.getData().getBeams() > 0){
-								gripper.close();
-							}
+							gripperData = gripper.getData();
 						}
 					}
 
@@ -169,7 +176,7 @@ public class Robot{
 		Thread sense = new Thread() {
 			public void run() {
 
-				while (true) {
+				while (!goFetchGarbageHasBeenCalled) {
 					Sense.sonarScan(map, Robot.this);
 					try {
 						sleep(SENSE_SLEEP);
@@ -346,6 +353,9 @@ public class Robot{
 //					pos2D.setSpeed(0, 0);
 //					break;
 //				}
+				
+				
+				
 				if (!isValidMoveCondition(target, end)) break;
 				
 				if ((Math.abs(px - x) < TARGET_THRESHOLD && Math.abs(py - y) < TARGET_THRESHOLD)) {
@@ -461,10 +471,12 @@ public class Robot{
 	}
 
 	public void explore() {
+		
 		this.control.println("Robot " + Robot.this.index + " started exploration.");
 		final Robot robot = this;
 		Thread thr = new Thread(){
 			public void run(){
+				
 				ExploreTest.exploreRobot(map, robot, Map.convertPlayerToInternal(x, y));
 				//map.filter();
 				//ExploreTest.exploreRobot(map, robot, Map.convertPlayerToInternal(x, y));
@@ -509,5 +521,99 @@ public class Robot{
 		}
 
 	}
+	
+	
+	
+	
 
+	private void lookOutForGarbageThread() {
+		Thread lookOutForGarbageThread = new Thread() {
+			public void run() {
+				while(!goFetchGarbageHasBeenCalled){
+					synchronized(sensorLock){
+						if (fiducialsInView != null) {
+							for(int i = 0; i < fiducialsInView.length; i++ ){
+								int id = fiducialsInView[i].getId();
+								//unlike robots and 0,0 garbage items have an id of 5,6,7
+								if(id == 5 || id == 6 || id == 7 ){
+									double Py = fiducialsInView[i].getPose().getPy();
+									// +0.2 accounts for the fiducial sensor being slightly forward on the robot.
+									double Px = fiducialsInView[i].getPose().getPx() + 0.2;
+									double distance = Math.sqrt(Py*Py + Px*Px);
+									double diffX = Math.cos(yaw + Math.atan(Py / Px)) * distance;
+									double diffY = Math.sin(yaw + Math.atan(Py / Px)) * distance;
+
+									addItem(new GarbageItem(Map.convertPlayerToInternal(x + diffX, y + diffY),false));
+								}
+							}	
+						}
+					}
+
+					try {
+						sleep(FIDUCIAL_SLEEP);
+					} catch (InterruptedException e) {
+					}
+				}
+			}
+		};
+		lookOutForGarbageThread.start();
+	}
+	
+	public void addItem(GarbageItem garbageItem){
+
+		//check if garbage has already been added
+		boolean garbageItemAlreadyExists = false;
+		//calculates how many tiles a garbage item takes up. They appear to take up 0.2 player units.
+		int threshold = (int) (0.2 / Map.SCALE);
+		for(int i = 0; i < map.garbageListArray.size(); i++){
+			if(Math.abs(garbageItem.getPoint().getX() - map.garbageListArray.get(i).getPoint().getX()) <= threshold &&
+					Math.abs(garbageItem.getPoint().getY() - map.garbageListArray.get(i).getPoint().getY()) <= threshold){
+				garbageItemAlreadyExists = true;
+				break;
+			}
+		}
+
+		if(!garbageItemAlreadyExists){
+			map.garbageListArray.add(garbageItem);
+			printGarbageToCollectList();
+		}
+	}
+	
+	//for dev purposes only
+	private void printGarbageToCollectList() {
+		control.println("Just added a garbage item: " + "map.garbageListArray size is " + map.garbageListArray.size() + " and holds:");
+		for(int i = 0; i < map.garbageListArray.size(); i++ )
+			control.println(map.garbageListArray.get(i).getPoint().toString());
+	}
+	
+	public void goFetchGarbage(double x1, double y1, double x2, double y2) {
+		goFetchGarbageHasBeenCalled = true;
+		int distanceFromGripperToRobotCenter = (int) (0.4/Map.SCALE);
+		Point dropOffPoint = Map.convertPlayerToInternal((x1+x2)/2, (y1+y2)/2);
+
+		for(int i = 0; i < map.garbageListArray.size(); i++){
+
+			Point garbagePoint = map.garbageListArray.get(i).getPoint();
+			List<Point> outboundList = AStarSearch.aSearch(map, 
+					getRobotPosition(),
+					garbagePoint);
+			for (int j = 0; outboundList != null && j < outboundList.size() - distanceFromGripperToRobotCenter; j++)
+				move(outboundList.get(j));
+			/*if (gripperData.getBeams() > 0 &&
+						Math.abs(getRobotPosition().x - garbagePoint.x) < GRIPPER_THRESHOLD &&
+						Math.abs(getRobotPosition().y - garbagePoint.y) < GRIPPER_THRESHOLD){ */
+
+			if(outboundList != null) gripper.close();
+			List<Point> returnList = AStarSearch.aSearch(map, 
+					getRobotPosition(),
+					dropOffPoint);
+			for (int k = 0; returnList != null && k < returnList.size(); k++){
+				move(returnList.get(k));
+				map.garbageListArray.get(i).setPoint(Map.convertPlayerToInternal(x, y));
+			}
+			if(outboundList != null && returnList != null) gripper.open();
+
+
+		}
+	}
 }

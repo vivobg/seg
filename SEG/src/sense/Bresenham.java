@@ -28,7 +28,7 @@ public class Bresenham {
 	 *            completely empty
 	 */
 	public static void line(Map map, int x0, int y0, int x1, int y1,
-			boolean WALL, PlayerPose2d pose) {
+			boolean WALL, PlayerPose2d pose, int robotIndex) {
 		double rX = pose.getPx();
 		double rY = pose.getPy();
 		Point robotPoint = Map.convertPlayerToInternal(rX, rY);
@@ -66,7 +66,7 @@ public class Bresenham {
 			
 			Point p = new Point(x1, y1);
 			distance = Map.calculateSonarDistance(p, robotPoint);
-			if (distance+MAP_SCALE < Map.FAR_WALL)
+			if (distance+MAP_SCALE < Map.FAR_WALL && !Sense.sensingAnotherRobot(map, map.robotList.get(robotIndex), new Point(x1,y1)))
 				circle(map,x1, y1, Map.BUFFER_CELLS);
 			
 			if (distance+MAP_SCALE  < map.getSonarDistance(x1, y1)/* || map.getSonarDistance(x1, y1) < 0.3*/){
@@ -110,7 +110,7 @@ public class Bresenham {
 		return points;
 	}
 
-	private static void circle(Map map, int x0, int y0, int radius) {
+	public static void circle(Map map, int x0, int y0, int radius) {
 		for(int y=-radius; y<=radius; y++)
 		    for(int x=-radius; x<=radius; x++)
 				if (x * x + y * y <= radius * radius
