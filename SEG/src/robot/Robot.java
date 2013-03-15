@@ -37,7 +37,6 @@ public class Robot{
 	public RangerInterface sonar = null;
 	GripperInterface gripper = null;
 	FiducialInterface fiducial = null;
-
 	public static final int COLLECTION_SLEEP = 5;
 	public static final int SENSE_SLEEP = 7;
 	public static final int MOVE_SLEEP = 5;
@@ -53,6 +52,7 @@ public class Robot{
 	private static final int GRIPPER_THRESHOLD = (int) (0.8 / Map.SCALE);
 	public static final int FIDUCIAL_SLEEP = 100;
 	public boolean isFollowing = false;
+	public boolean isCollecting = false;
 	public List<Point> currentOptimizedPath;
 	public List<Point> currentPath;
 	public Object moveLock = new Object();
@@ -367,7 +367,7 @@ public class Robot{
 				
 				
 				
-				if (this.isFollowing && do360 && AStarSearch.lineofSight(map, this.getRobotPosition(), end) &&
+				if (this.isFollowing && !isCollecting && do360 && AStarSearch.lineofSight(map, this.getRobotPosition(), end) &&
 						(this.getRobotPosition().distance(end) < (jiggleAverage / Map.SCALE))){
 					//this.control.println("do360 at " + jiggleAverage);
 					//this.do360SonarScan();
@@ -589,29 +589,45 @@ public class Robot{
 	
 	public void goFetchGarbage(double x1, double y1, double x2, double y2) {
 		goFetchGarbageHasBeenCalled = true;
-		int distanceFromGripperToRobotCenter = (int) (0.4/Map.SCALE);
+		int distanceFromGripperToRobotCenter = (int) Math.round(1.5/Map.SCALE);
 		Point dropOffPoint = Map.convertPlayerToInternal((x1+x2)/2, (y1+y2)/2);
-
 		for(int i = 0; i < map.garbageListArray.size(); i++){
 
 			Point garbagePoint = map.garbageListArray.get(i).getPoint();
 			List<Point> outboundList = AStarSearch.aSearch(map, 
 					getRobotPosition(),
 					garbagePoint);
-			for (int j = 0; outboundList != null && j < outboundList.size() - distanceFromGripperToRobotCenter; j++)
+			for(int z = 0; z < outboundList.size() && z < distanceFromGripperToRobotCenter; z++){outboundList.remove(z);}
+			currentPath = outboundList;
+			outboundList = ExploreTest.optimizePath2(outboundList);
+			isFollowing = true;
+			isCollecting = true;
+			for (int j = 0; outboundList != null && j < outboundList.size(); j++)
 				move(outboundList.get(j));
 			/*if (gripperData.getBeams() > 0 &&
 						Math.abs(getRobotPosition().x - garbagePoint.x) < GRIPPER_THRESHOLD &&
 						Math.abs(getRobotPosition().y - garbagePoint.y) < GRIPPER_THRESHOLD){ */
-
+			isFollowing = false;
+			isCollecting = false;
+			double targetYaw = targetYaw(garbagePoint.getX()*Map.SCALE, garbagePoint.getY()*Map.SCALE);
+			turn(targetYaw);
 			if(outboundList != null) gripper.close();
+			
 			List<Point> returnList = AStarSearch.aSearch(map, 
 					getRobotPosition(),
 					dropOffPoint);
+			currentPath = returnList;
+			returnList = ExploreTest.optimizePath2(returnList);
+			isFollowing = true;
+			isCollecting = true;
 			for (int k = 0; returnList != null && k < returnList.size(); k++){
 				move(returnList.get(k));
 				map.garbageListArray.get(i).setPoint(Map.convertPlayerToInternal(x, y));
 			}
+			isFollowing = false;
+			isCollecting = false;
+			
+			
 			if(outboundList != null && returnList != null) gripper.open();
 
 

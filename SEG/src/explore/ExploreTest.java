@@ -102,7 +102,7 @@ public class ExploreTest {
 	}
 	
 	
-	private static List<Point> optimizePath2(List<Point> path) {
+	public static List<Point> optimizePath2(List<Point> path) {
 		List<Point> result = new ArrayList<Point>();
 
 		Point initialP = path.get(0);
