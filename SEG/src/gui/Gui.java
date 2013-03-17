@@ -169,7 +169,7 @@ public class Gui extends javax.swing.JFrame {
 
         jLabel3.setText("x1:");
 
-        jtX1.setText("-7");
+        jtX1.setText("-4");
 
         jLabel4.setText("x2:");
 
@@ -177,11 +177,11 @@ public class Gui extends javax.swing.JFrame {
 
         jLabel6.setText("y2:");
 
-        jtX2.setText("-5");
+        jtX2.setText("-2");
 
-        jtY1.setText("1");
+        jtY1.setText("2");
 
-        jtY2.setText("-1");
+        jtY2.setText("0");
 
         javax.swing.GroupLayout jpCollectionAreaLayout = new javax.swing.GroupLayout(jpCollectionArea);
         jpCollectionArea.setLayout(jpCollectionAreaLayout);
