@@ -101,7 +101,7 @@ public class Robot{
 					PlayerConstants.PLAYER_OPEN_MODE);
 			sonar = robot.requestInterfaceRanger(index,
 					PlayerConstants.PLAYER_OPEN_MODE);
-			fiducial = robot.requestInterfaceFiducial(0,PlayerConstants.PLAYER_OPEN_MODE);
+			fiducial = robot.requestInterfaceFiducial(index,PlayerConstants.PLAYER_OPEN_MODE);
 		} catch (PlayerException e) {
 			System.err.println("Simplebob: Error connecting to Player!\n>>>"
 					+ e.toString());
