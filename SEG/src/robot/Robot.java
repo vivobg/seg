@@ -142,20 +142,21 @@ public class Robot{
 
 				while (true) {
 					synchronized(sensorLock){
-						if (pos2D.isDataReady() && sonar.isDataReady()) {
+						if (pos2D.isDataReady() && sonar.isDataReady() && fiducial.isDataReady()) {
 							x = pos2D.getX();
 							y = pos2D.getY();
 							yaw = pos2D.getYaw();
 							sonarValues = sonar.getData().getRanges().clone();
+							fiducialsInView = fiducial.getData().getFiducials();
 						}
 
 //						if (sonar.isDataReady()) {
 //							sonarValues = sonar.getData().getRanges();
 //						}
 
-						if(fiducial.isDataReady()){
-							fiducialsInView = fiducial.getData().getFiducials();
-						}
+//						if(fiducial.isDataReady()){
+//							fiducialsInView = fiducial.getData().getFiducials();
+//						}
 
 						if(gripper.isDataReady()){
 							gripperData = gripper.getData();
@@ -589,33 +590,40 @@ public class Robot{
 	
 	public void goFetchGarbage(double x1, double y1, double x2, double y2) {
 		goFetchGarbageHasBeenCalled = true;
-		int distanceFromGripperToRobotCenter = (int) Math.round(1.5/Map.SCALE);
+		int distanceFromGripperToRobotCenter = (int) Math.round(0.4/Map.SCALE);
 		Point dropOffPoint = Map.convertPlayerToInternal((x1+x2)/2, (y1+y2)/2);
 		for(int i = 0; i < map.garbageListArray.size(); i++){
 
 			Point garbagePoint = map.garbageListArray.get(i).getPoint();
+
+
 			List<Point> outboundList = AStarSearch.aSearch(map, 
 					getRobotPosition(),
 					garbagePoint);
-			for(int z = 0; z < outboundList.size() && z < distanceFromGripperToRobotCenter; z++){outboundList.remove(z);}
+			if(outboundList == null){break;}
+			for(int z = 0; z < distanceFromGripperToRobotCenter; z++){
+				outboundList.remove(outboundList.size()); 
+				System.out.println("im working");
+			}
 			currentPath = outboundList;
 			outboundList = ExploreTest.optimizePath2(outboundList);
 			isFollowing = true;
 			isCollecting = true;
 			for (int j = 0; outboundList != null && j < outboundList.size(); j++)
 				move(outboundList.get(j));
-			/*if (gripperData.getBeams() > 0 &&
-						Math.abs(getRobotPosition().x - garbagePoint.x) < GRIPPER_THRESHOLD &&
-						Math.abs(getRobotPosition().y - garbagePoint.y) < GRIPPER_THRESHOLD){ */
 			isFollowing = false;
 			isCollecting = false;
+
 			double targetYaw = targetYaw(garbagePoint.getX()*Map.SCALE, garbagePoint.getY()*Map.SCALE);
 			turn(targetYaw);
-			if(outboundList != null) gripper.close();
-			
+			gripper.close();
+			System.out.println(gripper.getData().getStored());
+			if(gripper.getData().getStored() == 0){break;}
+
 			List<Point> returnList = AStarSearch.aSearch(map, 
 					getRobotPosition(),
 					dropOffPoint);
+			if(returnList == null){break;}
 			currentPath = returnList;
 			returnList = ExploreTest.optimizePath2(returnList);
 			isFollowing = true;
@@ -626,11 +634,9 @@ public class Robot{
 			}
 			isFollowing = false;
 			isCollecting = false;
-			
-			
-			if(outboundList != null && returnList != null) gripper.open();
 
 
+			gripper.open();
 		}
 	}
 }
