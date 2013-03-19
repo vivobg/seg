@@ -41,6 +41,7 @@ public class Robot{
 	public static final int COLLECTION_SLEEP = 5;
 	public static final int SENSE_SLEEP = 7;
 	public static final int MOVE_SLEEP = 5;
+	public static final int MOVE_BACK_SLEEP = 15;
 	public static final int TURN_SLEEP = 5;
 	public static final double TURN_RATE = 0.5;
 	public static final double TURN_RATE_SLOW = 0.1;
@@ -255,6 +256,8 @@ public class Robot{
 				&& Math.abs(targetYaw - yaw) < 2 * Math.PI - HEADING_THRESHOLD) {
 			
 			if (!isValidMoveCondition(target, end)) break;
+			
+			if (isRobotStuck()) break;
 
 			double a = targetYaw - yaw;
 			if (a > Math.PI)
@@ -363,6 +366,8 @@ public class Robot{
 				
 				if (!isValidMoveCondition(target, end)) break;
 				
+				if (isRobotStuck()) break;
+				
 				if ((Math.abs(px - x) < TARGET_THRESHOLD && Math.abs(py - y) < TARGET_THRESHOLD)) {
 					pos2D.setSpeed(0, 0);
 					// System.out.println("BREAKING");
@@ -425,6 +430,27 @@ public class Robot{
 		}
 		return true;
 	}
+	
+	public boolean isRobotStuck(){
+        //0 walking
+        //1 is stuck        
+        
+        if (pos2D.getData().getStall()==1){
+            pos2D.setSpeed(-0.5, 0);
+            try {
+                Thread.sleep(MOVE_BACK_SLEEP);
+             } catch (InterruptedException e) {
+            }
+            System.out.println("Robot stuck, calculate a new path");
+            pos2D.setSpeed(0, 0);
+            return true;
+            
+         }
+        
+        
+        return false;
+    }
+
 
 	private boolean isTooCloseToWall() {
 		double threshold = 0.6;
