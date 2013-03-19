@@ -182,7 +182,7 @@ public class AStarSearch {
 				Point adjPoint = new Point(i,j);
 				if(!p.equals(adjPoint)  )
 				{
-					if(ASEARCH && map.isEmpty(i, j)){
+					if(ASEARCH && (map.isEmpty(i, j) || map.isBuffer(i, j) )){
 						// if(isAvailableCell(adjPoint,map))possiblePoints.add(adjPoint);
 						possiblePoints.add(adjPoint);
 					}

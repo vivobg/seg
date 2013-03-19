@@ -654,7 +654,7 @@ public class Robot{
 			List<Point> returnList = AStarSearch.aSearch(map, 
 					getRobotPosition(),
 					dropOffPoint);
-			if(returnList == null){gripper.open(); continue;}
+			if(returnList == null){System.out.println("returnList null");gripper.open(); continue;}
 			currentPath = returnList;
 			returnList = ExploreTest.optimizePath2(returnList);
 			isFollowing = true;
