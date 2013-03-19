@@ -27,7 +27,8 @@ public class DrawObjects {
 	public static final Color COLOR_PATH_FINISH = Color.MAGENTA;
 	public static final Color[] ROBOT_COLORS = { Color.RED, Color.YELLOW,
 			Color.BLUE };
-	public static final Color GARGABE_COLOR = Color.MAGENTA;
+	public static final Color GARGABE_COLOR = Color.RED;
+	public static final Color GARGABE_COLOR_COLLECTED = Color.GREEN;
 	public static final float GARBAGE_SIZE = 0.2f;
 	public static final Color COLOR_PATH_FINISH_EXPLORED = Color.BLUE;
 	public static final Color ROBOT_AREA_COLOR = Color.YELLOW.brighter();
@@ -263,9 +264,11 @@ public class DrawObjects {
 	public static void drawGarbage(Map map, Graphics2D g2, Point size) {
 		Point center = new Point(size.x / 2 / BLOCK_SIZE, size.y / 2 / BLOCK_SIZE);
 		int garbageSize = (int) (BLOCK_SIZE * (GARBAGE_SIZE / Map.SCALE));
-		g2.setColor(GARGABE_COLOR);
+		
 		for (int i = 0; i < map.garbageListArray.size(); i++) {
 			GarbageItem garbage = map.garbageListArray.get(i);
+			if(garbage.isCollected) g2.setColor(GARGABE_COLOR_COLLECTED);
+			else g2.setColor(GARGABE_COLOR);
 			g2.fillOval((center.x + garbage.getPoint().x) * BLOCK_SIZE
 					- garbageSize / 2, (center.y - garbage.getPoint().y)
 					* BLOCK_SIZE - garbageSize / 2, garbageSize, garbageSize);
