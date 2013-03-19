@@ -169,7 +169,7 @@ public class Gui extends javax.swing.JFrame {
 
         jLabel3.setText("x1:");
 
-        jtX1.setText("-4");
+        jtX1.setText("-6");
 
         jLabel4.setText("x2:");
 
@@ -177,9 +177,9 @@ public class Gui extends javax.swing.JFrame {
 
         jLabel6.setText("y2:");
 
-        jtX2.setText("-2");
+        jtX2.setText("-6");
 
-        jtY1.setText("2");
+        jtY1.setText("0");
 
         jtY2.setText("0");
 

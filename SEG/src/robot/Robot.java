@@ -17,6 +17,7 @@ import javaclient3.Position2DInterface;
 import javaclient3.RangerInterface;
 import javaclient3.structures.PlayerConstants;
 import javaclient3.structures.PlayerPose2d;
+import javaclient3.structures.fiducial.PlayerFiducialGeom;
 import javaclient3.structures.fiducial.PlayerFiducialItem;
 import javaclient3.structures.gripper.PlayerGripperData;
 import mainApp.Control;
@@ -72,6 +73,7 @@ public class Robot{
 
 	public PlayerGripperData gripperData;
 	private boolean goFetchGarbageHasBeenCalled = false;
+	protected PlayerFiducialGeom fiducialGeom;
 
 
 	/**
@@ -142,12 +144,17 @@ public class Robot{
 
 				while (true) {
 					synchronized(sensorLock){
-						if (pos2D.isDataReady() && sonar.isDataReady() && fiducial.isDataReady()) {
+						if (pos2D.isDataReady() && sonar.isDataReady() && fiducial.isDataReady() /*&& fiducial.isGeomReady()*/) {
 							x = pos2D.getX();
 							y = pos2D.getY();
 							yaw = pos2D.getYaw();
 							sonarValues = sonar.getData().getRanges().clone();
 							fiducialsInView = fiducial.getData().getFiducials();
+							//fiducialGeom = fiducial.getGeom();
+						}
+						
+						if(gripper.isDataReady()){
+							gripperData = gripper.getData();
 						}
 
 //						if (sonar.isDataReady()) {
@@ -157,10 +164,6 @@ public class Robot{
 //						if(fiducial.isDataReady()){
 //							fiducialsInView = fiducial.getData().getFiducials();
 //						}
-
-						if(gripper.isDataReady()){
-							gripperData = gripper.getData();
-						}
 					}
 
 					try {
@@ -566,7 +569,7 @@ public class Robot{
 		//check if garbage has already been added
 		boolean garbageItemAlreadyExists = false;
 		//calculates how many tiles a garbage item takes up. They appear to take up 0.2 player units.
-		int threshold = (int) (0.2 / Map.SCALE);
+		int threshold = (int) Math.round(0.4 / Map.SCALE);
 		for(int i = 0; i < map.garbageListArray.size(); i++){
 			if(Math.abs(garbageItem.getPoint().getX() - map.garbageListArray.get(i).getPoint().getX()) <= threshold &&
 					Math.abs(garbageItem.getPoint().getY() - map.garbageListArray.get(i).getPoint().getY()) <= threshold){
@@ -578,6 +581,7 @@ public class Robot{
 		if(!garbageItemAlreadyExists){
 			map.garbageListArray.add(garbageItem);
 			printGarbageToCollectList();
+			//System.out.println("Geom " + fiducialGeom.getPose().getPx());
 		}
 	}
 	
@@ -600,10 +604,9 @@ public class Robot{
 			List<Point> outboundList = AStarSearch.aSearch(map, 
 					getRobotPosition(),
 					garbagePoint);
-			if(outboundList == null){break;}
-			for(int z = 0; z < distanceFromGripperToRobotCenter; z++){
-				outboundList.remove(outboundList.size()); 
-				System.out.println("im working");
+			if(outboundList == null){System.out.println("outboundList null");continue;}
+			if(outboundList.size() > distanceFromGripperToRobotCenter){
+				outboundList = outboundList.subList(0,outboundList.size()-distanceFromGripperToRobotCenter); 
 			}
 			currentPath = outboundList;
 			outboundList = ExploreTest.optimizePath2(outboundList);
@@ -616,21 +619,23 @@ public class Robot{
 
 			double targetYaw = targetYaw(garbagePoint.getX()*Map.SCALE, garbagePoint.getY()*Map.SCALE);
 			turn(targetYaw);
+			
+			//this caused problems and only rarely saw the garbage
+			//if(gripperData.getBeams() == 0){continue;}
+			
 			gripper.close();
-			System.out.println(gripper.getData().getStored());
-			if(gripper.getData().getStored() == 0){break;}
-
+			
 			List<Point> returnList = AStarSearch.aSearch(map, 
 					getRobotPosition(),
 					dropOffPoint);
-			if(returnList == null){break;}
+			if(returnList == null){gripper.open(); continue;}
 			currentPath = returnList;
 			returnList = ExploreTest.optimizePath2(returnList);
 			isFollowing = true;
 			isCollecting = true;
 			for (int k = 0; returnList != null && k < returnList.size(); k++){
 				move(returnList.get(k));
-				map.garbageListArray.get(i).setPoint(Map.convertPlayerToInternal(x, y));
+				map.garbageListArray.get(i).setPoint(Map.convertPlayerToInternal(x+(Math.cos(yaw)*0.4), y + (Math.sin(yaw)*0.4)));
 			}
 			isFollowing = false;
 			isCollecting = false;
@@ -638,5 +643,6 @@ public class Robot{
 
 			gripper.open();
 		}
+		control.println("Garbage collection finished");
 	}
 }
