@@ -104,12 +104,12 @@ public class Control {
 			}
 			else if (args[i].equals("-explore"))
 			{
-				while(!allRobotsAvailable()){};//Wait for all robots to complete what they're doing
+				while(!allRobotsAvailable()){sleep(2000);};//Wait for all robots to complete what they're doing
 				explore();
 			}
 			else if(args[i].equals("-map"))
 			{
-				while(!allRobotsAvailable()){}; //Wait for all robots to complete what they're doing
+				while(!allRobotsAvailable()){sleep(2000);}; //Wait for all robots to complete what they're doing
 				if(i + 1 < args.length)
 				{
 					String filename = args[i+1];
@@ -118,7 +118,7 @@ public class Control {
 			}
 			else if(args[i].equals("-collect"))
 			{
-				while(!allRobotsAvailable()){};//Wait for all robots to complete what they're doing
+				while(!allRobotsAvailable()){sleep(2000);};//Wait for all robots to complete what they're doing
 				if(i + 4 < args.length)
 				{
 					try{
@@ -136,6 +136,15 @@ public class Control {
 
 		}
 
+	}
+	private void sleep(int i) {
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	private void launchGui() {
 		//Enable Nimbus Look and Feel, if available.
