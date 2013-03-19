@@ -4,8 +4,8 @@
 package robot;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.List;
-import java.util.Vector;
 
 import explore.ExploreTest;
 import robot.Robot;
@@ -39,8 +39,8 @@ public class Robot{
 	public RangerInterface sonar = null;
 	GripperInterface gripper = null;
 	FiducialInterface fiducial = null;
-	public static final int COLLECTION_SLEEP = 5;
-	public static final int SENSE_SLEEP = 7;
+	public static final int COLLECTION_SLEEP = 20;
+	public static final int SENSE_SLEEP = 20;
 	public static final int MOVE_SLEEP = 5;
 	public static final int MOVE_BACK_SLEEP = 15;
 	public static final int TURN_SLEEP = 5;
@@ -68,8 +68,7 @@ public class Robot{
 	public final int index;
 	private double[] sonarValues;
 	public PlayerFiducialItem[] fiducialsInView;
-	public RobotState Status;
-
+	
 	private double totalJiggle = 0;
 	private int jiggleCount = 0;
 	private double jiggleAverage = 3;
@@ -77,6 +76,11 @@ public class Robot{
 	public PlayerGripperData gripperData;
 	private boolean goFetchGarbageHasBeenCalled = false;
 	protected PlayerFiducialGeom fiducialGeom;
+	private boolean carryingGarbage = false;
+	private Rectangle dropOffRectangle;
+	private Point x1y1;
+	private Point x2y2;
+	private int currentGarbageIndex;
 
 
 	/**
@@ -96,7 +100,7 @@ public class Robot{
 		this.control = control;
 		this.index = index;
 		this.map = this.control.getMap();
-		
+
 		// Set up service proxies
 		try {
 			robot = new PlayerClient("localhost", 6665);
@@ -124,7 +128,6 @@ public class Robot{
 		// do360.start();
 		senseThread();
 		lookOutForGarbageThread();
-		setStatus(RobotState.Idle);
 	}
 
 	public double[] getSonar(){
@@ -145,10 +148,11 @@ public class Robot{
 	private void collectionThread() {
 		Thread collection = new Thread() {
 			public void run() {
-
 				while (true) {
 					synchronized(sensorLock){
-						if (pos2D.isDataReady() && sonar.isDataReady() && fiducial.isDataReady() /*&& fiducial.isGeomReady()*/) {
+						if (pos2D.isDataReady() && sonar.isDataReady() && fiducial.isDataReady() && pos2D.getTimestamp() == fiducial.getTimestamp()
+								&& pos2D.getTimestamp() == sonar.getTimestamp()) {
+
 							x = pos2D.getX();
 							y = pos2D.getY();
 							yaw = pos2D.getYaw();
@@ -156,25 +160,16 @@ public class Robot{
 							fiducialsInView = fiducial.getData().getFiducials();
 							//fiducialGeom = fiducial.getGeom();
 						}
-						
+
 						if(gripper.isDataReady()){
 							gripperData = gripper.getData();
 						}
-
-//						if (sonar.isDataReady()) {
-//							sonarValues = sonar.getData().getRanges();
-//						}
-
-//						if(fiducial.isDataReady()){
-//							fiducialsInView = fiducial.getData().getFiducials();
-//						}
 					}
-
+					
 					try {
 						sleep(COLLECTION_SLEEP);
 					} catch (InterruptedException e) {
 					}
-
 				}
 			}
 		};
@@ -352,6 +347,7 @@ public class Robot{
 			double py = pose.getPy();
 			//Point target =  new Point((int)px,(int)py);
 			Point target =  Map.convertPlayerToInternal(px, py);
+			
 			boolean do360 = true;
 			double distance360 = this.jiggleAverage;
 			while (true) {
@@ -368,6 +364,18 @@ public class Robot{
 				
 				
 				if (!isValidMoveCondition(target, end)) break;
+				if (carryingGarbage)
+				{
+					Point garbagePoint = Map.convertPlayerToInternal(x+(Math.cos(yaw)*0.4), y + (Math.sin(yaw)*0.4));
+					map.garbageListArray.get(currentGarbageIndex).setPoint(garbagePoint);
+					
+					if(x1y1.x <= garbagePoint.x && garbagePoint.x <= x2y2.x && x2y2.y <= garbagePoint.y && garbagePoint.y <= x1y1.y)
+					{
+						pos2D.setSpeed(0, 0);
+						map.garbageListArray.get(currentGarbageIndex).setIsCollected(true);
+						break;
+					}
+				}
 				
 				if (isRobotStuck()) break;
 				
@@ -501,6 +509,7 @@ public class Robot{
 
 			move(pos);
 		}
+		
 
 	}
 
@@ -510,26 +519,18 @@ public class Robot{
 		final Robot robot = this;
 		Thread thr = new Thread(){
 			public void run(){
-				setStatus(RobotState.Exploring);
+				
 				ExploreTest.exploreRobot(map, robot, Map.convertPlayerToInternal(x, y));
 				//map.filter();
 				//ExploreTest.exploreRobot(map, robot, Map.convertPlayerToInternal(x, y));
 				Robot.this.control.println("Robot " + Robot.this.index + " finished exploration.");
-				setStatus(RobotState.Idle);
 			}
 		};
 		thr.start();
 
 
 	}
-	
-	private void setStatus(RobotState state) {
-		this.Status = state;
-		control.RobotStateChanged(this, state);
-		
-	}
-	
-	
+
 
 	/**
 	 * Picks up an object
@@ -575,7 +576,9 @@ public class Robot{
 					synchronized(sensorLock){
 						if (fiducialsInView != null) {
 							for(int i = 0; i < fiducialsInView.length; i++ ){
-								int id = fiducialsInView[i].getId();
+								//we got a null pointer exception
+								int id = 0;
+								id = fiducialsInView[i].getId();
 								//unlike robots and 0,0 garbage items have an id of 5,6,7
 								if(id == 5 || id == 6 || id == 7 ){
 									double Py = fiducialsInView[i].getPose().getPy();
@@ -606,10 +609,9 @@ public class Robot{
 		//check if garbage has already been added
 		boolean garbageItemAlreadyExists = false;
 		//calculates how many tiles a garbage item takes up. They appear to take up 0.2 player units.
-		int threshold = (int) Math.round(0.4 / Map.SCALE);
 		for(int i = 0; i < map.garbageListArray.size(); i++){
-			if(Math.abs(garbageItem.getPoint().getX() - map.garbageListArray.get(i).getPoint().getX()) <= threshold &&
-					Math.abs(garbageItem.getPoint().getY() - map.garbageListArray.get(i).getPoint().getY()) <= threshold){
+			if(garbageItem.getPoint().getX() == map.garbageListArray.get(i).getPoint().getX() &&
+				  garbageItem.getPoint().getY() == map.garbageListArray.get(i).getPoint().getY()){
 				garbageItemAlreadyExists = true;
 				break;
 			}
@@ -633,8 +635,12 @@ public class Robot{
 		goFetchGarbageHasBeenCalled = true;
 		int distanceFromGripperToRobotCenter = (int) Math.round(0.4/Map.SCALE);
 		Point dropOffPoint = Map.convertPlayerToInternal((x1+x2)/2, (y1+y2)/2);
+		//dropOffRectangle = new Rectangle((int)(x1/Map.SCALE), (int)(y1/Map.SCALE), (int)((x2 - x1) /Map.SCALE), (int)((y1 - y2)/Map.SCALE));
+		x1y1 = Map.convertPlayerToInternal(x1, y1);
+		x2y2 = Map.convertPlayerToInternal(x2, y2);
 		for(int i = 0; i < map.garbageListArray.size(); i++){
-
+			
+			currentGarbageIndex = i;
 			Point garbagePoint = map.garbageListArray.get(i).getPoint();
 
 
@@ -661,7 +667,7 @@ public class Robot{
 			//if(gripperData.getBeams() == 0){continue;}
 			
 			gripper.close();
-			
+			carryingGarbage  = true;
 			List<Point> returnList = AStarSearch.aSearch(map, 
 					getRobotPosition(),
 					dropOffPoint);
@@ -672,12 +678,11 @@ public class Robot{
 			isCollecting = true;
 			for (int k = 0; returnList != null && k < returnList.size(); k++){
 				move(returnList.get(k));
-				map.garbageListArray.get(i).setPoint(Map.convertPlayerToInternal(x+(Math.cos(yaw)*0.4), y + (Math.sin(yaw)*0.4)));
 			}
 			isFollowing = false;
 			isCollecting = false;
 
-
+			carryingGarbage = false;
 			gripper.open();
 		}
 		control.println("Garbage collection finished");
