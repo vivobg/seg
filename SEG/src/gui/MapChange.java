@@ -45,7 +45,7 @@ public class MapChange extends JFrame{
 				int x = Integer.valueOf(jtX.getText());
 				int y = Integer.valueOf(jtY.getText());
 				byte v = Byte.valueOf(jtV.getText());
-				map.setValue(x, y, v);
+				map.setValue(x, y, v, 9);
 				
 			}
 		});

@@ -3,9 +3,13 @@ package sense;
 import java.awt.Point;
 import java.util.ArrayList;
 
+import javaclient3.structures.PlayerPose2d;
+
 import map.Map;
 
 public class Bresenham {
+	private static final double MAP_SCALE = 0.1;
+
 	/**
 	 * Draws a line onto the map, with the given internal map coordinates
 	 * 
@@ -24,30 +28,61 @@ public class Bresenham {
 	 *            completely empty
 	 */
 	public static void line(Map map, int x0, int y0, int x1, int y1,
-			boolean WALL) {
-
+			boolean WALL, PlayerPose2d pose, int robotIndex) {
+		double rX = pose.getPx();
+		double rY = pose.getPy();
+		Point robotPoint = Map.convertPlayerToInternal(rX, rY);
 		ArrayList<Point> points = bresenhamLine(x0, y0, x1, y1);
-		
+
 		if (WALL) {
-			for (int i = 0; i < points.size() - Map.UNWALKABLE_CELLS; i++) {
+			double distance = Double.MAX_VALUE;
+			for (int i = 0; i < points.size() - Map.BUFFER_CELLS; i++) {
 				Point p = points.get(i);
-				if (!map.isOccupied(p.x, p.y) && !map.isUnwalkable(p.x, p.y))
-				map.setValue(p.x, p.y, Map.EMPTY);
+				//if (!map.isBuffer(p.x, p.y))
+					// Only update, if cell was observed from a closer range.
+				distance = Map.calculateSonarDistance(p, robotPoint);// Player
+				// Only update, if cell was observed from a closer range.
+				if (!map.isBuffer(p.x, p.y)
+						&& distance+MAP_SCALE < map.getSonarDistance(p.x, p.y)) {
+					map.setValue(p.x, p.y, Map.EMPTY, distance);
+				}
+				// If buffer, do not change type, but update distance
+				else if (map.isBuffer(p.x, p.y)
+						&& distance+MAP_SCALE < map.getSonarDistance(p.x, p.y)) {
+					map.setValue(p.x, p.y, Map.BUFFER, distance);
+				}
+
 			}
-			for (int i = (int) (points.size() - Map.UNWALKABLE_CELLS); i < points
+			
+			//Do not Bresenham the buffer, as a circle is drawn automatically.
+			/*for (int i = (int) (points.size() - Map.BUFFER_CELLS); i < points
 					.size() - 1; i++) {
 				if (i < 0)
 					continue;
 				Point p = points.get(i);
-				if (!map.isOccupied(p.x, p.y))
-				map.setValue(p.x, p.y, Map.UNWALKABLE);
+				//if (!map.isOccupied(p.x, p.y))
+				map.setValue(p.x, p.y, Map.BUFFER, p.distance(robotPoint)*Map.SCALE);
+			}*/
+			
+			Point p = new Point(x1, y1);
+			distance = Map.calculateSonarDistance(p, robotPoint);
+			if (distance+MAP_SCALE < Map.FAR_WALL && !Sense.sensingAnotherRobot(map, map.robotList.get(robotIndex), new Point(x1,y1)))
+				circle(map,x1, y1, Map.BUFFER_CELLS);
+			
+			if (distance+MAP_SCALE  < map.getSonarDistance(x1, y1)/* || map.getSonarDistance(x1, y1) < 0.3*/){
+				map.setValue(x1, y1, Map.WALL, distance);
 			}
-			circle(map,x1, y1, Map.UNWALKABLE_CELLS);
-			map.setValue(x1, y1, Map.OCCUPIED);
 		} else {
-			for (Point p : points) {
-				if (!map.isOccupied(p.x, p.y) && !map.isUnwalkable(p.x, p.y))
-				map.setValue(p.x, p.y, Map.EMPTY);
+			for (int i = 0; i < points.size() - Map.BUFFER_CELLS; i++) {
+				Point p = points.get(i);
+				
+				double distance = Map.calculateSonarDistance(p, robotPoint);
+				if (!map.isBuffer(p.x, p.y) && distance+MAP_SCALE  < map.getSonarDistance(p.x, p.y))
+					map.setValue(p.x, p.y, Map.EMPTY,  distance);
+				//If buffer, do not change type, but update distance
+				else if (map.isBuffer(p.x, p.y) && distance+MAP_SCALE  < map.getSonarDistance(p.x, p.y)){
+					map.setValue(p.x, p.y, Map.BUFFER,  distance);
+				}
 			}
 		}
 	}
@@ -75,11 +110,16 @@ public class Bresenham {
 		return points;
 	}
 
-	private static void circle(Map map, int x0, int y0, int radius) {
+	public static void circle(Map map, int x0, int y0, int radius) {
 		for(int y=-radius; y<=radius; y++)
 		    for(int x=-radius; x<=radius; x++)
-		        if(x*x+y*y <= radius*radius && !map.isOccupied(x0+x, y0+y))
-		            map.setValue(x0+x, y0+y, Map.UNWALKABLE);
+				if (x * x + y * y <= radius * radius
+						&& !map.isOccupied(x0 + x, y0 + y) && !map.isFarWall(x0 + x, y0 + y)) {
+					// current distance or 9.5 - Buffer is calculated, not sensed.
+					double distance = Math.min(
+							map.getSonarDistance(x0 + x, y0 + y), 9.5);
+					map.setValue(x0 + x, y0 + y, Map.BUFFER, distance);
+				}
 	}
 
 }

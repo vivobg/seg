@@ -7,6 +7,7 @@ import java.util.List;
 import map.Map;
 import robot.Robot;
 import search.AStarSearch;
+import sense.Sense;
 
 public class ExploreTest {
 
@@ -17,8 +18,8 @@ public class ExploreTest {
 			if (path != null) {
 				int size = path.size();
 				Point end = path.get(size - 1);
-				byte found = Math.random() < 0.4 ? Map.EMPTY : Map.OCCUPIED;
-				map.setValue(end.x, end.y, found);
+				float found = Math.random() < 0.4 ? Map.EMPTY : Map.WALL;
+				map.setValue(end.x, end.y, found,5);
 				
 				if (found < 0.4) //Target cell is EMPTY, start from it.
 					start = path.get(size - 1);
@@ -48,6 +49,8 @@ public class ExploreTest {
 				robot.currentOptimizedPath = path;
 				robot.isFollowing = true;
 				for (int i = 1; i<path.size();i++){
+					
+				
 					Point p = path.get(i);
 					Point end = path.get(path.size()-1);
 
@@ -99,7 +102,7 @@ public class ExploreTest {
 	}
 	
 	
-	private static List<Point> optimizePath2(List<Point> path) {
+	public static List<Point> optimizePath2(List<Point> path) {
 		List<Point> result = new ArrayList<Point>();
 
 		Point initialP = path.get(0);

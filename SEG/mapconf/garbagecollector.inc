@@ -43,7 +43,7 @@ define robot_base position (
 define robot_with_sensors robot_base 
 (
    robot_ranger( pose [0 0 -0.25 0] )
-   garbagegripper( pose [0.4 0 -0.25 0] )
+   garbagegripper( pose [0.4 0 -0.4 0] )
    fiducialsensor( pose [0.20 0 -0.25 0])
 )
 

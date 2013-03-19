@@ -19,7 +19,6 @@ import mainApp.Control;
 import map.Map;
 import robot.Robot;
 import sense.GarbageItem;
-import sense.GarbageManager;
 
 public class JMapPanel extends JPanel{
 
@@ -65,6 +64,8 @@ public class JMapPanel extends JPanel{
 		DrawObjects.drawRobots(map, g2, size);
 		DrawObjects.drawGarbage(map, g2, size);
 		DrawObjects.drawPaths(map, g2, size);
+		//DrawObjects.drawRobotArea(map, g2, size);
+		
 		g2.dispose();
 
 	}
@@ -228,7 +229,6 @@ public class JMapPanel extends JPanel{
 		map.addRobot(robot);
 		//map.addRobot(robot2);
 		//map.addRobot(robot3);
-		new GarbageManager(robot,map);
 		SwingUtilities.invokeLater(new Runnable() {
 
 			@Override

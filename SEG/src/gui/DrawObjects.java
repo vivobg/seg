@@ -10,6 +10,7 @@ import javaclient3.structures.PlayerPose2d;
 import map.Map;
 import map.VerticalArray;
 import robot.Robot;
+import search.AStarSearch;
 import sense.GarbageItem;
 
 public class DrawObjects {
@@ -18,7 +19,8 @@ public class DrawObjects {
 	public static final Color COLOR_EMPTY = Color.WHITE;
 	public static final Color COLOR_UNEXPLORED = Color.GRAY;
 	// Too close to a wall
-	public static final Color COLOR_UNWALKABLE = Color.RED.darker();
+	public static final Color COLOR_UNWALKABLE = Color.CYAN;
+	public static final Color COLOR_FAR_WALL = Color.BLACK;
 	public static final Color COLOR_PATH = Color.ORANGE;
 	public static final Color COLOR_PATH_OPTIMIZED = Color.ORANGE.darker();
 	public static final Color COLOR_PATH_START = Color.GREEN;
@@ -27,6 +29,9 @@ public class DrawObjects {
 			Color.BLUE };
 	public static final Color GARGABE_COLOR = Color.MAGENTA;
 	public static final float GARBAGE_SIZE = 0.2f;
+	public static final Color COLOR_PATH_FINISH_EXPLORED = Color.BLUE;
+	public static final Color ROBOT_AREA_COLOR = Color.YELLOW.brighter();
+
 
 	/**
 	 * Clear the given graphical context
@@ -95,14 +100,28 @@ public class DrawObjects {
 		for (int x = 0; x < map.getMaxXSize(); x++) {
 			VerticalArray vert = map.getVertical(x);
 			for (int y = (vert.getNegSize() - 1) * -1; y < vert.getPosSize(); y++) {
-				if (map.isEmpty(x, y))
+				boolean draw = false;
+				if (map.isEmpty(x, y)){
 					g2.setColor(COLOR_EMPTY);
-				else if (map.isUnexplored(x, y))
+					draw = true;
+				}
+				else if (map.isUnexplored(x, y)){
 					g2.setColor(COLOR_UNEXPLORED);
-				else if (map.isOccupied(x, y))
+					draw = true;
+				}
+				else if (map.isOccupied(x, y)){
 					g2.setColor(COLOR_WALL);
-				else
+					draw = true;
+				}
+				else if (map.isBuffer(x, y)){
 					g2.setColor(COLOR_UNWALKABLE);
+					draw = true;
+				}
+				else if (map.isFarWall(x, y)){
+					g2.setColor(COLOR_FAR_WALL);
+					draw = true;
+				}
+				if (draw)
 				g2.fillRect((center.x + x) * BLOCK_SIZE, (center.y - y)
 						* BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
 			}
@@ -112,14 +131,28 @@ public class DrawObjects {
 		for (int x = 1; x < map.getMinXSize(); x++) {
 			VerticalArray vert = map.getVertical(-x);
 			for (int y = (vert.getNegSize() - 1) * -1; y < vert.getPosSize(); y++) {
-				if (map.isEmpty(-x, y))
+				boolean draw = false;
+				if (map.isEmpty(-x, y)){
 					g2.setColor(COLOR_EMPTY);
-				else if (map.isUnexplored(-x, y))
+					draw = true;
+				}
+				else if (map.isUnexplored(-x, y)){
 					g2.setColor(COLOR_UNEXPLORED);
-				else if (map.isOccupied(-x, y))
+					draw = true;
+				}
+				else if (map.isOccupied(-x, y)){
 					g2.setColor(COLOR_WALL);
-				else
+					draw = true;
+				}
+				else if(map.isBuffer(-x, y)){
 					g2.setColor(COLOR_UNWALKABLE);
+					draw = true;
+				}
+				else if (map.isFarWall(-x, y)){
+					g2.setColor(COLOR_FAR_WALL);
+					draw = true;
+				}
+				if (draw)
 				g2.fillRect((center.x - x) * BLOCK_SIZE, (center.y - y)
 						* BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
 			}
@@ -148,17 +181,21 @@ public class DrawObjects {
 			Point start = opPath.get(0);
 			g2.fillRect((center.x + start.x) * BLOCK_SIZE, (center.y - start.y)
 					* BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-			g2.setColor(COLOR_PATH_FINISH);
+			
 			Point finish = opPath.get(opPath.size() - 1);
+			if (map.isUnexplored(finish.x, finish.y))
+				g2.setColor(COLOR_PATH_FINISH);
+			else g2.setColor(COLOR_PATH_FINISH_EXPLORED);
+			
 			g2.fillRect((center.x + finish.x) * BLOCK_SIZE,
 					(center.y - finish.y) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-
+			/*
 			// Optimized path
 			opPath = bot.currentOptimizedPath;
 			if (opPath == null || !bot.isFollowing)
 				continue;
 			g2.setColor(COLOR_PATH_OPTIMIZED);
-			for (int i = 0; i < opPath.size() - 1; i++) {
+			for (int i = 0; i < opPath.size()-1; i++) {
 				Point s = opPath.get(i);
 				Point t = opPath.get(i + 1);
 				List<Point> missing = line(s.x, s.y, t.x, t.y);
@@ -166,7 +203,7 @@ public class DrawObjects {
 					g2.fillRect((center.x + p.x) * BLOCK_SIZE, (center.y - p.y)
 							* BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
 				}
-			}
+			}*/
 		}
 	}
 
@@ -233,5 +270,20 @@ public class DrawObjects {
 					- garbageSize / 2, (center.y - garbage.getPoint().y)
 					* BLOCK_SIZE - garbageSize / 2, garbageSize, garbageSize);
 		}
+	}
+
+	public static void drawRobotArea(Map map, Graphics2D g2, Point size) {
+		// TODO Auto-generated method stub
+		
+		Point center = new Point(size.x / 2 / BLOCK_SIZE, size.y / 2 / BLOCK_SIZE);
+		//int robotSize = (int) (BLOCK_SIZE * (Robot.ROBOT_SIZE / Map.SCALE));
+		g2.setColor(ROBOT_AREA_COLOR);
+		Point robot1 = map.getRobotList().get(0).getRobotPosition();
+		List<Point> adjacentPoints = AStarSearch.getAdjacentPoints(map, robot1, true);
+
+	
+		
+		
+		
 	}
 }

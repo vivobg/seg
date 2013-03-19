@@ -64,16 +64,17 @@ public class Map implements Serializable{
 		this.maxX = maxX;
 	}
 	//Fiducially explored cells have the sign flipped.
-	public static final byte UNEXPLORED = 1;
-	public static final byte EMPTY 		= 2;
-	public static final byte UNWALKABLE = 3;
-	public static final byte OCCUPIED 	= 4;
+	public static final float UNEXPLORED = 1.95f;//Allow to be overwritten
+	public static final float EMPTY 	 = 2;
+	public static final float BUFFER     = 3;
+	public static final float WALL 	 	 = 4;
+	public static final float FAR_WALL = Map.WALL + 0.35f;//3.5meters
 	
-	public static final float TOO_CLOSE = 0.8f;// Player Units from wall
+	public static final float TOO_CLOSE = 0.7f;// Player Units from wall
 	public static final float SCALE = 0.1f;// Player units into 1 internal map
 											// unit
 	// how many cells away from wall are empty, but too close to the wall
-	public static final int UNWALKABLE_CELLS = Math.round(TOO_CLOSE / SCALE);
+	public static final int BUFFER_CELLS = Math.round(TOO_CLOSE / SCALE);
 
 	private ArrayList<VerticalArray> posArray;
 	private ArrayList<VerticalArray> negArray;
@@ -88,9 +89,9 @@ public class Map implements Serializable{
 		garbageList = new HashMap<Point, Boolean>();
 		garbageListArray = new ArrayList<GarbageItem>();
 		robotList = new ArrayList<Robot>();
-		setValue(0, 0, Map.UNEXPLORED);
-		setValue(1, 1, Map.UNEXPLORED);
-		setValue(-1, -1, Map.UNEXPLORED);
+		setValue(0, 0, Map.UNEXPLORED,0);
+		setValue(1, 1, Map.UNEXPLORED,0);
+		setValue(-1, -1, Map.UNEXPLORED,0);
 	}
 	
 	public void addRobot(Robot r){
@@ -136,7 +137,7 @@ public class Map implements Serializable{
 	 *            the vertical index
 	 * @return the value at the specified location
 	 */
-	public byte getValue(int x, int y) {
+	public float getValue(int x, int y) {
 		try {
 			if (x < 0) {
 				x = Math.abs(x);
@@ -146,6 +147,24 @@ public class Map implements Serializable{
 		} catch (IndexOutOfBoundsException e) {
 			return Map.UNEXPLORED;
 		}
+	}
+	
+	public double getSonarDistance(int x, int y){
+		double value = Math.abs(getValue(x, y));
+		//Remove integer part
+		value -=  Math.floor(value);
+		//Multiply by 10 to extract sonar difference
+		value *= 10;
+		return value;
+		
+	}
+	
+	public static double calculateSonarDistance(Point a, Point b){
+		return a.distance(b)*Map.SCALE;
+	}
+	
+	public static float encodeSonarDifference(double distance){
+		return (float) (distance/10);//nothing to do with map scale
 	}
 
 	/**
@@ -180,7 +199,7 @@ public class Map implements Serializable{
 			return posArray.get(x);
 	}
 	
-	private void updateMap(int x, int y, byte value){
+	private void updateMap(int x, int y, float value){
 		ArrayList<VerticalArray> array;
 		if (x < 0)
 			array = negArray;
@@ -208,7 +227,7 @@ public class Map implements Serializable{
 	 * @param explored Explored or Not
 	 */
 	public synchronized void setFiducialExplored(int x, int y) {
-		byte val = getValue(x, y);
+		float val = getValue(x, y);
 		if (val > 0) val *= -1;	
 		updateMap(x, y, val);
 	}
@@ -224,10 +243,13 @@ public class Map implements Serializable{
 	 * @param value
 	 *            the value to set in the given location, assumes positive value
 	 */
-	public synchronized void setValue(int x, int y, byte value) {
+	public synchronized void setValue(int x, int y, float value, double distance) {
+		//Only update, if cell was observed from a closer range.
+		value += Map.encodeSonarDifference(distance);
 		//Preserve fiducial status
 		if (isFiducialExplored(x, y)) value *=-1;
 		updateMap(x, y, value);
+		//}
 	}
 
 	/**
@@ -262,21 +284,32 @@ public class Map implements Serializable{
 	public int getMinYSize() {
 		return minY;
 	}
+	
+	public boolean isFarWall(int x, int y) {
+		//return getValue(x, y) == Math.abs(Map.OCCUPIED);
+		float value  = Math.abs(getValue(x, y));
+		return value > Map.FAR_WALL;
+	}
 
 	public boolean isOccupied(int x, int y) {
-		return getValue(x, y) == Math.abs(Map.OCCUPIED);
+		//return getValue(x, y) == Math.abs(Map.OCCUPIED);
+		float value  = Math.abs(getValue(x, y));
+		return value >= Map.WALL && value <= Map.FAR_WALL;
 	}
 
 	public boolean isEmpty(int x, int y) {
-		return getValue(x, y) == Math.abs(Map.EMPTY);
+		float value  = Math.abs(getValue(x, y));
+		return value >= Map.EMPTY && value < Map.BUFFER;
 	}
 
 	public boolean isUnexplored(int x, int y) {
-		return getValue(x, y) == Math.abs(Map.UNEXPLORED);
+		float value  = Math.abs(getValue(x, y));
+		return value >= Map.UNEXPLORED && value < Map.EMPTY;
 	}
 
-	public boolean isUnwalkable(int x, int y) {
-		return getValue(x, y) == Math.abs(Map.UNWALKABLE);
+	public boolean isBuffer(int x, int y) {
+		float value  = Math.abs(getValue(x, y));
+		return value >= Map.BUFFER && value < Map.WALL;
 	}
 	
 	public boolean isFiducialExplored(int x, int y){
@@ -297,18 +330,18 @@ public class Map implements Serializable{
 	}
 
 	public boolean isUnwalkable(float x, float y) {
-		return getValue(x, y) == Math.abs(Map.UNWALKABLE);
+		return getValue(x, y) == Math.abs(Map.BUFFER);
 	}
 	*/
 	public static void main(String[] a) {
 		Map map = new Map();
 
-		map.setValue(0, 3, Map.EMPTY);
-		map.setValue(2, 4, Map.OCCUPIED);
-		map.setValue(4, -2, Map.UNWALKABLE);
-		map.setValue(3, -5, Map.UNEXPLORED);
+		map.setValue(0, 3, Map.EMPTY, 4);
+		map.setValue(2, 4, Map.WALL, 3);
+		map.setValue(4, -2, Map.BUFFER, 2);
+		map.setValue(3, -5, Map.UNEXPLORED, 2);
 
-		map.setValue(-2, -2, Map.EMPTY);
+		map.setValue(-2, -2, Map.EMPTY, 2);
 		// map.setValue(1, 1, 1.1f);
 		// map.setValue(1, 2, 0.2f);
 		// map.setValue(3, 4, 3.4f);
