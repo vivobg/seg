@@ -24,9 +24,6 @@ public class Control {
 	Map map;
 	public Gui gui = null;
 
-	// ArrayList<Robot> robots = new ArrayList<Robot>();
-	// ArrayList<Point> garbage = new ArrayList<Point>();
-	//BotMode botMode = BotMode.Solo;
 	private boolean soloMode = true;
 	/**
 	 * Initialise a new Control instance. It loads a pre-explored map,
