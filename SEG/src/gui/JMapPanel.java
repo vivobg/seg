@@ -1,24 +1,13 @@
 package gui;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 
-import control.Control;
-
 import map.Map;
-import robot.Robot;
 /**
  * Provides a custom JPanel, tailored to displaying a Map instance,
  * with the contents of each cell, the garbages, the robots and their paths. 
@@ -71,7 +60,6 @@ public class JMapPanel extends JPanel{
 		DrawObjects.drawRobots(map, g2, size);
 		DrawObjects.drawGarbage(map, g2, size);
 		DrawObjects.drawPaths(map, g2, size);
-		//DrawObjects.drawRobotArea(map, g2, size);
 		
 		g2.dispose();
 
