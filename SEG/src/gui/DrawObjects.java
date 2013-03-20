@@ -12,7 +12,12 @@ import map.VerticalArray;
 import robot.Robot;
 import search.AStarSearch;
 import sense.GarbageItem;
-
+/**
+ * Class providing static methods to draw the map, robots, garbages and paths
+ * to either a Java Swing component, or a Buffered image, depending on the provided
+ * Graphics2D instance.
+ *
+ */
 public class DrawObjects {
 	public static final int BLOCK_SIZE = 3;
 	public static final Color COLOR_WALL = Color.BLACK;
@@ -160,7 +165,12 @@ public class DrawObjects {
 		}
 
 	}
-
+	/**
+	 * Draw the path that each robot is currently following.
+	 * @param map the map instance
+	 * @param g2 the graphics context to draw with
+	 * @param size the size of the "canvas" on which to draw, as Graphics2D does not provide size information
+	 */
 	public static void drawPaths(Map map, Graphics2D g2, Point size) {
 
 		Point center = new Point(size.x / 2 / BLOCK_SIZE, size.y / 2
@@ -207,7 +217,7 @@ public class DrawObjects {
 			}*/
 		}
 	}
-
+/*
 	public static List<Point> line(int x0, int y0, int x1, int y1) {
 
 		int dx = Math.abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
@@ -230,7 +240,7 @@ public class DrawObjects {
 			}
 		}
 		return points;
-	}
+	}*/
 
 
 	/**
@@ -260,7 +270,12 @@ public class DrawObjects {
 					robotSize, startAngle, 300);
 		}
 	}
-
+	/**
+	 * Draw the discovered garbage objects, from the given map
+	 * @param map the map instance
+	 * @param g2 the graphics context to draw with
+	 * @param size the size of the canvas, as Graphics2D does not provide size information
+	 */
 	public static void drawGarbage(Map map, Graphics2D g2, Point size) {
 		Point center = new Point(size.x / 2 / BLOCK_SIZE, size.y / 2 / BLOCK_SIZE);
 		int garbageSize = (int) (BLOCK_SIZE * (GARBAGE_SIZE / Map.SCALE));
@@ -274,7 +289,12 @@ public class DrawObjects {
 					* BLOCK_SIZE - garbageSize / 2, garbageSize, garbageSize);
 		}
 	}
-
+	/**
+	 * TO BE REMOVED, NOT USED
+	 * @param map
+	 * @param g2
+	 * @param size
+	 */
 	public static void drawRobotArea(Map map, Graphics2D g2, Point size) {
 		// TODO Auto-generated method stub
 		

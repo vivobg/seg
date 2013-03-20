@@ -7,15 +7,19 @@ import java.util.List;
 import map.Map;
 import robot.Robot;
 import sense.Bresenham;
-
+/**
+ * Class providing static methods, to calculate a path between 2 points
+ * @author vivo
+ *
+ */
 public class AStarSearch {
 	/**
 	 * A* search from source to target.
 	 * Useful during garbage collection.
-	 * @param map
-	 * @param source
-	 * @param target
-	 * @return
+	 * @param map the map to base the path on
+	 * @param source the starting point
+	 * @param target the final point
+	 * @return the list of path nodes to follow from source to target, null if no possible path
 	 */
 	public static List<Point> aSearch(Map map , Point source, Point target){
 		return search(map, source, target, true );
@@ -23,19 +27,19 @@ public class AStarSearch {
 	/**
 	 * Djikstra's search from source to nearest unexplored cell.
 	 * Useful during exploration
-	 * @param map
-	 * @param source
-	 * @return
+	 * @param map map the map to base the path on
+	 * @param source source the starting point
+	 * @return the list of path nodes to follow from the source to the nearest unexplored point
 	 */
 	public static List<Point> dSearch(Map map , Point source){
 		return search(map, source, null, false );
 	}
 	/**
 	 * A* or Djikstra's search, depending on parameters
-	 * @param map
-	 * @param source
-	 * @param target
-	 * @param ASEARCH
+	 * @param map map the map to base the path on
+	 * @param source source the starting point
+	 * @param target the final point
+	 * @param ASEARCH a flag to indicate whether to perform an A* or Dijkstra search
 	 * @return
 	 */
 	private static List<Point> search(Map map , Point source, Point target, boolean ASEARCH )
@@ -95,7 +99,13 @@ public class AStarSearch {
 
 
 
-
+	/**
+	 * Calculate the heuristic cost for A*
+	 * @param source the current point
+	 * @param target the final point
+	 * @param ASEARCH true for A*, false for Dijkstra
+	 * @return the heuristic cost from given point to final target
+	 */
 	private static int Hcost(Point source, Point target, boolean ASEARCH) {
 		//Incase we want to change the cost function
 		if (ASEARCH) return 5*euclidDist(source,target);
@@ -122,14 +132,24 @@ public class AStarSearch {
 			return cost + 5;
 
 	}
-
+	/**
+	 * Check to see if two points are diagonal to each other
+	 * @param s the first point
+	 * @param t the second point
+	 * @return true if diagonal, false otherwise
+	 */
 	private static boolean isDiagonal(Point s, Point t){
 		if (s.x == t.x || s.y == t.y)return false;
 		else return true;
 	}
 
 
-
+	/**
+	 * Reconstruct the path from source to target, starting from the target
+	 * @param cameFrom the node from which the current node was reached
+	 * @param target the target node
+	 * @return list of nodes from source to target
+	 */
 	private static List<Point> reconstructPath(HashMap<Point, Point> cameFrom, Point target) {
 		if(cameFrom.containsKey(target)){
 			List<Point> result = new ArrayList<Point>();
@@ -143,7 +163,12 @@ public class AStarSearch {
 	}
 
 
-
+	/**
+	 * Returns the lowest cost node from the open set
+	 * @param openSet the open set
+	 * @param fScores the list of total cost for every point
+	 * @return the lowest cost node
+	 */
 	private static Point getLowest(
 			List<Point> openSet,HashMap<Point, Integer> fScores) {
 		Point lowest = null;
@@ -162,7 +187,12 @@ public class AStarSearch {
 
 		return  lowest;
 	}
-
+	/**
+	 * The straight line distance between two points
+	 * @param source the first point
+	 * @param target the second point
+	 * @return the distance between the two points
+	 */
 	private static int euclidDist(Point source, Point target) {
 		int dx = target.x - source.x;
 		int dy = target.y - source.y;
@@ -170,7 +200,13 @@ public class AStarSearch {
 		int dist = (int) Math.sqrt(Math.pow(dx + dy, 2));
 		return dist;
 	}
-
+	/**
+	 * Get a list of all adjacent points
+	 * @param map the map to use
+	 * @param p the current point for which to return adjacent points
+	 * @param ASEARCH true if A*, false if Dijkstra
+	 * @return the list of adjacent points
+	 */
 	public static List<Point> getAdjacentPoints(Map map, Point p , boolean ASEARCH)
 	{
 		List<Point> possiblePoints = new ArrayList<Point>();
@@ -199,7 +235,12 @@ public class AStarSearch {
 		return possiblePoints;
 
 	}
-
+	/**
+	 * Check if the given cell is available (not too close to a wall)
+	 * @param adjPoint the point to check
+	 * @param map the map to use
+	 * @return true if the point is available, false otherwise
+	 */
 	public static boolean isAvailableCell(Point adjPoint, Map map) {
 		//int scale = 2; //for Testing
 		int scale = (int) Math.ceil( (0.3 / Map.SCALE ));

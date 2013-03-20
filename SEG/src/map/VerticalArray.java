@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
+ * A one-dimension dynamic array, which can grow in either direction. It stores a float
+ * in each cell.
  * @author Vilian Atmadzhov
  * 
  */
@@ -19,7 +21,9 @@ public class VerticalArray implements Serializable{
 	private static final long serialVersionUID = 8012591684140451394L;	
 	private ArrayList<Float> posArray;
 	private ArrayList<Float> negArray;
-
+	/**
+	 * initialise a new VerticalArray with an UNEXPLORED 0 index
+	 */
 	public VerticalArray(){
 		
 		posArray=new ArrayList<Float>();
@@ -27,7 +31,12 @@ public class VerticalArray implements Serializable{
 		//negArray.add((byte) -123);
 		setValue(0, Map.UNEXPLORED);
 	}
-	
+	/**
+	 * initialise a new VerticalArray with an UNEXPLORED 0 index, and
+	 * the specified index with the given value
+	 * @param y the y coordinate
+	 * @param value the value to give to the cell
+	 */
 	public VerticalArray(int y, float value){
 		posArray=new ArrayList<Float>();
 		negArray=new ArrayList<Float>();
@@ -171,7 +180,9 @@ public class VerticalArray implements Serializable{
 		float value = Math.abs(getValue(y));
 		return value >= Map.UNEXPLORED && value < Map.EMPTY;
 	}
-	
+	/**
+	 * Returns a string representation of the Vertical array.
+	 */
 	public String toString(){
 		
 		StringBuffer sb = new StringBuffer("[");

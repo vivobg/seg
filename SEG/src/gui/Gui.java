@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package gui;
 
 import java.awt.Dimension;
@@ -25,8 +22,8 @@ import mainApp.Control;
 import map.Map;
 
 /**
- *
- * @author vivo
+ * The GUI class, which extends JFrame, and provides the graphical user interface
+ * of the software.
  */
 public class Gui extends javax.swing.JFrame {
     private Map map;
@@ -43,7 +40,11 @@ public class Gui extends javax.swing.JFrame {
         this.buf = new StringBuffer();
         initComponents();
     }
-
+    /**
+     * Print to the graphical console
+     * @param text the text to write to the console
+     * @param color the the color to style the text with
+     */
     public void printToGuiConsole(final String text, final String color) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -56,7 +57,9 @@ public class Gui extends javax.swing.JFrame {
         });
 
     }
-
+    /**
+     * Center the JMapPanel within its JScrollPane
+     */
     private void centerMap() {
         JViewport vp = jscrMap.getViewport();
         Dimension vs = vp.getExtentSize();

@@ -9,7 +9,11 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import map.Map;
-
+/**
+ * A class providing static methods to save a Map instance
+ * to a PNG image file
+ *
+ */
 public class Save {
 	/**
 	 * Save the given image to a PNG file.
@@ -17,7 +21,7 @@ public class Save {
 	 * @param filename The filename to save to, including file extension 
 	 * @return True if successful, False if error occurred.
 	 */
-	public static boolean toPNG(BufferedImage image, String filename) {
+	private static boolean toPNG(BufferedImage image, String filename) {
 		File f = new File(filename);
 		try {
 			if (!ImageIO.write(image, "PNG", f))
@@ -34,7 +38,7 @@ public class Save {
 	 * @param map
 	 *            The map instance to use
 	 * @param filename
-	 *            the filename to use for the image
+	 *            the filename to use for the image, including file extension
 	 * @return
 	 */
 	public static boolean toPNG(Map map, String filename) {

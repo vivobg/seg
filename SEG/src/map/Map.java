@@ -13,37 +13,59 @@ import robot.Robot;
 import sense.GarbageItem;
 
 /**
- * Provides a dynamic 2D grid of byte. It is based on ArrayLists, and is
+ * Provides a dynamic 2D array of floats. It is based on ArrayLists, and is
  * suitable for storing occupancy grid maps of arbitrary sizes, because it grows
- * as needed.
+ * as needed. The integer part indicates the TYPE of the cell (empty, unexplored, etc.),
+ * while the decimal part contains the encoded DISTANCE at which the cell was observed.
  * 
  * @author Vilian Atmadzhov
  * 
  */
 public class Map implements Serializable{
+	/**
+	 * 
+	 * @return The list of discovered garbage objects
+	 */
 	public List<GarbageItem> getGarbageListArray() {
 		return garbageListArray;
 	}
-
+	/**
+	 * 
+	 * @return The underlying positive X array
+	 */
 	public ArrayList<VerticalArray> getPosArray() {
 		return posArray;
 	}
-
+	/**
+	 * 
+	 * @return The underlying negative X array
+	 */
 	public ArrayList<VerticalArray> getNegArray() {
 		return negArray;
 	}
 	public transient List<Robot> robotList;
 	public List<GarbageItem> garbageListArray;// GUI code based on this
 	public transient HashMap<Point, Boolean> garbageList;// Abdi's code based on this
-
+	/**
+	 * 
+	 * @return The minimum Y value of the map with the sign stripped, as the minimum Y
+	 * can only be 0 or less and the indices of the negative array are positive.
+	 */
 	public int getMinY() {
 		return minY;
 	}
-
+	/**
+	 * 
+	 * @return The maximum Y value of the map, 0 or greater.
+	 */
 	public int getMaxY() {
 		return maxY;
 	}
-
+	/**
+	 * 
+	 * @return The minimum X value of the map with the sign stripped, as the minimum X
+	 * can only be 0 or less and the indices of the negative array are positive.
+	 */
 	public int getMinX() {
 		return minX;
 	}
@@ -82,7 +104,9 @@ public class Map implements Serializable{
 	private int maxY = 0; // handy for the GUI
 	private int minX = 0; // handy for the GUI
 	private int maxX = 0; // handy for the GUI
-	
+	/**
+	 * Initialise a new Map instance, with empty garbage and robot lists.
+	 */
 	public Map() {
 		posArray = new ArrayList<VerticalArray>();
 		negArray = new ArrayList<VerticalArray>();
@@ -93,21 +117,37 @@ public class Map implements Serializable{
 		setValue(1, 1, Map.UNEXPLORED,0);
 		setValue(-1, -1, Map.UNEXPLORED,0);
 	}
-	
+	/**
+	 * Add a robot to the map's list of robots.
+	 * @param r
+	 */
 	public void addRobot(Robot r){
 		robotList.add(r);
 	}
-	
+	/**
+	 * 
+	 * @return The map's robot list.
+	 */
 	public List<Robot> getRobotList(){
 		return robotList;
 	}
-
+	/**
+	 * Convert from Player coordinates to internal map coordinates
+	 * @param x the X Player coordinate
+	 * @param y the Y Player coordinate
+	 * @return a Point with the converted internal coordinates
+	 */
 	public static Point convertPlayerToInternal(double x, double y) {
 		int xi = (int) Math.round(x / Map.SCALE);
 		int yi = (int) Math.round(y / Map.SCALE);
 		return new Point(xi, yi);
 	}
-
+	/**
+	 * Update the MinMax Y values
+	 * @param x The x coordinate of the new cell.
+	 * @param y The y coordinate of the new cell.
+	 * @return true if the map's dimensions increased, false otherwise.
+	 */
 	private boolean updateMinMaxY(int x, int y) {
 		boolean grown = false;
 		if (y > maxY) {
@@ -148,7 +188,12 @@ public class Map implements Serializable{
 			return Map.UNEXPLORED;
 		}
 	}
-	
+	/**
+	 * Extract the encoded distance for the specified cell
+	 * @param x the x coordinate of the cell
+	 * @param y the y coordinate of the cell
+	 * @return the decoded distance from which the cell was observed.
+	 */
 	public double getSonarDistance(int x, int y){
 		double value = Math.abs(getValue(x, y));
 		//Remove integer part
@@ -158,11 +203,20 @@ public class Map implements Serializable{
 		return value;
 		
 	}
-	
+	/**
+	 * Calculate the distance in Player units between two Points in internal coordinates.
+	 * @param a the first Point
+	 * @param b the second Point
+	 * @return the Player distance between the two points
+	 */
 	public static double calculateSonarDistance(Point a, Point b){
 		return a.distance(b)*Map.SCALE;
 	}
-	
+	/**
+	 * Encode the given Player distance
+	 * @param distance the distance to encode
+	 * @return the encoded distance, as a decimal with a 0 integer part
+	 */
 	public static float encodeSonarDifference(double distance){
 		return (float) (distance/10);//nothing to do with map scale
 	}
@@ -198,7 +252,12 @@ public class Map implements Serializable{
 		} else
 			return posArray.get(x);
 	}
-	
+	/**
+	 * Update/create the specified cell with the given value
+	 * @param x the x coordinate of the cell
+	 * @param y the y coordinate of the cell
+	 * @param value the value to be stored in the specified cell
+	 */
 	private void updateMap(int x, int y, float value){
 		ArrayList<VerticalArray> array;
 		if (x < 0)
@@ -212,7 +271,7 @@ public class Map implements Serializable{
 			array.get(xc).setValue(y, value);// Update the existing value
 		} else {// Grow the array with default values, up to the needed index
 			int size = array.size();
-			for (int i = 1; i < xc - size + 1; i++) {// *********************i=0
+			for (int i = 1; i < xc - size + 1; i++) {
 				array.add(new VerticalArray());
 			}
 			array.add(new VerticalArray(y, value));
@@ -268,50 +327,94 @@ public class Map implements Serializable{
 		Point c = convertPlayerToInternal(x, y);
 		setValue(c.x, c.y, value);
 	}*/
-
+	
+	
+	/**
+	 * 
+	 * @return the size of the internal positive x array
+	 */
 	public int getMaxXSize() {
 		return posArray.size();
 	}
-
+	/**
+	 * 
+	 * @return the size of the internal negative x array
+	 */
 	public int getMinXSize() {
 		return negArray.size();
 	}
-
+	/**
+	 * 
+	 * @return the size of the maximum positive y array
+	 */
 	public int getMaxYSize() {
 		return maxY;
 	}
-
+	/**
+	 * 
+	 * @return the size of the minimum positive y array
+	 */
 	public int getMinYSize() {
 		return minY;
 	}
-	
+	/**
+	 * Check if the specified cell is a FAR WALL
+	 * @param x the x coordinate of the cell
+	 * @param y the y coordinate of the cell
+	 * @return true if the cell is FAR WALL, false otherwise
+	 */
 	public boolean isFarWall(int x, int y) {
 		//return getValue(x, y) == Math.abs(Map.OCCUPIED);
 		float value  = Math.abs(getValue(x, y));
 		return value > Map.FAR_WALL;
 	}
-
+	/**
+	 * Check if the specified cell is a WALL
+	 * @param x the x coordinate of the cell
+	 * @param y the y coordinate of the cell
+	 * @return true if the cell is WALL, false otherwise
+	 */
 	public boolean isOccupied(int x, int y) {
 		//return getValue(x, y) == Math.abs(Map.OCCUPIED);
 		float value  = Math.abs(getValue(x, y));
 		return value >= Map.WALL && value <= Map.FAR_WALL;
 	}
-
+	/**
+	 * Check if the specified cell is EMPTY
+	 * @param x the x coordinate of the cell
+	 * @param y the y coordinate of the cell
+	 * @return true if the cell is EMPTY, false otherwise
+	 */
 	public boolean isEmpty(int x, int y) {
 		float value  = Math.abs(getValue(x, y));
 		return value >= Map.EMPTY && value < Map.BUFFER;
 	}
-
+	/**
+	 * Check if the specified cell is UNEXPLORED
+	 * @param x the x coordinate of the cell
+	 * @param y the y coordinate of the cell
+	 * @return true if the cell is UNEXPLORED, false otherwise
+	 */
 	public boolean isUnexplored(int x, int y) {
 		float value  = Math.abs(getValue(x, y));
 		return value >= Map.UNEXPLORED && value < Map.EMPTY;
 	}
-
+	/**
+	 * Check if the specified cell is BUFFER
+	 * @param x the x coordinate of the cell
+	 * @param y the y coordinate of the cell
+	 * @return true if the cell is BUFFER, false otherwise
+	 */
 	public boolean isBuffer(int x, int y) {
 		float value  = Math.abs(getValue(x, y));
 		return value >= Map.BUFFER && value < Map.WALL;
 	}
-	
+	/**
+	 * Check if the specified cell is fiducially explored.
+	 * @param x the x coordinate of the cell
+	 * @param y the y coordinate of the cell
+	 * @return true if the cell is fiducially explored, false otherwise
+	 */
 	public boolean isFiducialExplored(int x, int y){
 		return getValue(x,y) < 0;
 	}
@@ -366,7 +469,10 @@ public class Map implements Serializable{
 		}
 		System.out.println("Done negative X");
 	}
-
+	/**
+	 * 
+	 * @return The maximum X value of the map, 0 or greater.
+	 */
 	public int getMaxX() {
 		return maxX;
 	}

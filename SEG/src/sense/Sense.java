@@ -7,16 +7,20 @@ import javaclient3.structures.PlayerPose2d;
 import map.Map;
 import robot.Robot;
 import search.AStarSearch;
-
+/**
+ * 
+ * Class providing static methods that use the sensor data to update the map
+ *
+ */
 public class Sense {
-	/**
-	 * Scan the current surroundings with the sonar sensors
-	 * @param map
-	 * @param robot
-	 */
+	
 	
 	public static java.util.List<Point> adjacentPoints;
-	
+	/**
+	 * Scan the current surroundings with the sonar sensors and update the map
+	 * @param map the map to update
+	 * @param robot the robot from which to take the sonar data
+	 */
 	public static void sonarScan(Map map, Robot robot) {
 		PlayerPose2d pose;
 		double[] sonarValues = null;
@@ -44,22 +48,25 @@ public class Sense {
 		}
 	}
 	/**
-	 * Scan the current surroundings with the fiducial sensor
-	 * @param map
-	 * @param robot
+	 * Scan the current surroundings with the fiducial sensor, and update the map
+	 * @param map the map to update
+	 * @param robot the robot from which to take the fiducial data
 	 */
 	public static void fiducialScan(Map map, Robot robot){
 		updateFiducialExplored(map, robot);
 		throw new UnsupportedOperationException("Not Implemented Yet!");
 	}
+	
 	/**
-	 * Scan the current surroundings with both types of sensors
-	 * @param map
-	 * @param robot
+	 * Update the map with the given sonar reading
+	 * @param robot the robot from which the reading was obtained
+	 * @param map the map to update
+	 * @param sX the robot's x coordinate at the time of the sonar reading
+	 * @param sY the robot's y coordinate at the time of the sonar reading
+	 * @param distance the sonar reading
+	 * @param angle the angle at which the reading was taken
+	 * @param pose the pose of the robot at the time of the reading
 	 */
-	public static void scan360(Map map, Robot robot){
-		throw new UnsupportedOperationException("Not Implemented Yet!");
-	}
 	private static void senseSonarSensor(Robot robot, Map map, double sX, double sY, double distance,
 			double angle,PlayerPose2d pose) {
 
@@ -78,16 +85,20 @@ public class Sense {
 		boolean WALL = distance < 5 ? true : false;
 		Bresenham.line(map, s.x, s.y, t.x, t.y, WALL, pose, robot.index);
 	}
-
+	
+	
+	
 	private static void updateFiducialExplored(Map map, Robot robot){
 		throw new UnsupportedOperationException("Not Implemented Yet!");
 	}
+	
+	
 	/**
-	 * 
-	 * @param map
-	 * @param robot
-	 * @param radius
-	 * @return
+	 * Check if sonar is detecting another robot
+	 * @param map the map to use
+	 * @param robot the current robot to check
+	 * @param radius the radius of the robots
+	 * @return true, if the sonar detects another robot, false otherwise
 	 */
 	public static boolean sensingAnotherRobot(Map map, Robot robot, Point target) {
 		int radius = (int) ((Robot.ROBOT_SIZE+0.7) / Map.SCALE);

@@ -18,7 +18,11 @@ import map.Map;
 import robot.Robot;
 import robot.RobotState;
 
-
+/**
+ * The class responsible for initialising and connecting all other classes.
+ * It processes the given command-line arguments and launches the requested
+ * functionality.
+ */
 public class Control {
 	Map map;
 	public Gui gui = null;
@@ -27,6 +31,10 @@ public class Control {
 	// ArrayList<Robot> robots = new ArrayList<Robot>();
 	// ArrayList<Point> garbage = new ArrayList<Point>();
 	BotMode botMode = BotMode.Solo;
+	/**
+	 * Initialise a new Control instance. It loads a pre-explored map,
+	 * if one was saved. It checks the current working directory for a "map.instance" file.
+	 */
 	public Control(){
 		this.map = new Map();
 		try {
@@ -46,6 +54,7 @@ public class Control {
 				map.setPosArray(savedMap.getPosArray());
 				map.setGarbageListArray(savedMap.getGarbageListArray());
 				this.println("Saved Map successfully loaded");
+				o.close();
 			}
 			else {
 				this.println("Saved object is not an instance of Map");
@@ -61,12 +70,18 @@ public class Control {
 
 		setupRobots();
 	}
+	/**
+	 * Initialise a new Control instance. 
+	 * @param args the arguments to process and launch requested functionality.
+	 */
 	public Control(String[] args)
 	{
 		this();
 		processArgs(args);
 	}
-
+	/**
+	 * Initialise the robots
+	 */
 	private void setupRobots() {
 		if (this.botMode.equals(BotMode.Solo) && map.robotList.size() == 0) {
 			map.robotList.add(new Robot(this, 0));
@@ -78,7 +93,10 @@ public class Control {
 			}
 		}
 	}
-
+	/**
+	 * Process the arguments and launch the requested functionality
+	 * @param args
+	 */
 	private void processArgs(String[] args) {
 		//java MainApp -solo -explore -map map1 -multi -collect 1 1 2 0 -map map2
 		if (args.length == 0) {
@@ -134,6 +152,10 @@ public class Control {
 		}
 
 	}
+	/**
+	 * Wrap Thread.sleep() and its try-catch block in a convenience method.
+	 * @param i
+	 */
 	private void sleep(int i) {
 		try {
 			Thread.sleep(200);
@@ -143,6 +165,9 @@ public class Control {
 		}
 		
 	}
+	/**
+	 * Launch the GUI.
+	 */
 	private void launchGui() {
 		//Enable Nimbus Look and Feel, if available.
 		try {
@@ -170,7 +195,13 @@ public class Control {
 			}
 		});
 	}
-
+	/**
+	 * Start the collection functionality, collecting all garbage objects into the specified rectangle area
+	 * @param x1 the x coordinate of the first point
+	 * @param y1 the y coordinate of the first point
+	 * @param x2 the x coordinate of the second point
+	 * @param y2 the y coordinate of the second point
+	 */
 	public void collect(final double x1, final double y1, final double x2, final double y2) {
 
 		//Rectangle collectionArea = new Rectangle(x1,y1,x2-x1,y2-y1);
@@ -194,6 +225,10 @@ public class Control {
 		//throw new RuntimeException("Not Implemented Yet Exception");
 
 	}
+	/**
+	 * 
+	 * @return The list of available robots
+	 */
 	private List<Robot> getAvailableRobots() {
 
 		List<Robot> availableBots = new ArrayList<Robot>();
@@ -205,31 +240,40 @@ public class Control {
 			availableBots = map.robotList;
 		return availableBots;
 	}
-
+	/**
+	 * Switch to use all robots. Disabled, as multi mode not fully implemented.
+	 */
 	public void switchToMulti() {
 		botMode = BotMode.Multi;
 		setupRobots();
 
 	}
-
+	/**
+	 * Switch to use only the Robot with index 0.
+	 */
 	public void switchToSolo() {
 		botMode = BotMode.Solo;
 		setupRobots();
 	}
-
+	/**
+	 * 
+	 * @return the map instance
+	 */
 	public Map getMap() {
 		return map;
 	}
 
 	/**
-	 * 
+	 * Save the map to a PNG image
 	 * @param filename the filename to be used to save the map (filename+.extension)
 	 */
 	private void saveMap(String filename) {
 		Save.toPNG(map, filename);
 
 	}
-
+	/**
+	 * Launch the exploration functionality
+	 */
 	public void explore() 
 	{	
 		if(botMode == BotMode.Solo)
@@ -247,7 +291,7 @@ public class Control {
 
 	}
 	/**
-	 * Print given text to console and GUI, if one is used.
+	 * Print the given text to console and GUI, if one is used.
 	 * @param text
 	 */
 	public void println(String text){
@@ -255,11 +299,18 @@ public class Control {
 		if (gui!=null) gui.printToGuiConsole(text, "#0000C0");
 		if (nbgui!=null) nbgui.printToGuiConsole(text, "#0000C0");
 	}
-	
+	/**
+	 * Print the state of the given robot
+	 * @param robot the robot
+	 * @param state the state of the robot
+	 */
 	public void RobotStateChanged(Robot robot, RobotState state) {
 		println("Robot " + robot.index + " set status to : " + state.toString());
 	}
-	
+	/**
+	 * 
+	 * @return true if all robots are idle/available.
+	 */
 	boolean allRobotsAvailable()
 	{
 		for(Robot robot : getAvailableRobots())

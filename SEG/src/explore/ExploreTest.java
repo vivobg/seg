@@ -10,7 +10,11 @@ import search.AStarSearch;
 import sense.Sense;
 
 public class ExploreTest {
-
+	/**
+	 * Robotless random exploration. To be REMOVED!
+	 * @param map
+	 * @param start
+	 */
 	public static void explore(Map map, Point start) {
 		List<Point> path = null;
 		do {
@@ -36,7 +40,12 @@ public class ExploreTest {
 		} while (path != null);
 		System.out.println("Exploration finished");
 	}
-	
+	/**
+	 * Explore the map with the given robot
+	 * @param map the map instance to write the exploration data to
+	 * @param robot the robot to explore with
+	 * @param start the starting point of the exploration
+	 */
 	public static void exploreRobot(Map map,Robot robot, Point start) {
 		//System.out.println("Exploration started");
 		List<Point> path = null;
@@ -82,7 +91,11 @@ public class ExploreTest {
 		//System.out.println("Exploration finished");
 
 	}
-
+	/**
+	 * BROKEN. TO BE REMOVED
+	 * @param path
+	 * @return
+	 */
 	private static List<Point> optimizePath(List<Point> path) {
 		List<Point> result = new ArrayList<Point>();
 		int lastGradient = 100;
@@ -101,7 +114,12 @@ public class ExploreTest {
 		return result;
 	}
 	
-	
+	/**
+	 * Optimise the given path by removing middle nodes from straight lines.
+	 * The returned path is geometrically identical, but contains far fewer nodes.
+	 * @param path the path to optimise
+	 * @return the optimised path
+	 */
 	public static List<Point> optimizePath2(List<Point> path) {
 		List<Point> result = new ArrayList<Point>();
 
@@ -152,7 +170,10 @@ public class ExploreTest {
 		
 		
 		
-		
+	/**
+	 * UNUSED, TO BE REMOVED
+	 * @param robot
+	 */
 	public static void scan(Robot robot) {
 		for(int i = 0; i < 4; i++)robot.turn(robot.yaw + Math.PI/i);
 		

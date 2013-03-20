@@ -19,20 +19,24 @@ import mainApp.Control;
 import map.Map;
 import robot.Robot;
 import sense.GarbageItem;
-
+/**
+ * Provides a custom JPanel, tailored to displaying a Map instance,
+ * with the contents of each cell, the garbages, the robots and their paths. 
+ *
+ */
 public class JMapPanel extends JPanel{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1361469152515719114L;
 	public static final long REFRESH_RATE = 50;
 	public static final int minWidth = 800;
 	public static final int minHeight = 800;
 
 	private Map map;
-	public static final int panelSize = (int) (50 / Map.SCALE * DrawObjects.BLOCK_SIZE);
-
+	public static final int panelSize = (int) (100 / Map.SCALE * DrawObjects.BLOCK_SIZE);
+	/**
+	 * Initialise a new JMapPanel
+	 * @param map the map instance to draw
+	 */
 	JMapPanel(Map map) {
 		this.map = map;
 		JMapPanel.this.setSize(panelSize, panelSize);
@@ -52,8 +56,11 @@ public class JMapPanel extends JPanel{
 	public Dimension getMinimumSize() {
 		return getPreferredSize();
 	}
-
+	
 	@Override
+	/**
+	 * The custom drawing of the panel.
+	 */
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
@@ -99,7 +106,10 @@ public class JMapPanel extends JPanel{
 		};
 		update.start();
 	}
-
+	/**
+	 * 
+	 * @return the map instance
+	 */
 	public Map getMap() {
 		return map;
 	}

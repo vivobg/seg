@@ -6,7 +6,11 @@ import java.util.ArrayList;
 import javaclient3.structures.PlayerPose2d;
 
 import map.Map;
-
+/**
+ * Class providing static methods that have algorithms
+ * based on Bresenham, or generate a circle
+ *
+ */
 public class Bresenham {
 	private static final double MAP_SCALE = 0.1;
 
@@ -86,7 +90,14 @@ public class Bresenham {
 			}
 		}
 	}
-	
+	/**
+	 * The Bresenham Line algorithm
+	 * @param x0 x coordinate of start point
+	 * @param y0 y coordinate of start point
+	 * @param x1 x coordinate of end point
+	 * @param y1 y coordinate of end point
+	 * @return the list of points between the start and end points
+	 */
 	public static ArrayList<Point> bresenhamLine(int x0, int y0, int x1, int y1){
 		int dx = Math.abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
 		int dy = Math.abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
@@ -109,7 +120,13 @@ public class Bresenham {
 		}
 		return points;
 	}
-
+	/**
+	 * Draw a circle onto the map, with the given center and radius
+	 * @param map the map to draw to
+	 * @param x0 the x coordinate of the center of the circle
+	 * @param y0 the y coordinate of the center of the circle
+	 * @param radius the radius of the circle
+	 */
 	public static void circle(Map map, int x0, int y0, int radius) {
 		for(int y=-radius; y<=radius; y++)
 		    for(int x=-radius; x<=radius; x++)

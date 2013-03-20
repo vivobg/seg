@@ -28,10 +28,8 @@ import sense.GarbageItem;
 import sense.Sense;
 
 /**
- * 
- * 
- *Generic robot class provides the interface with player/stage
- * 
+ *Generic robot class providing the interface with player/stage
+ *and providing the basic functionality of the robot
  */
 public class Robot{
 	PlayerClient robot = null;
@@ -92,12 +90,16 @@ public class Robot{
 	public PlayerPose2d getPose(){
 		return new PlayerPose2d(x,y,yaw);
 	}
-
+/*
 	public Robot(Control control) {
 
 		this(control, 0);
-	}
-
+	}*/
+	/**
+	 * Initialise a new Robot instance
+	 * @param control the control instance to use
+	 * @param index the index of the robot
+	 */
 	public Robot(Control control, int index) {
 		this.control = control;
 		this.index = index;
@@ -132,21 +134,31 @@ public class Robot{
 		lookOutForGarbageThread();
 		setStatus(RobotState.Idle);
 	}
-
+	/**
+	 * 
+	 * @return the sonar values
+	 */
 	public double[] getSonar(){
 		return sonarValues;
-	}
-
+	}/*
+	/**
+	 * 
+	 * @return the fiducial data
+	 *
 	public double[] getFiducial() {
 		throw new UnsupportedOperationException("Not Implemented Yet!");
-	}
+	}*/
 	
+	/**
+	 * 
+	 * @return the current position of the robot, in internal coordinates
+	 */
 	public Point getRobotPosition(){
 		return Map.convertPlayerToInternal(x, y);
 	}
 
 	/**
-	 * It retrieves x,y,yaw and sensor readings
+	 * Retrieves x,y,yaw and sensor readings every N milliseconds
 	 */
 	private void collectionThread() {
 		Thread collection = new Thread() {
@@ -178,7 +190,9 @@ public class Robot{
 		};
 		collection.start();
 	}
-
+	/**
+	 * Update the map with the sensor data every N milliseconds
+	 */
 	private void senseThread() {
 		Thread sense = new Thread() {
 			public void run() {
@@ -286,15 +300,24 @@ public class Robot{
 		}
 		pos2D.setSpeed(0, 0);// Remove for speed?
 	}
-	
+	/**
+	 * Turn the robot
+	 * @param targetYaw the heading to turn to
+	 * @param rate the rate to turn at
+	 */
 	public void turn(double targetYaw, double rate){
 		turn(targetYaw, rate, null, null);
 	}
-
+	/**
+	 * Turn the robot
+	 * @param targetYaw the heading to turn to
+	 */
 	public void turn(double targetYaw){
 		turn(targetYaw, TURN_RATE);
 	}
-
+	/**
+	 * TO BE REMOVED,BROKEN, NEVER USED
+	 */
 	public void do360SonarScan(){
 		//for (int i=0;i<4;i++)
 		//turn(Math.toRadians(120) + yaw, TURN_360);
@@ -323,7 +346,11 @@ public class Robot{
 	public void move(Point target) {
 		move(target, null);
 	}
-	
+	/**
+	 * Move the robot
+	 * @param target the point to move to
+	 * @param end the final point the robot wants to move to at the end of the path
+	 */
 	public void move(Point target, Point end){
 		synchronized (moveLock){
 			double px = target.x * Map.SCALE;// convert to Player coords
@@ -331,7 +358,10 @@ public class Robot{
 			move(new PlayerPose2d(px, py, 0),end);
 		}
 	}
-
+	/**
+	 * Move the robot
+	 * @param pose the position to move to
+	 */
 	public void move(PlayerPose2d pose) {
 		move(pose, null);
 	}
@@ -437,7 +467,12 @@ public class Robot{
 			}
 		}
 	}
-	
+	/**
+	 * Check if current move conditions are valid
+	 * @param target the current move target
+	 * @param end the final point on the followed path
+	 * @return true if the move conditions are valid, false otherwise
+	 */
 	public boolean isValidMoveCondition(Point target, Point end){
 		if (target!=null && ((!target.equals(end) &&  false /*map.isUnexplored(target.x, target.y)*/) || !AStarSearch.isAvailableCell(target, map)) ||
 				(  end!=null && (!(map.isUnexplored(end.x, end.y) || map.isFarWall(end.x, end.y)) || !AStarSearch.isAvailableCell(end, map))    )    ) {
@@ -447,7 +482,11 @@ public class Robot{
 		}
 		return true;
 	}
-	
+
+	/**
+	 * Check if the robot's motors have stalled
+	 * @return true, if the robot is stuck, false otherwise
+	 */
 	public boolean isRobotStuckExploration(){
         //0 walking
         //1 is stuck        
@@ -467,7 +506,10 @@ public class Robot{
         
         return false;
     }
-	
+	/**
+	 * Check if the robot's motors have stalled
+	 * @return true, if the robot is stuck, false otherwise
+	 */
 	public void isRobotStuckGarbageCollection(){
         //0 walking
         //1 is stuck        
@@ -489,7 +531,10 @@ public class Robot{
 	
 	
 
-
+	/**
+	 * NEVER USED, TO BE REMOVED
+	 * @return
+	 */
 	private boolean isTooCloseToWall() {
 		double threshold = 0.6;
 		if(sonarValues[0] < threshold || sonarValues[1] < threshold || sonarValues[15] < threshold)
@@ -501,7 +546,7 @@ public class Robot{
 	}
 
 	/**
-	 * Used by RobotControl to move up,down,left,right
+	 * TO BE REMOVED with RobotControl, not needed for final code
 	 * 
 	 * @param direction
 	 * @param distance
@@ -539,7 +584,9 @@ public class Robot{
 		
 
 	}
-
+	/**
+	 * Start exploration
+	 */
 	public void explore() {
 		
 		this.control.println("Robot " + Robot.this.index + " started exploration.");
@@ -558,7 +605,10 @@ public class Robot{
 
 
 	}
-
+	/**
+	 * Set the status of the robot
+	 * @param state the state to set the status to
+	 */
 	private void setStatus(RobotState state) {
 		this.Status = state;
 		control.RobotStateChanged(this, state);
@@ -567,7 +617,7 @@ public class Robot{
 
 
 	/**
-	 * Picks up an object
+	 * Pick up an object
 	 * 
 	 * @return true if something was successfully picked up
 	 */
@@ -602,7 +652,10 @@ public class Robot{
 	
 	
 	
-
+	/**
+	 * Look out for garbage items, and add them to the list of discovered garbage
+	 * items to be collected later
+	 */
 	private void lookOutForGarbageThread() {
 		Thread lookOutForGarbageThread = new Thread() {
 			public void run() {
@@ -638,7 +691,10 @@ public class Robot{
 		};
 		lookOutForGarbageThread.start();
 	}
-	
+	/**
+	 * Add a new garbage item to the list of discovered garbage items, if it does not exist already
+	 * @param garbageItem the garbage item to add
+	 */
 	public void addItem(GarbageItem garbageItem){
 
 		//check if garbage has already been added
@@ -660,12 +716,22 @@ public class Robot{
 	}
 	
 	//for dev purposes only
+	/**
+	 * POSSIBLY REMOVE ?
+	 * Print the list of currently discovered garbage objects
+	 */
 	private void printGarbageToCollectList() {
 		control.println("Just added a garbage item: " + "map.garbageListArray size is " + map.garbageListArray.size() + " and holds:");
 		for(int i = 0; i < map.garbageListArray.size(); i++ )
 			control.println(map.garbageListArray.get(i).getPoint().toString());
 	}
-	
+	/**
+	 * Start garbage collection in the specified area
+	 * @param x1 the x coordinate of the first point
+	 * @param y1 the y coordinate of the first point
+	 * @param x2 the x coordinate of the second point
+	 * @param y2 the y coordinate of the second point
+	 */
 	public void goFetchGarbage(double x1, double y1, double x2, double y2) {
 		goFetchGarbageHasBeenCalled = true;
 		int distanceFromGripperToRobotCenter = (int) Math.round(0.4/Map.SCALE);
