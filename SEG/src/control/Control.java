@@ -1,5 +1,5 @@
 
-package mainApp;
+package control;
 
 import gui.Gui;
 import gui.NBGui;

@@ -7,6 +7,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
 
+import control.Control;
+
 import robot.Robot;
 
 import javaclient3.FiducialInterface;
@@ -20,7 +22,6 @@ import javaclient3.structures.PlayerPose2d;
 import javaclient3.structures.fiducial.PlayerFiducialGeom;
 import javaclient3.structures.fiducial.PlayerFiducialItem;
 import javaclient3.structures.gripper.PlayerGripperData;
-import mainApp.Control;
 import map.GarbageItem;
 import map.Map;
 import search.Search;

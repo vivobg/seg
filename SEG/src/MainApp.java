@@ -1,5 +1,5 @@
 
-import mainApp.Control;
+import control.Control;
 /**
  * 
  * The main class of the software. It is the entry point

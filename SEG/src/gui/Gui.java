@@ -11,7 +11,8 @@ import java.io.ObjectOutputStream;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 
-import mainApp.Control;
+import control.Control;
+
 import map.Map;
 
 /**
