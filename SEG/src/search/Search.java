@@ -255,44 +255,58 @@ public class Search {
 		}
 		return true;
 	}
-	/*
-	public static List<Point> optimisePath(Map map, List<Point> path) {
-		List<Point> opti = new ArrayList<Point>();
-		if (path!=null && path.size() > 2){
-		Point node = path.get(0);
-		Point lastNode;
-		int index = 0;
-		//System.out.println("Path Length = " + path.size());
-		opti.add(new Point(node));
-		while (index+1 < path.size()) {
-			for (int i = index+1; i < path.size(); i++) {
-				//Get the next node
-				lastNode = node;
-				node = path.get(i);
-				index = i;
-				Point optiEnd =opti.get(opti.size()-1);
-				//no line of sight: add, then break
-				// make sure lineOfSight works on !!!copies!!! of the Points
-				if (!lineofSight(map, optiEnd, node)) {
-					opti.add(lastNode);
-					//System.out.println("NO Line of sight " + i);
+	/**
+	 * Optimise the given path by removing middle nodes from straight lines.
+	 * The returned path is geometrically identical, but contains far fewer nodes.
+	 * @param path the path to optimise
+	 * @return the optimised path
+	 */
+	public static List<Point> optimizePath(List<Point> path) {
+		List<Point> result = new ArrayList<Point>();
+
+		Point initialP = path.get(0);
+		Point finalP = path.get(path.size()-1);
+		result.add(initialP);
+		Point coordA;
+		Point coordB;
+		
+
+		for (int i = 2; i < path.size()-1; i++){
+
+			 coordA = path.get(i-1);
+			 coordB = path.get(i);
+
+
+			if (coordA.x ==coordB.x || coordA.y == coordB.y){
+				//skip node
+			}else{
+				result.add(coordA);
+				for (int c = 0; i < path.size(); i++){
+					
+				coordA = path.get(i-1);
+			    coordB = path.get(i);
+
+					
+				if (coordA.x != coordB.x & coordA.y != coordB.y){
+					//skip nodes
+				}else {
+					result.add(coordA);
 					break;
 				}
-				//else System.out.println("Line of sight between " + opti.get(opti.size() - 1) + " and " + path.get(i));
-
-				// if ( ! lastVisible.equals(opti.get(opti.size()-1))){
 				
-				// }
+				
+				
+				}
 			}
-			opti.add(new Point(node));
-		}
-		return opti;
-		}
-		
-		return path;
+	}
+	result.add(finalP);
+	
+	
+	//System.out.println("Original Path  " + path.size());
+	//System.out.println("Optimized Path  " + result.size());
 
-		
-	}*/
+	return result;
+}
 
 	/**
 	 * Draws a line onto the map, with the given internal map coordinates

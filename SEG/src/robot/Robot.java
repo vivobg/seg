@@ -753,7 +753,7 @@ public class Robot{
 				outboundList = outboundList.subList(0,outboundList.size()-distanceFromGripperToRobotCenter); 
 			}
 			currentPath = outboundList;
-			outboundList = Explore.optimizePath2(outboundList);
+			outboundList = Search.optimizePath(outboundList);
 			isFollowing = true;
 			isCollecting = true;
 			for (int j = 0; outboundList != null && j < outboundList.size(); j++)
@@ -774,7 +774,7 @@ public class Robot{
 					dropOffPoint);
 			if(returnList == null){System.out.println("returnList null");gripper.open(); continue;}
 			currentPath = returnList;
-			returnList = Explore.optimizePath2(returnList);
+			returnList = Search.optimizePath(returnList);
 			isFollowing = true;
 			isCollecting = true;
 			for (int k = 0; returnList != null && k < returnList.size(); k++){
