@@ -216,8 +216,8 @@ public class Search {
 				if(!p.equals(adjPoint)  )
 				{
 					if(ASEARCH && (map.isEmpty(i, j) || map.isBuffer(i, j) )){
-						// if(isAvailableCell(adjPoint,map))possiblePoints.add(adjPoint);
-						possiblePoints.add(adjPoint);
+						if(isAvailableCell(adjPoint,map))possiblePoints.add(adjPoint);
+						//possiblePoints.add(adjPoint);
 					}
  else if (!ASEARCH && (!map.isOccupied(i, j)))
 					{

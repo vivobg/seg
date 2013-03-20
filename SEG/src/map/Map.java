@@ -29,7 +29,7 @@ public class Map implements Serializable{
 	public static final float WALL = 4;
 	public static final float FAR_WALL = Map.WALL + 0.35f;// 3.5meters
 
-	public static final float TOO_CLOSE = 0.7f;// Player Units from wall
+	public static final float TOO_CLOSE = 0.8f;// Player Units from wall
 	public static final float SCALE = 0.1f;// Player units into 1 internal map
 											// unit
 	// how many cells away from wall are empty, but too close to the wall
