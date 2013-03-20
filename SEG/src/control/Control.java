@@ -2,7 +2,6 @@
 package control;
 
 import gui.Gui;
-import gui.NBGui;
 import gui.Save;
 
 import java.io.FileInputStream;
@@ -24,7 +23,6 @@ import robot.RobotState;
 public class Control {
 	Map map;
 	public Gui gui = null;
-	public NBGui nbgui = null;
 
 	// ArrayList<Robot> robots = new ArrayList<Robot>();
 	// ArrayList<Point> garbage = new ArrayList<Point>();
@@ -290,7 +288,6 @@ public class Control {
 	public void println(String text){
 		System.out.println(text);
 		if (gui!=null) gui.printToGuiConsole(text, "#0000C0");
-		if (nbgui!=null) nbgui.printToGuiConsole(text, "#0000C0");
 	}
 	/**
 	 * Print the state of the given robot
