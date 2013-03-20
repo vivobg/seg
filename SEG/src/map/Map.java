@@ -6,7 +6,6 @@ package map;
 import java.awt.Point;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import robot.Robot;
@@ -46,7 +45,6 @@ public class Map implements Serializable{
 	}
 	public transient List<Robot> robotList;
 	public List<GarbageItem> garbageListArray;// GUI code based on this
-	public transient HashMap<Point, Boolean> garbageList;// Abdi's code based on this
 	/**
 	 * 
 	 * @return The minimum Y value of the map with the sign stripped, as the minimum Y
@@ -70,19 +68,31 @@ public class Map implements Serializable{
 	public int getMinX() {
 		return minX;
 	}
-
+	/**
+	 * Set the garbage list 
+	 * @param garbageListArray
+	 */
 	public void setGarbageListArray(List<GarbageItem> garbageListArray) {
 		this.garbageListArray = garbageListArray;
 	}
-
+	/**
+	 * Set the positive X array
+	 * @param posArray
+	 */
 	public void setPosArray(ArrayList<VerticalArray> posArray) {
 		this.posArray = posArray;
 	}
-
+	/**
+	 * Set the negative X array
+	 * @param negArray
+	 */
 	public void setNegArray(ArrayList<VerticalArray> negArray) {
 		this.negArray = negArray;
 	}
-
+	/**
+	 * Set the maximum X value of the map, 0 or greater.
+	 * @param maxX
+	 */
 	public void setMaxX(int maxX) {
 		this.maxX = maxX;
 	}
@@ -111,7 +121,6 @@ public class Map implements Serializable{
 	public Map() {
 		posArray = new ArrayList<VerticalArray>();
 		negArray = new ArrayList<VerticalArray>();
-		garbageList = new HashMap<Point, Boolean>();
 		garbageListArray = new ArrayList<GarbageItem>();
 		robotList = new ArrayList<Robot>();
 		setValue(0, 0, Map.UNEXPLORED,0);
@@ -223,22 +232,6 @@ public class Map implements Serializable{
 	}
 
 	/**
-	 * A wrapper method to abstract the internal representation from the caller.
-	 * The caller can just provide Player/Stage coordinates. Always returns a
-	 * value. If the location was never set it returns Map.UNEXPLORED
-	 * 
-	 * @param x
-	 *            the horizontal index
-	 * @param y
-	 *            the vertical index
-	 * @return the value at the specified location
-	 *//*
-	public byte getValue(float x, float y) {
-		Point c = convertPlayerToInternal(x, y);
-		return getValue(c.x, c.y);
-	}*/
-
-	/**
 	 * It is strongly recommended to use setValue() and getValue() instead Only
 	 * use to read and NOT set (can mess up MinMax sizes)
 	 * 
@@ -309,26 +302,8 @@ public class Map implements Serializable{
 		//Preserve fiducial status
 		if (isFiducialExplored(x, y)) value *=-1;
 		updateMap(x, y, value);
-		//}
 	}
 
-	/**
-	 * A wrapper method to abstract internal representation from caller. The
-	 * caller can give Player/Stage coordinates directly. Updates the existing
-	 * value, or grows the underlying array and writes the given value
-	 * 
-	 * @param x
-	 *            the x coordinate
-	 * @param y
-	 *            the y coordinate
-	 * @param value
-	 *            the value to set in the given location
-	 *//*
-	public void setValue(float x, float y, byte value) {
-		Point c = convertPlayerToInternal(x, y);
-		setValue(c.x, c.y, value);
-	}*/
-	
 	
 	/**
 	 * 
@@ -365,7 +340,6 @@ public class Map implements Serializable{
 	 * @return true if the cell is FAR WALL, false otherwise
 	 */
 	public boolean isFarWall(int x, int y) {
-		//return getValue(x, y) == Math.abs(Map.OCCUPIED);
 		float value  = Math.abs(getValue(x, y));
 		return value > Map.FAR_WALL;
 	}
@@ -376,7 +350,6 @@ public class Map implements Serializable{
 	 * @return true if the cell is WALL, false otherwise
 	 */
 	public boolean isOccupied(int x, int y) {
-		//return getValue(x, y) == Math.abs(Map.OCCUPIED);
 		float value  = Math.abs(getValue(x, y));
 		return value >= Map.WALL && value <= Map.FAR_WALL;
 	}
@@ -419,24 +392,7 @@ public class Map implements Serializable{
 	public boolean isFiducialExplored(int x, int y){
 		return getValue(x,y) < 0;
 	}
-	/*
-	public boolean isOccupied(float x, float y) {
-		return getValue(x, y) == Math.abs(Map.OCCUPIED);
-	}
 	
-	
-	public boolean isEmpty(float x, float y) {
-		return getValue(x, y) == Math.abs(Map.EMPTY);
-	}
-
-	public boolean isUnexplored(float x, float y) {
-		return getValue(x, y) == Math.abs(Map.UNEXPLORED);
-	}
-
-	public boolean isUnwalkable(float x, float y) {
-		return getValue(x, y) == Math.abs(Map.BUFFER);
-	}
-	*/
 	public static void main(String[] a) {
 		Map map = new Map();
 
@@ -446,27 +402,18 @@ public class Map implements Serializable{
 		map.setValue(3, -5, Map.UNEXPLORED, 2);
 
 		map.setValue(-2, -2, Map.EMPTY, 2);
-		// map.setValue(1, 1, 1.1f);
-		// map.setValue(1, 2, 0.2f);
-		// map.setValue(3, 4, 3.4f);
-		// map.setValue(0, -1, 1.2f);
-		// map.setValue(0, -2, 2.2f);
-		// map.setValue(0, -3, 3.2f);
-		// map.setValue(-2, -6, 4.2f);
 
 		// positive X
 		for (int x = 0; x < map.getMaxXSize(); x++) {
 			VerticalArray vert = map.getVertical(x);
 
 			System.out.println(vert.toString());
-
 		}
 		System.out.println("Done positive X");
 		// Negative X
 		for (int x = 1; x < map.getMinXSize(); x++) {
 			VerticalArray vert = map.getVertical(-x);
 			System.out.println(vert.toString());
-
 		}
 		System.out.println("Done negative X");
 	}
@@ -477,15 +424,24 @@ public class Map implements Serializable{
 	public int getMaxX() {
 		return maxX;
 	}
-
+	/**
+	 * 
+	 *Set the minimum Y value of the map, 0 or greater.
+	 */
 	public void setMinY(int minY) {
 		this.minY = minY;
 	}
-
+	/**
+	 * 
+	 *Set the maximum Y value of the map, 0 or greater.
+	 */
 	public void setMaxY(int maxY) {
 		this.maxY = maxY;
 	}
-
+	/**
+	 * 
+	 *Set the minimum X value of the map, 0 or greater.
+	 */
 	public void setMinX(int minX) {
 		this.minX = minX;
 	}

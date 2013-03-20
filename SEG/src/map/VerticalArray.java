@@ -38,7 +38,6 @@ public class VerticalArray implements Serializable{
 	}
 	
 	
-	
 	/**
 	 * @param y
 	 *            The index of the array
