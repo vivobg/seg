@@ -258,7 +258,8 @@ public class Robot{
 			
 			if (!isValidMoveCondition(target, end)) break;
 			
-			if (isRobotStuck()) break;
+			if (isRobotStuckExploration()) break;
+			isRobotStuckGarbageCollection();
 
 			double a = targetYaw - yaw;
 			if (a > Math.PI)
@@ -381,7 +382,8 @@ public class Robot{
 					}
 				}
 				
-				if (isRobotStuck()) break;
+				if (isRobotStuckExploration()) break;
+				isRobotStuckGarbageCollection();
 				
 				if ((Math.abs(px - x) < TARGET_THRESHOLD && Math.abs(py - y) < TARGET_THRESHOLD)) {
 					pos2D.setSpeed(0, 0);
@@ -446,11 +448,11 @@ public class Robot{
 		return true;
 	}
 	
-	public boolean isRobotStuck(){
+	public boolean isRobotStuckExploration(){
         //0 walking
         //1 is stuck        
         
-        if (pos2D.getData().getStall()==1){
+        if (pos2D.getData().getStall()==1 && !goFetchGarbageHasBeenCalled){
             pos2D.setSpeed(-0.5, 0);
             try {
                 Thread.sleep(MOVE_BACK_SLEEP);
@@ -465,6 +467,27 @@ public class Robot{
         
         return false;
     }
+	
+	public void isRobotStuckGarbageCollection(){
+        //0 walking
+        //1 is stuck        
+        
+        if (pos2D.getData().getStall()==1 && goFetchGarbageHasBeenCalled){
+            pos2D.setSpeed(-0.5, 0);
+            try {
+                Thread.sleep(250);
+             } catch (InterruptedException e) {
+            }
+            System.out.println("Robot stuck during garbage collection, move back");
+            pos2D.setSpeed(0, 0);
+         
+            
+         } 
+        
+      
+    }
+	
+	
 
 
 	private boolean isTooCloseToWall() {
@@ -645,7 +668,7 @@ public class Robot{
 	
 	public void goFetchGarbage(double x1, double y1, double x2, double y2) {
 		goFetchGarbageHasBeenCalled = true;
-		int distanceFromGripperToRobotCenter = (int) Math.round(0.3/Map.SCALE);
+		int distanceFromGripperToRobotCenter = (int) Math.round(0.4/Map.SCALE);
 		Point dropOffPoint = Map.convertPlayerToInternal((x1+x2)/2, (y1+y2)/2);
 		//dropOffRectangle = new Rectangle((int)(x1/Map.SCALE), (int)(y1/Map.SCALE), (int)((x2 - x1) /Map.SCALE), (int)((y1 - y2)/Map.SCALE));
 		x1y1 = Map.convertPlayerToInternal(x1, y1);
