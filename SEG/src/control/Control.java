@@ -298,7 +298,7 @@ public class Control {
 	 * 
 	 * @return true if all robots are idle/available.
 	 */
-	boolean allRobotsAvailable()
+	private boolean allRobotsAvailable()
 	{
 		for(Robot robot : getAvailableRobots())
 		{
