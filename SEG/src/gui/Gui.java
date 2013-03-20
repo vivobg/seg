@@ -564,7 +564,9 @@ public class Gui extends javax.swing.JFrame {
             ObjectOutputStream o = new ObjectOutputStream(fos);
             //Write map instance to disk
             o.writeObject(control.getMap());
-             this.printToGuiConsole("Map instance saved.", "#00C000");
+            this.printToGuiConsole("Map instance saved.", "#00C000");
+            o.flush();
+            o.close();
             
         } catch (FileNotFoundException ex) {
             this.printToGuiConsole("Error writing Map instance. File not found.", "#FF0000");
