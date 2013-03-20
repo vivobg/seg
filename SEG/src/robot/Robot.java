@@ -7,7 +7,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
 
-import explore.Explore;
 import robot.Robot;
 
 import javaclient3.FiducialInterface;
@@ -594,9 +593,27 @@ public class Robot{
 		Thread thr = new Thread(){
 			public void run(){
 				setStatus(RobotState.Exploring);
-				Explore.explore(map, robot, Map.convertPlayerToInternal(x, y));
-				//map.filter();
-				//ExploreTest.exploreRobot(map, robot, Map.convertPlayerToInternal(x, y));
+				Point start = Map.convertPlayerToInternal(x, y);
+				List<Point> path = null;
+				do {
+					path = Search.dSearch(map, start);
+					robot.currentPath = path;
+					if (path != null) {
+						if(path.size() > 3)path = Search.optimizePath(path);
+						robot.currentOptimizedPath = path;
+						robot.isFollowing = true;
+						for (int i = 1; i<path.size();i++){
+							
+							Point p = path.get(i);
+							Point end = path.get(path.size()-1);
+
+							robot.move(p, end);
+						}
+						start = Map.convertPlayerToInternal(robot.x, robot.y);
+					}
+				} while (path != null);
+				robot.isFollowing = false;
+				
 				Robot.this.control.println("Robot " + Robot.this.index + " finished exploration.");
 				setStatus(RobotState.Idle);
 			}
