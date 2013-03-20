@@ -597,20 +597,8 @@ public class Robot {
 
 		if (!garbageItemAlreadyExists) {
 			map.garbageListArray.add(garbageItem);
-			printGarbageToCollectList();
+			control.println("Just seen a new garbage item at " + garbageItem.getPoint().x + "," + garbageItem.getPoint().y);
 		}
-	}
-
-	// for dev purposes only
-	/**
-	 * POSSIBLY REMOVE ? Print the list of currently discovered garbage objects
-	 */
-	private void printGarbageToCollectList() {
-		control.println("Just added a garbage item: "
-				+ "map.garbageListArray size is " + map.garbageListArray.size()
-				+ " and holds:");
-		for (int i = 0; i < map.garbageListArray.size(); i++)
-			control.println(map.garbageListArray.get(i).getPoint().toString());
 	}
 
 	/**
