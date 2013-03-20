@@ -21,9 +21,9 @@ import javaclient3.structures.fiducial.PlayerFiducialGeom;
 import javaclient3.structures.fiducial.PlayerFiducialItem;
 import javaclient3.structures.gripper.PlayerGripperData;
 import mainApp.Control;
+import map.GarbageItem;
 import map.Map;
 import search.Search;
-import sense.GarbageItem;
 import sense.Sense;
 
 /**

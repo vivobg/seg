@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import robot.Robot;
-import sense.GarbageItem;
 
 /**
  * Provides a dynamic 2D array of floats. It is based on ArrayLists, and is

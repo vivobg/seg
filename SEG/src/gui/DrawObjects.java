@@ -6,11 +6,11 @@ import java.awt.Point;
 import java.util.List;
 
 import javaclient3.structures.PlayerPose2d;
+import map.GarbageItem;
 import map.Map;
 import map.VerticalArray;
 import robot.Robot;
 import search.Search;
-import sense.GarbageItem;
 /**
  * Class providing static methods to draw the map, robots, garbages and paths
  * to either a Java Swing component, or a Buffered image, depending on the provided
