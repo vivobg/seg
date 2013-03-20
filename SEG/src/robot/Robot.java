@@ -68,6 +68,7 @@ public class Robot{
 	public final int index;
 	private double[] sonarValues;
 	public PlayerFiducialItem[] fiducialsInView;
+	public RobotState Status;
 	
 	private double totalJiggle = 0;
 	private int jiggleCount = 0;
@@ -128,6 +129,7 @@ public class Robot{
 		// do360.start();
 		senseThread();
 		lookOutForGarbageThread();
+		setStatus(RobotState.Idle);
 	}
 
 	public double[] getSonar(){
@@ -519,15 +521,22 @@ public class Robot{
 		final Robot robot = this;
 		Thread thr = new Thread(){
 			public void run(){
-				
+				setStatus(RobotState.Exploring);
 				ExploreTest.exploreRobot(map, robot, Map.convertPlayerToInternal(x, y));
 				//map.filter();
 				//ExploreTest.exploreRobot(map, robot, Map.convertPlayerToInternal(x, y));
 				Robot.this.control.println("Robot " + Robot.this.index + " finished exploration.");
+				setStatus(RobotState.Idle);
 			}
 		};
 		thr.start();
 
+
+	}
+
+	private void setStatus(RobotState state) {
+		this.Status = state;
+		control.RobotStateChanged(this, state);
 
 	}
 
