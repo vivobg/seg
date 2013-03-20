@@ -28,7 +28,8 @@ public class Control {
 
 	// ArrayList<Robot> robots = new ArrayList<Robot>();
 	// ArrayList<Point> garbage = new ArrayList<Point>();
-	BotMode botMode = BotMode.Solo;
+	//BotMode botMode = BotMode.Solo;
+	private boolean soloMode = true;
 	/**
 	 * Initialise a new Control instance. It loads a pre-explored map,
 	 * if one was saved. It checks the current working directory for a "map.instance" file.
@@ -81,10 +82,10 @@ public class Control {
 	 * Initialise the robots
 	 */
 	private void setupRobots() {
-		if (this.botMode.equals(BotMode.Solo) && map.robotList.size() == 0) {
+		if (this.soloMode && map.robotList.size() == 0) {
 			map.robotList.add(new Robot(this, 0));
 			println("Robot 0 successfully initialised.");
-		} else if (this.botMode.equals(BotMode.Multi)) {
+		} else if (!this.soloMode) {
 			for (int i = map.robotList.size(); i < 3; i++) {
 				map.robotList.add(new Robot(this, i));
 				println("Robot " + i + " successfully initialised.");
@@ -208,7 +209,7 @@ public class Control {
 		List<Robot> availableBots = getAvailableRobots();
 		Thread soTheGUIDoesNotFreeze = new Thread(){
 			public void run() {
-				if(botMode == BotMode.Solo)
+				if(soloMode)
 				{
 					println("Garbage Collection Starting with Robot map.robotList.get(0) droping off at " +
 							x1 + "," + y1 + " and " + x2 + "," + y2);
@@ -230,7 +231,7 @@ public class Control {
 	private List<Robot> getAvailableRobots() {
 
 		List<Robot> availableBots = new ArrayList<Robot>();
-		if(botMode == BotMode.Solo)
+		if(soloMode)
 		{
 			availableBots.add(map.robotList.get(0));
 		}
@@ -242,7 +243,8 @@ public class Control {
 	 * Switch to use all robots. Disabled, as multi mode not fully implemented.
 	 */
 	public void switchToMulti() {
-		botMode = BotMode.Multi;
+		//soloMode = false;
+		soloMode = true;
 		setupRobots();
 
 	}
@@ -250,7 +252,7 @@ public class Control {
 	 * Switch to use only the Robot with index 0.
 	 */
 	public void switchToSolo() {
-		botMode = BotMode.Solo;
+		soloMode = true;
 		setupRobots();
 	}
 	/**
@@ -274,7 +276,7 @@ public class Control {
 	 */
 	public void explore() 
 	{	
-		if(botMode == BotMode.Solo)
+		if(soloMode)
 		{
 			map.robotList.get(0).Status = RobotState.Exploring;
 			map.robotList.get(0).explore(); // Only use the first bot
