@@ -1,12 +1,10 @@
 
 package mainApp;
 
-import garbage.GarbageCollection;
 import gui.Gui;
 import gui.NBGui;
 import gui.Save;
 
-import java.awt.Rectangle;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;

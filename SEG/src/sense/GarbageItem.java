@@ -11,6 +11,7 @@ import java.io.Serializable;
  */
 public class GarbageItem implements Serializable{
 
+	private static final long serialVersionUID = 3157106517548243969L;
 	public Point point;   
 	public boolean isCollected;    
 	/**

@@ -16,6 +16,7 @@ import map.Map;
  */
 public class NBGui extends javax.swing.JFrame {
 
+	private static final long serialVersionUID = 8103069722182528063L;
 	private Map map;
 	private Control control;
 	private StringBuffer buf;

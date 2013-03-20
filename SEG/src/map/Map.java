@@ -22,6 +22,8 @@ import sense.GarbageItem;
  * 
  */
 public class Map implements Serializable{
+	
+	private static final long serialVersionUID = 7594975695476674486L;
 	/**
 	 * 
 	 * @return The list of discovered garbage objects

@@ -3,18 +3,11 @@ package gui;
 
 import java.awt.Dimension;
 import java.awt.Point;
-import java.beans.PropertyVetoException;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JDesktopPane;
-import javax.swing.JInternalFrame;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 
@@ -26,7 +19,9 @@ import map.Map;
  * of the software.
  */
 public class Gui extends javax.swing.JFrame {
-    private Map map;
+
+	private static final long serialVersionUID = 1986063334983370079L;
+	private Map map;
     private Control control;
     private StringBuffer buf;
 

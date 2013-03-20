@@ -5,11 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import map.Map;
-import robot.Robot;
 import sense.Bresenham;
 /**
  * Class providing static methods, to calculate a path between 2 points
- * @author vivo
  *
  */
 public class AStarSearch {

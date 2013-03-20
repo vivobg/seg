@@ -7,7 +7,6 @@ import java.util.List;
 import map.Map;
 import robot.Robot;
 import search.AStarSearch;
-import sense.Sense;
 
 public class ExploreTest {
 	/**

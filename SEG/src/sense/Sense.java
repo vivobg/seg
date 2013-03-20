@@ -1,12 +1,10 @@
 package sense;
 
-import java.awt.List;
 import java.awt.Point;
 
 import javaclient3.structures.PlayerPose2d;
 import map.Map;
 import robot.Robot;
-import search.AStarSearch;
 /**
  * 
  * Class providing static methods that use the sensor data to update the map

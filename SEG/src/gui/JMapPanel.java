@@ -18,7 +18,6 @@ import javax.swing.SwingUtilities;
 import mainApp.Control;
 import map.Map;
 import robot.Robot;
-import sense.GarbageItem;
 /**
  * Provides a custom JPanel, tailored to displaying a Map instance,
  * with the contents of each cell, the garbages, the robots and their paths. 
