@@ -202,10 +202,7 @@ public class Control {
 	 */
 	public void collect(final double x1, final double y1, final double x2, final double y2) {
 
-		//Rectangle collectionArea = new Rectangle(x1,y1,x2-x1,y2-y1);
-		//GarbageCollection.setCollectionArea(collectionArea);
 		println("Begin Collecting!");
-		List<Robot> availableBots = getAvailableRobots();
 		Thread soTheGUIDoesNotFreeze = new Thread(){
 			public void run() {
 				if(soloMode)
@@ -218,9 +215,6 @@ public class Control {
 					throw new RuntimeException("Collection Not Implemented For Multiple Robots Yet Exception");
 			}
 		}; soTheGUIDoesNotFreeze.start();
-		//println("Collection Complete");
-		//GarbageCollection.collect(map, availableBots, new Rectangle());
-		//throw new RuntimeException("Not Implemented Yet Exception");
 
 	}
 	/**
