@@ -58,16 +58,6 @@ public class Bresenham {
 
 			}
 			
-			//Do not Bresenham the buffer, as a circle is drawn automatically.
-			/*for (int i = (int) (points.size() - Map.BUFFER_CELLS); i < points
-					.size() - 1; i++) {
-				if (i < 0)
-					continue;
-				Point p = points.get(i);
-				//if (!map.isOccupied(p.x, p.y))
-				map.setValue(p.x, p.y, Map.BUFFER, p.distance(robotPoint)*Map.SCALE);
-			}*/
-			
 			Point p = new Point(x1, y1);
 			distance = Map.calculateSonarDistance(p, robotPoint);
 			if (distance+MAP_SCALE < Map.FAR_WALL && !Sense.sensingAnotherRobot(map, map.robotList.get(robotIndex), new Point(x1,y1)))
