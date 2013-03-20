@@ -26,17 +26,6 @@ public class Sense {
 				pose = new PlayerPose2d(robot.x, robot.y, robot.yaw);
 				if(robot.getSonar() != null) sonarValues = robot.getSonar().clone();
 		}
-//		while(!robot.pos2D.isDataReady() ){};
-//		pose = robot.pos2D.getData().getPos();
-//		robot.x = pose.getPx();
-//		robot.y = pose.getPy();
-//		robot.yaw = pose.getPa();
-//		
-//		while(!robot.sonar.isDataReady() ){};
-//		sonarValues = robot.sonar.getData().getRanges();
-		
-		
-		//Point start = Map.convertPlayerToInternal(pose.getPx(), pose.getPy());
 		if (sonarValues != null) {
 			for (int i = 0; i < sonarValues.length-3; i++) {
 				senseSonarSensor(robot, map, pose.getPx(), pose.getPy(), sonarValues[i],
@@ -68,12 +57,6 @@ public class Sense {
 	private static void senseSonarSensor(Robot robot, Map map, double sX, double sY, double distance,
 			double angle,PlayerPose2d pose) {
 
-		/*double distance2 = distance / Map.SCALE; // Convert distance to internal
-													// map
-		// units;
-	    Point t = new Point((int) Math.floor(distance2 * Math.cos(angle)),
-				(int) Math.floor(distance2 * Math.sin(angle))); */
-		// distance = Math.min(distance, 3);
 		double tX = distance * Math.cos(angle);
 		double tY = distance * Math.sin(angle);
 		tX += sX;
@@ -83,8 +66,6 @@ public class Sense {
 		boolean WALL = distance < 5 ? true : false;
 		Bresenham.line(map, s.x, s.y, t.x, t.y, WALL, pose, robot.index);
 	}
-	
-	
 	
 	private static void updateFiducialExplored(Map map, Robot robot){
 		throw new UnsupportedOperationException("Not Implemented Yet!");
@@ -118,14 +99,3 @@ public class Sense {
 	}
 
 }
-
-
-
-
-
-
-//Point robot2 =  map.getRobotList().get(1).getRobotPosition();				
-//System.out.println(map.getRobotList().get(i).getRobotPosition());
-//Point robotTAL = map.getRobotList().get(i).getRobotPosition();
-//adjacentPoints = Search.getAdjacentPoints(map, robotTAL, true);
-//System.out.println(adjacentPoints);
