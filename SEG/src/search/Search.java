@@ -11,6 +11,8 @@ import sense.Bresenham;
  *
  */
 public class Search {
+	private static final double AVAILABLE_CELL_LIMIT = 0.3;
+
 	/**
 	 * A* search from source to target.
 	 * Useful during garbage collection.
@@ -61,7 +63,6 @@ public class Search {
 			if((ASEARCH && current.equals(target))|| (!ASEARCH && (map.isUnexplored(current.x, current.y) )))
 				//if we are are at the target, stop search and return path
 			{
-				//return optimisePath(map, reconstructPath(cameFrom, current));
 				return reconstructPath(cameFrom, current);
 			}
 
@@ -105,10 +106,8 @@ public class Search {
 	 * @return the heuristic cost from given point to final target
 	 */
 	private static int Hcost(Point source, Point target, boolean ASEARCH) {
-		//Incase we want to change the cost function
 		if (ASEARCH) return 5*euclidDist(source,target);
 		else return 0;
-		//return 0;
 	}
 
 	/**
@@ -240,15 +239,13 @@ public class Search {
 	 * @return true if the point is available, false otherwise
 	 */
 	public static boolean isAvailableCell(Point adjPoint, Map map) {
-		//int scale = 2; //for Testing
-		int scale = (int) Math.ceil( (0.3 / Map.SCALE ));
+		int scale = (int) Math.ceil( (AVAILABLE_CELL_LIMIT / Map.SCALE ));
 		for(int i = adjPoint.x - scale; i <= adjPoint.x + scale; i++)
 		{
 			for(int j = adjPoint.y - scale; j<=adjPoint.y + scale; j++)
 			{
 				if(map.isOccupied(i, j) || map.isFarWall(i, j)) 
 				{
-					//System.out.println(map.getValue(i, j));
 					return false;
 				}
 			}
@@ -281,7 +278,7 @@ public class Search {
 				//skip node
 			}else{
 				result.add(coordA);
-				for (int c = 0; i < path.size(); i++){
+				for (; i < path.size(); i++){
 					
 				coordA = path.get(i-1);
 			    coordB = path.get(i);
@@ -300,10 +297,6 @@ public class Search {
 			}
 	}
 	result.add(finalP);
-	
-	
-	//System.out.println("Original Path  " + path.size());
-	//System.out.println("Optimized Path  " + result.size());
 
 	return result;
 }
