@@ -15,7 +15,7 @@ public class Explore {
 	 * @param robot the robot to explore with
 	 * @param start the starting point of the exploration
 	 */
-	public static void exploreRobot(Map map,Robot robot, Point start) {
+	public static void explore(Map map,Robot robot, Point start) {
 		//System.out.println("Exploration started");
 		List<Point> path = null;
 		do {

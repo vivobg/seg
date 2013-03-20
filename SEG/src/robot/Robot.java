@@ -594,7 +594,7 @@ public class Robot{
 		Thread thr = new Thread(){
 			public void run(){
 				setStatus(RobotState.Exploring);
-				Explore.exploreRobot(map, robot, Map.convertPlayerToInternal(x, y));
+				Explore.explore(map, robot, Map.convertPlayerToInternal(x, y));
 				//map.filter();
 				//ExploreTest.exploreRobot(map, robot, Map.convertPlayerToInternal(x, y));
 				Robot.this.control.println("Robot " + Robot.this.index + " finished exploration.");
