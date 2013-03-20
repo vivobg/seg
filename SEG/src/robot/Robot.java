@@ -7,7 +7,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
 
-import explore.ExploreTest;
+import explore.Explore;
 import robot.Robot;
 
 import javaclient3.FiducialInterface;
@@ -594,7 +594,7 @@ public class Robot{
 		Thread thr = new Thread(){
 			public void run(){
 				setStatus(RobotState.Exploring);
-				ExploreTest.exploreRobot(map, robot, Map.convertPlayerToInternal(x, y));
+				Explore.exploreRobot(map, robot, Map.convertPlayerToInternal(x, y));
 				//map.filter();
 				//ExploreTest.exploreRobot(map, robot, Map.convertPlayerToInternal(x, y));
 				Robot.this.control.println("Robot " + Robot.this.index + " finished exploration.");
@@ -753,7 +753,7 @@ public class Robot{
 				outboundList = outboundList.subList(0,outboundList.size()-distanceFromGripperToRobotCenter); 
 			}
 			currentPath = outboundList;
-			outboundList = ExploreTest.optimizePath2(outboundList);
+			outboundList = Explore.optimizePath2(outboundList);
 			isFollowing = true;
 			isCollecting = true;
 			for (int j = 0; outboundList != null && j < outboundList.size(); j++)
@@ -774,7 +774,7 @@ public class Robot{
 					dropOffPoint);
 			if(returnList == null){System.out.println("returnList null");gripper.open(); continue;}
 			currentPath = returnList;
-			returnList = ExploreTest.optimizePath2(returnList);
+			returnList = Explore.optimizePath2(returnList);
 			isFollowing = true;
 			isCollecting = true;
 			for (int k = 0; returnList != null && k < returnList.size(); k++){
