@@ -127,5 +127,5 @@ public class Sense {
 //Point robot2 =  map.getRobotList().get(1).getRobotPosition();				
 //System.out.println(map.getRobotList().get(i).getRobotPosition());
 //Point robotTAL = map.getRobotList().get(i).getRobotPosition();
-//adjacentPoints = AStarSearch.getAdjacentPoints(map, robotTAL, true);
+//adjacentPoints = Search.getAdjacentPoints(map, robotTAL, true);
 //System.out.println(adjacentPoints);

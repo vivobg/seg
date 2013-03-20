@@ -23,7 +23,7 @@ import javaclient3.structures.fiducial.PlayerFiducialItem;
 import javaclient3.structures.gripper.PlayerGripperData;
 import mainApp.Control;
 import map.Map;
-import search.AStarSearch;
+import search.Search;
 import sense.GarbageItem;
 import sense.Sense;
 
@@ -387,10 +387,10 @@ public class Robot{
 			while (true) {
 				//pos2D.setSpeed(0, 0);
 //				if (!map.isUnexplored(target.x, target.y) ||
-//						!AStarSearch.isAvailableCell(target, map) ||
+//						!Search.isAvailableCell(target, map) ||
 //						(end!=null
 //						&& (!map.isUnexplored(end.x, end.y)
-//						|| !AStarSearch.isAvailableCell(end, map)))) {
+//						|| !Search.isAvailableCell(end, map)))) {
 //					pos2D.setSpeed(0, 0);
 //					break;
 //				}
@@ -423,7 +423,7 @@ public class Robot{
 				
 				
 				
-				if (this.isFollowing && !isCollecting && do360 && AStarSearch.lineofSight(map, this.getRobotPosition(), end) &&
+				if (this.isFollowing && !isCollecting && do360 && Search.lineofSight(map, this.getRobotPosition(), end) &&
 						(this.getRobotPosition().distance(end) < (jiggleAverage / Map.SCALE))){
 					//this.control.println("do360 at " + jiggleAverage);
 					//this.do360SonarScan();
@@ -474,8 +474,8 @@ public class Robot{
 	 * @return true if the move conditions are valid, false otherwise
 	 */
 	public boolean isValidMoveCondition(Point target, Point end){
-		if (target!=null && ((!target.equals(end) &&  false /*map.isUnexplored(target.x, target.y)*/) || !AStarSearch.isAvailableCell(target, map)) ||
-				(  end!=null && (!(map.isUnexplored(end.x, end.y) || map.isFarWall(end.x, end.y)) || !AStarSearch.isAvailableCell(end, map))    )    ) {
+		if (target!=null && ((!target.equals(end) &&  false /*map.isUnexplored(target.x, target.y)*/) || !Search.isAvailableCell(target, map)) ||
+				(  end!=null && (!(map.isUnexplored(end.x, end.y) || map.isFarWall(end.x, end.y)) || !Search.isAvailableCell(end, map))    )    ) {
 			pos2D.setSpeed(0, 0);
 			//System.out.println("Breaking");
 			return false;
@@ -745,7 +745,7 @@ public class Robot{
 			Point garbagePoint = map.garbageListArray.get(i).getPoint();
 
 
-			List<Point> outboundList = AStarSearch.aSearch(map, 
+			List<Point> outboundList = Search.aSearch(map, 
 					getRobotPosition(),
 					garbagePoint);
 			if(outboundList == null){System.out.println("outboundList null");continue;}
@@ -769,7 +769,7 @@ public class Robot{
 			
 			gripper.close();
 			carryingGarbage  = true;
-			List<Point> returnList = AStarSearch.aSearch(map, 
+			List<Point> returnList = Search.aSearch(map, 
 					getRobotPosition(),
 					dropOffPoint);
 			if(returnList == null){System.out.println("returnList null");gripper.open(); continue;}

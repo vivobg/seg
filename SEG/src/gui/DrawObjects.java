@@ -9,7 +9,7 @@ import javaclient3.structures.PlayerPose2d;
 import map.Map;
 import map.VerticalArray;
 import robot.Robot;
-import search.AStarSearch;
+import search.Search;
 import sense.GarbageItem;
 /**
  * Class providing static methods to draw the map, robots, garbages and paths
@@ -301,7 +301,7 @@ public class DrawObjects {
 		//int robotSize = (int) (BLOCK_SIZE * (Robot.ROBOT_SIZE / Map.SCALE));
 		g2.setColor(ROBOT_AREA_COLOR);
 		Point robot1 = map.getRobotList().get(0).getRobotPosition();
-		List<Point> adjacentPoints = AStarSearch.getAdjacentPoints(map, robot1, true);
+		List<Point> adjacentPoints = Search.getAdjacentPoints(map, robot1, true);
 
 	
 		

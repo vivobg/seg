@@ -6,7 +6,7 @@ import java.util.List;
 
 import map.Map;
 import robot.Robot;
-import search.AStarSearch;
+import search.Search;
 
 public class Explore {
 	/**
@@ -20,7 +20,7 @@ public class Explore {
 		List<Point> path = null;
 		do {
 			//scan(robot);
-			path = AStarSearch.dSearch(map, start);
+			path = Search.dSearch(map, start);
 			robot.currentPath = path;
 			if (path != null) {
 				if(path.size() > 3)path = optimizePath2(path);
@@ -33,7 +33,7 @@ public class Explore {
 					Point end = path.get(path.size()-1);
 
 					// if (!map.isUnexplored(end.x, end.y)
-					// || !AStarSearch.isAvailableCell(end, map)) {
+					// || !Search.isAvailableCell(end, map)) {
 					// break;
 					// }
 					robot.move(p, end);// Decide if worth moving, before moving

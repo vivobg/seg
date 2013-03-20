@@ -10,7 +10,7 @@ import sense.Bresenham;
  * Class providing static methods, to calculate a path between 2 points
  *
  */
-public class AStarSearch {
+public class Search {
 	/**
 	 * A* search from source to target.
 	 * Useful during garbage collection.

@@ -213,10 +213,10 @@ public class JMapPanel extends JPanel{
 		/*
 		 * Path drawing test
 		 *//*
-		List<Point> points = AStarSearch.aSearch(map, new Point(16-200, 20),
+		List<Point> points = Search.aSearch(map, new Point(16-200, 20),
 				new Point(28-200, 28));
 		jMapPanel.drawPath(points);
-		points = AStarSearch.dSearch(map, new Point(3-200, 9));
+		points = Search.dSearch(map, new Point(3-200, 9));
 		jMapPanel.drawPath(points);
 
 		/*
