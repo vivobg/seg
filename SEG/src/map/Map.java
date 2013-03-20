@@ -22,6 +22,40 @@ import robot.Robot;
 public class Map implements Serializable{
 	
 	private static final long serialVersionUID = 7594975695476674486L;
+	// Fiducially explored cells have the sign flipped.
+	public static final float UNEXPLORED = 1.95f;// Allow to be overwritten
+	public static final float EMPTY = 2;
+	public static final float BUFFER = 3;
+	public static final float WALL = 4;
+	public static final float FAR_WALL = Map.WALL + 0.35f;// 3.5meters
+
+	public static final float TOO_CLOSE = 0.7f;// Player Units from wall
+	public static final float SCALE = 0.1f;// Player units into 1 internal map
+											// unit
+	// how many cells away from wall are empty, but too close to the wall
+	public static final int BUFFER_CELLS = Math.round(TOO_CLOSE / SCALE);
+
+	private ArrayList<VerticalArray> posArray;
+	private ArrayList<VerticalArray> negArray;
+	private int minY = 0; // handy for the GUI
+	private int maxY = 0; // handy for the GUI
+	private int minX = 0; // handy for the GUI
+	private int maxX = 0; // handy for the GUI
+	public transient List<Robot> robotList;
+	public List<GarbageItem> garbageListArray;// GUI code based on this
+
+	/**
+	 * Initialise a new Map instance, with empty garbage and robot lists.
+	 */
+	public Map() {
+		posArray = new ArrayList<VerticalArray>();
+		negArray = new ArrayList<VerticalArray>();
+		garbageListArray = new ArrayList<GarbageItem>();
+		robotList = new ArrayList<Robot>();
+		setValue(0, 0, Map.UNEXPLORED, 0);
+		setValue(1, 1, Map.UNEXPLORED, 0);
+		setValue(-1, -1, Map.UNEXPLORED, 0);
+	}
 	/**
 	 * 
 	 * @return The list of discovered garbage objects
@@ -43,31 +77,8 @@ public class Map implements Serializable{
 	public ArrayList<VerticalArray> getNegArray() {
 		return negArray;
 	}
-	public transient List<Robot> robotList;
-	public List<GarbageItem> garbageListArray;// GUI code based on this
-	/**
-	 * 
-	 * @return The minimum Y value of the map with the sign stripped, as the minimum Y
-	 * can only be 0 or less and the indices of the negative array are positive.
-	 */
-	public int getMinY() {
-		return minY;
-	}
-	/**
-	 * 
-	 * @return The maximum Y value of the map, 0 or greater.
-	 */
-	public int getMaxY() {
-		return maxY;
-	}
-	/**
-	 * 
-	 * @return The minimum X value of the map with the sign stripped, as the minimum X
-	 * can only be 0 or less and the indices of the negative array are positive.
-	 */
-	public int getMinX() {
-		return minX;
-	}
+	
+	
 	/**
 	 * Set the garbage list 
 	 * @param garbageListArray
@@ -96,37 +107,7 @@ public class Map implements Serializable{
 	public void setMaxX(int maxX) {
 		this.maxX = maxX;
 	}
-	//Fiducially explored cells have the sign flipped.
-	public static final float UNEXPLORED = 1.95f;//Allow to be overwritten
-	public static final float EMPTY 	 = 2;
-	public static final float BUFFER     = 3;
-	public static final float WALL 	 	 = 4;
-	public static final float FAR_WALL = Map.WALL + 0.35f;//3.5meters
 	
-	public static final float TOO_CLOSE = 0.7f;// Player Units from wall
-	public static final float SCALE = 0.1f;// Player units into 1 internal map
-											// unit
-	// how many cells away from wall are empty, but too close to the wall
-	public static final int BUFFER_CELLS = Math.round(TOO_CLOSE / SCALE);
-
-	private ArrayList<VerticalArray> posArray;
-	private ArrayList<VerticalArray> negArray;
-	private int minY = 0; // handy for the GUI
-	private int maxY = 0; // handy for the GUI
-	private int minX = 0; // handy for the GUI
-	private int maxX = 0; // handy for the GUI
-	/**
-	 * Initialise a new Map instance, with empty garbage and robot lists.
-	 */
-	public Map() {
-		posArray = new ArrayList<VerticalArray>();
-		negArray = new ArrayList<VerticalArray>();
-		garbageListArray = new ArrayList<GarbageItem>();
-		robotList = new ArrayList<Robot>();
-		setValue(0, 0, Map.UNEXPLORED,0);
-		setValue(1, 1, Map.UNEXPLORED,0);
-		setValue(-1, -1, Map.UNEXPLORED,0);
-	}
 	/**
 	 * Add a robot to the map's list of robots.
 	 * @param r
@@ -151,52 +132,6 @@ public class Map implements Serializable{
 		int xi = (int) Math.round(x / Map.SCALE);
 		int yi = (int) Math.round(y / Map.SCALE);
 		return new Point(xi, yi);
-	}
-	/**
-	 * Update the MinMax Y values
-	 * @param x The x coordinate of the new cell.
-	 * @param y The y coordinate of the new cell.
-	 * @return true if the map's dimensions increased, false otherwise.
-	 */
-	private boolean updateMinMaxY(int x, int y) {
-		boolean grown = false;
-		if (y > maxY) {
-			maxY = y;
-			grown = true;
-		} else if (y < 0 && Math.abs(y) > minY) {
-			minY = Math.abs(y);
-			grown = true;
-		}
-		if (x > maxX) {
-			maxX = x;
-			grown = true;
-		} else if (x < 0 && Math.abs(x) > minX) {
-			minX = Math.abs(x);
-			grown = true;
-		}
-		return grown;
-	}
-
-	/**
-	 * Always returns a value. If the location was never set it returns
-	 * Map.UNEXPLORED
-	 * 
-	 * @param x
-	 *            the horizontal index
-	 * @param y
-	 *            the vertical index
-	 * @return the value at the specified location
-	 */
-	public float getValue(int x, int y) {
-		try {
-			if (x < 0) {
-				x = Math.abs(x);
-				return negArray.get(x).getValue(y);
-			} else
-				return posArray.get(x).getValue(y);
-		} catch (IndexOutOfBoundsException e) {
-			return Map.UNEXPLORED;
-		}
 	}
 	/**
 	 * Extract the encoded distance for the specified cell
@@ -230,7 +165,6 @@ public class Map implements Serializable{
 	public static float encodeSonarDifference(double distance){
 		return (float) (distance/10);//nothing to do with map scale
 	}
-
 	/**
 	 * It is strongly recommended to use setValue() and getValue() instead Only
 	 * use to read and NOT set (can mess up MinMax sizes)
@@ -245,6 +179,27 @@ public class Map implements Serializable{
 			return negArray.get(x);
 		} else
 			return posArray.get(x);
+	}
+	/**
+	 * Always returns a value. If the location was never set it returns
+	 * Map.UNEXPLORED
+	 * 
+	 * @param x
+	 *            the horizontal index
+	 * @param y
+	 *            the vertical index
+	 * @return the value at the specified location
+	 */
+	public float getValue(int x, int y) {
+		try {
+			if (x < 0) {
+				x = Math.abs(x);
+				return negArray.get(x).getValue(y);
+			} else
+				return posArray.get(x).getValue(y);
+		} catch (IndexOutOfBoundsException e) {
+			return Map.UNEXPLORED;
+		}
 	}
 	/**
 	 * Update/create the specified cell with the given value
@@ -304,7 +259,60 @@ public class Map implements Serializable{
 		updateMap(x, y, value);
 	}
 
-	
+	/**
+	 * 
+	 * @return The minimum Y value of the map with the sign stripped, as the minimum Y
+	 * can only be 0 or less and the indices of the negative array are positive.
+	 */
+	public int getMinY() {
+		return minY;
+	}
+	/**
+	 * 
+	 * @return The maximum Y value of the map, 0 or greater.
+	 */
+	public int getMaxY() {
+		return maxY;
+	}
+	/**
+	 * 
+	 * @return The minimum X value of the map with the sign stripped, as the minimum X
+	 * can only be 0 or less and the indices of the negative array are positive.
+	 */
+	public int getMinX() {
+		return minX;
+	}
+	/**
+	 * 
+	 * @return The maximum X value of the map, 0 or greater.
+	 */
+	public int getMaxX() {
+		return maxX;
+	}
+	/**
+	 * Update the MinMax Y values
+	 * @param x The x coordinate of the new cell.
+	 * @param y The y coordinate of the new cell.
+	 * @return true if the map's dimensions increased, false otherwise.
+	 */
+	private boolean updateMinMaxY(int x, int y) {
+		boolean grown = false;
+		if (y > maxY) {
+			maxY = y;
+			grown = true;
+		} else if (y < 0 && Math.abs(y) > minY) {
+			minY = Math.abs(y);
+			grown = true;
+		}
+		if (x > maxX) {
+			maxX = x;
+			grown = true;
+		} else if (x < 0 && Math.abs(x) > minX) {
+			minX = Math.abs(x);
+			grown = true;
+		}
+		return grown;
+	}
 	/**
 	 * 
 	 * @return the size of the internal positive x array
@@ -332,6 +340,27 @@ public class Map implements Serializable{
 	 */
 	public int getMinYSize() {
 		return minY;
+	}
+	/**
+	 * 
+	 *Set the minimum Y value of the map, 0 or greater.
+	 */
+	public void setMinY(int minY) {
+		this.minY = minY;
+	}
+	/**
+	 * 
+	 *Set the maximum Y value of the map, 0 or greater.
+	 */
+	public void setMaxY(int maxY) {
+		this.maxY = maxY;
+	}
+	/**
+	 * 
+	 *Set the minimum X value of the map, 0 or greater.
+	 */
+	public void setMinX(int minX) {
+		this.minX = minX;
 	}
 	/**
 	 * Check if the specified cell is a FAR WALL
@@ -417,33 +446,6 @@ public class Map implements Serializable{
 		}
 		System.out.println("Done negative X");
 	}
-	/**
-	 * 
-	 * @return The maximum X value of the map, 0 or greater.
-	 */
-	public int getMaxX() {
-		return maxX;
-	}
-	/**
-	 * 
-	 *Set the minimum Y value of the map, 0 or greater.
-	 */
-	public void setMinY(int minY) {
-		this.minY = minY;
-	}
-	/**
-	 * 
-	 *Set the maximum Y value of the map, 0 or greater.
-	 */
-	public void setMaxY(int maxY) {
-		this.maxY = maxY;
-	}
-	/**
-	 * 
-	 *Set the minimum X value of the map, 0 or greater.
-	 */
-	public void setMinX(int minX) {
-		this.minX = minX;
-	}
+	
 
 }
