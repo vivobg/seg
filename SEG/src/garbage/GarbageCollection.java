@@ -3,12 +3,9 @@ package garbage;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayDeque;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Queue;
 import map.Map;
-
-import mainApp.Utilities;
 
 import javaclient3.structures.PlayerPose2d;
 
@@ -38,7 +35,12 @@ public class GarbageCollection {//too much static
 		while(map.garbageList.containsValue(false)) //while there exists one that hasnt been collected
 		{
 			//wait for list to be empty
-			Utilities.pause(100);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 	}
