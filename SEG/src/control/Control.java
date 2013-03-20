@@ -157,9 +157,8 @@ public class Control {
 	 */
 	private void sleep(int i) {
 		try {
-			Thread.sleep(200);
+			Thread.sleep(i);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
