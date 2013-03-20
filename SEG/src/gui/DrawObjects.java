@@ -10,7 +10,6 @@ import map.GarbageItem;
 import map.Map;
 import map.VerticalArray;
 import robot.Robot;
-import search.Search;
 /**
  * Class providing static methods to draw the map, robots, garbages and paths
  * to either a Java Swing component, or a Buffered image, depending on the provided
@@ -19,25 +18,21 @@ import search.Search;
  */
 public class DrawObjects {
 	public static final int BLOCK_SIZE = 3;
-	public static final Color COLOR_WALL = Color.BLACK;
-	public static final Color COLOR_EMPTY = Color.WHITE;
-	public static final Color COLOR_UNEXPLORED = Color.GRAY;
+	private static final Color COLOR_WALL = Color.BLACK;
+	private static final Color COLOR_EMPTY = Color.WHITE;
+	private static final Color COLOR_UNEXPLORED = Color.GRAY;
 	// Too close to a wall
-	public static final Color COLOR_UNWALKABLE = Color.CYAN;
-	public static final Color COLOR_FAR_WALL = Color.BLACK;
-	public static final Color COLOR_PATH = Color.ORANGE;
-	public static final Color COLOR_PATH_OPTIMIZED = Color.ORANGE.darker();
-	public static final Color COLOR_PATH_START = Color.GREEN;
-	public static final Color COLOR_PATH_FINISH = Color.MAGENTA;
-	public static final Color[] ROBOT_COLORS = { Color.RED, Color.YELLOW,
+	private static final Color COLOR_UNWALKABLE = Color.CYAN;
+	private static final Color COLOR_FAR_WALL = Color.BLACK;
+	private static final Color COLOR_PATH = Color.ORANGE;
+	private static final Color COLOR_PATH_START = Color.GREEN;
+	private static final Color COLOR_PATH_FINISH = Color.MAGENTA;
+	private static final Color[] ROBOT_COLORS = { Color.RED, Color.YELLOW,
 			Color.BLUE };
-	public static final Color GARGABE_COLOR = Color.RED;
-	public static final Color GARGABE_COLOR_COLLECTED = Color.GREEN;
-	public static final float GARBAGE_SIZE = 0.2f;
-	public static final Color COLOR_PATH_FINISH_EXPLORED = Color.BLUE;
-	public static final Color ROBOT_AREA_COLOR = Color.YELLOW.brighter();
-
-
+	private static final Color GARGABE_COLOR = Color.RED;
+	private static final Color GARGABE_COLOR_COLLECTED = Color.GREEN;
+	private static final float GARBAGE_SIZE = 0.2f;
+	private static final Color COLOR_PATH_FINISH_EXPLORED = Color.BLUE;
 	/**
 	 * Clear the given graphical context
 	 * 
@@ -52,7 +47,7 @@ public class DrawObjects {
 	}
 
 	/**
-	 * Naively draws the map with the given graphics context
+	 * Naively draws the map with the given graphics context. Slower than drawMapDeep
 	 * 
 	 * @param g2
 	 *            The graphics object to draw with
@@ -199,48 +194,9 @@ public class DrawObjects {
 			
 			g2.fillRect((center.x + finish.x) * BLOCK_SIZE,
 					(center.y - finish.y) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-			/*
-			// Optimized path
-			opPath = bot.currentOptimizedPath;
-			if (opPath == null || !bot.isFollowing)
-				continue;
-			g2.setColor(COLOR_PATH_OPTIMIZED);
-			for (int i = 0; i < opPath.size()-1; i++) {
-				Point s = opPath.get(i);
-				Point t = opPath.get(i + 1);
-				List<Point> missing = line(s.x, s.y, t.x, t.y);
-				for (Point p : missing) {
-					g2.fillRect((center.x + p.x) * BLOCK_SIZE, (center.y - p.y)
-							* BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-				}
-			}*/
+			
 		}
 	}
-/*
-	public static List<Point> line(int x0, int y0, int x1, int y1) {
-
-		int dx = Math.abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
-		int dy = Math.abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
-		int err = (dx > dy ? dx : -dy) / 2, e2;
-
-		List<Point> points = new ArrayList<Point>();
-		for (;;) {
-			points.add(new Point(x0, y0));
-			if (x0 == x1 && y0 == y1)
-				break;
-			e2 = err;
-			if (e2 > -dx) {
-				err -= dy;
-				x0 += sx;
-			}
-			if (e2 < dy) {
-				err += dx;
-				y0 += sy;
-			}
-		}
-		return points;
-	}*/
-
 
 	/**
 	 * Draw robots with the given graphics context
@@ -250,8 +206,6 @@ public class DrawObjects {
 	 */
 	public static void drawRobots(Map map, Graphics2D g2, Point size) {
 		Point center = new Point(size.x / 2 / BLOCK_SIZE, size.y / 2 / BLOCK_SIZE);
-		// int centerX = map.getMinXSize();
-		// int centerY = map.getMaxYSize();
 		int robotSize = (int) (BLOCK_SIZE * (Robot.ROBOT_SIZE / Map.SCALE));
 		for (int i = 0; i < map.robotList.size(); i++) {
 			Robot bot = map.robotList.get(i);
@@ -288,24 +242,5 @@ public class DrawObjects {
 					* BLOCK_SIZE - garbageSize / 2, garbageSize, garbageSize);
 		}
 	}
-	/**
-	 * TO BE REMOVED, NOT USED
-	 * @param map
-	 * @param g2
-	 * @param size
-	 */
-	public static void drawRobotArea(Map map, Graphics2D g2, Point size) {
-		// TODO Auto-generated method stub
-		
-		Point center = new Point(size.x / 2 / BLOCK_SIZE, size.y / 2 / BLOCK_SIZE);
-		//int robotSize = (int) (BLOCK_SIZE * (Robot.ROBOT_SIZE / Map.SCALE));
-		g2.setColor(ROBOT_AREA_COLOR);
-		Point robot1 = map.getRobotList().get(0).getRobotPosition();
-		List<Point> adjacentPoints = Search.getAdjacentPoints(map, robot1, true);
-
 	
-		
-		
-		
-	}
 }
