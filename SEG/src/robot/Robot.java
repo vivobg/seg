@@ -82,6 +82,7 @@ public class Robot{
 	private Point x1y1;
 	private Point x2y2;
 	private int currentGarbageIndex;
+	private int GARBAGE_AREA_BOUNDARY = 3;
 
 
 	/**
@@ -371,7 +372,8 @@ public class Robot{
 					Point garbagePoint = Map.convertPlayerToInternal(x+(Math.cos(yaw)*0.4), y + (Math.sin(yaw)*0.4));
 					map.garbageListArray.get(currentGarbageIndex).setPoint(garbagePoint);
 					
-					if(x1y1.x <= garbagePoint.x && garbagePoint.x <= x2y2.x && x2y2.y <= garbagePoint.y && garbagePoint.y <= x1y1.y)
+					if(x1y1.x + GARBAGE_AREA_BOUNDARY  <= garbagePoint.x && garbagePoint.x <= x2y2.x - GARBAGE_AREA_BOUNDARY 
+							&& x2y2.y + GARBAGE_AREA_BOUNDARY <= garbagePoint.y && garbagePoint.y <= x1y1.y - GARBAGE_AREA_BOUNDARY)
 					{
 						pos2D.setSpeed(0, 0);
 						map.garbageListArray.get(currentGarbageIndex).setIsCollected(true);
@@ -596,6 +598,7 @@ public class Robot{
 									double distance = Math.sqrt(Py*Py + Px*Px);
 									double diffX = Math.cos(yaw + Math.atan(Py / Px)) * distance;
 									double diffY = Math.sin(yaw + Math.atan(Py / Px)) * distance;
+									//System.out.println((x + diffX) + "," +  (y + diffY));
 
 									addItem(new GarbageItem(Map.convertPlayerToInternal(x + diffX, y + diffY),false));
 								}
@@ -642,7 +645,7 @@ public class Robot{
 	
 	public void goFetchGarbage(double x1, double y1, double x2, double y2) {
 		goFetchGarbageHasBeenCalled = true;
-		int distanceFromGripperToRobotCenter = (int) Math.round(0.4/Map.SCALE);
+		int distanceFromGripperToRobotCenter = (int) Math.round(0.3/Map.SCALE);
 		Point dropOffPoint = Map.convertPlayerToInternal((x1+x2)/2, (y1+y2)/2);
 		//dropOffRectangle = new Rectangle((int)(x1/Map.SCALE), (int)(y1/Map.SCALE), (int)((x2 - x1) /Map.SCALE), (int)((y1 - y2)/Map.SCALE));
 		x1y1 = Map.convertPlayerToInternal(x1, y1);
