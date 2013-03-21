@@ -241,6 +241,12 @@ public class Robot {
 	public void turn(double targetYaw, double rate, Point target, Point end) {
 		while (Math.abs(targetYaw - yaw) > HEADING_THRESHOLD
 				&& Math.abs(targetYaw - yaw) < 2 * Math.PI - HEADING_THRESHOLD) {
+			if (carryingGarbage) {
+				map.garbageListArray.get(currentGarbageIndex).setPoint(
+						Map.convertPlayerToInternal(
+								x + (Math.cos(yaw) * 0.4), y
+										+ (Math.sin(yaw) * 0.4)));
+			}
 
 			if (!isValidMoveCondition(target, end))
 				break;
