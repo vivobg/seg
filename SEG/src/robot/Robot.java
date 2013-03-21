@@ -379,7 +379,7 @@ public class Robot {
 
 				if (isRobotStuckExploration())
 					break;
-				isRobotStuckGarbageCollection();
+				if (isRobotStuckGarbageCollection()) break;
 
 				if ((Math.abs(px - x) < TARGET_THRESHOLD && Math.abs(py - y) < TARGET_THRESHOLD)) {
 					pos2D.setSpeed(0, 0);
@@ -449,7 +449,7 @@ public class Robot {
 	 * 
 	 * @return true, if the robot is stuck, false otherwise
 	 */
-	public void isRobotStuckGarbageCollection() {
+	public boolean isRobotStuckGarbageCollection() {
 
 		if (pos2D.getData().getStall() == 1 && goFetchGarbageHasBeenCalled) {
 			pos2D.setSpeed(-0.5, 0);
@@ -460,7 +460,9 @@ public class Robot {
 			System.out
 					.println("Robot stuck during garbage collection, move back");
 			pos2D.setSpeed(0, 0);
+			return true;
 		}
+		return false;
 	}
 
 	/**
