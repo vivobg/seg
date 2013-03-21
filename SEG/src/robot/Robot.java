@@ -350,6 +350,12 @@ public class Robot {
 			Point target = Map.convertPlayerToInternal(px, py);
 
 			while (true) {
+				
+				Point a = this.getRobotPosition();
+				if (a.distance(target) < 3){
+					double targetYaw = targetYaw(px, py);
+					turn(targetYaw);
+				}
 
 				if (!isValidMoveCondition(target, end))
 					break;
