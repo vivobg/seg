@@ -11,7 +11,7 @@ import sense.Bresenham;
  *
  */
 public class Search {
-	private static final double AVAILABLE_CELL_LIMIT = 0.3;
+	private static final double AVAILABLE_CELL_LIMIT = 0.4;
 
 	/**
 	 * A* search from source to target.
