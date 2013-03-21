@@ -60,7 +60,7 @@ public class Bresenham {
 			
 			Point p = new Point(x1, y1);
 			distance = Map.calculateSonarDistance(p, robotPoint);
-			if (distance+MAP_SCALE < Map.FAR_WALL && !Sense.sensingAnotherRobot(map, map.robotList.get(robotIndex), new Point(x1,y1)))
+			if ( !Sense.sensingAnotherRobot(map, map.robotList.get(robotIndex), new Point(x1,y1)))
 				circle(map,x1, y1, Map.BUFFER_CELLS);
 			
 			if (distance+MAP_SCALE  < map.getSonarDistance(x1, y1)/* || map.getSonarDistance(x1, y1) < 0.3*/){
