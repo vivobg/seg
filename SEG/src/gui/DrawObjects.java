@@ -206,7 +206,7 @@ public class DrawObjects {
 	 */
 	public static void drawRobots(Map map, Graphics2D g2, Point size) {
 		Point center = new Point(size.x / 2 / BLOCK_SIZE, size.y / 2 / BLOCK_SIZE);
-		int robotSize = (int) (BLOCK_SIZE * (Robot.ROBOT_SIZE / Map.SCALE));
+		int robotSize = (int) (BLOCK_SIZE * (Robot.ROBOT_SIZE / Map.SCALE) * 1.3);
 		for (int i = 0; i < map.robotList.size(); i++) {
 			Robot bot = map.robotList.get(i);
 			g2.setColor(ROBOT_COLORS[i]);
