@@ -219,7 +219,7 @@ public class Search {
 						if(isAvailableCell(adjPoint,map))possiblePoints.add(adjPoint);
 						//possiblePoints.add(adjPoint);
 					}
- else if (!ASEARCH && (!map.isOccupied(i, j)))
+					else if (!ASEARCH && (!map.isOccupied(i, j)))
 					{
 	 					
 						if (isAvailableCell(adjPoint, map))

@@ -17,7 +17,7 @@ import robot.Robot;
  *
  */
 public class DrawObjects {
-	public static final int BLOCK_SIZE = 3;
+	public static final int BLOCK_SIZE = 1;
 	private static final Color COLOR_WALL = Color.BLACK;
 	private static final Color COLOR_EMPTY = Color.WHITE;
 	private static final Color COLOR_UNEXPLORED = Color.GRAY;
