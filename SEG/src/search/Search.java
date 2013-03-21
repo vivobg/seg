@@ -121,7 +121,10 @@ public class Search {
 	private static int Gcost(Point source, Point target, Map map) {
 		int cost = 0;
 		if (map.isBuffer(target.x, target.y))
-			cost = 20;
+			cost = 50;
+		
+		if (map.isOccupied(target.x, target.y))
+			cost = 2500;
 		
 		if (isDiagonal(source, target))
 			return cost + 7;
@@ -216,8 +219,8 @@ public class Search {
 				if(!p.equals(adjPoint)  )
 				{
 					if(ASEARCH && (map.isEmpty(i, j) || map.isBuffer(i, j) )){
-						if(isAvailableCell(adjPoint,map))possiblePoints.add(adjPoint);
-						//possiblePoints.add(adjPoint);
+						//if(isAvailableCell(adjPoint,map))possiblePoints.add(adjPoint);
+						possiblePoints.add(adjPoint);
 					}
  else if (!ASEARCH && (!map.isOccupied(i, j)))
 					{
