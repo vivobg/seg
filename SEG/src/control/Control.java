@@ -125,7 +125,7 @@ public class Control {
 				if(i + 1 < args.length)
 				{
 					String filename = args[i+1];
-					saveMap(filename);
+					saveMap(filename + ".png");
 				}
 			}
 			else if(args[i].equals("-collect"))
