@@ -475,13 +475,14 @@ public class Robot {
 	 * Start exploration
 	 */
 	public void explore() {
+		setStatus(RobotState.Exploring);
 
 		this.control.println("Robot " + Robot.this.index
 				+ " started exploration.");
 		final Robot robot = this;
 		Thread thr = new Thread() {
 			public void run() {
-				setStatus(RobotState.Exploring);
+				
 				Point start = Map.convertPlayerToInternal(x, y);
 				List<Point> path = null;
 				do {
@@ -628,6 +629,7 @@ public class Robot {
 	 *            the y coordinate of the second point
 	 */
 	public void goFetchGarbage(double x1, double y1, double x2, double y2) {
+		setStatus(RobotState.GarbageCollecting);
 		goFetchGarbageHasBeenCalled = true;
 		int distanceFromGripperToRobotCenter = (int) Math
 				.round(0.4 / Map.SCALE);
@@ -680,5 +682,6 @@ public class Robot {
 			gripper.open();
 		}
 		control.println("Garbage collection finished");
+		setStatus(RobotState.Idle);
 	}
 }

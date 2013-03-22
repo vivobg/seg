@@ -92,13 +92,16 @@ public class Control {
 	 * @param args
 	 */
 	private void processArgs(String[] args) {
+		boolean gui = false;
 		//java MainApp -solo -explore -map map1 -multi -collect 1 1 2 0 -map map2
 		if (args.length == 0) {
-			args = new String[]{"-gui"};
+			System.out.println("No arguments. Exiting...");
 		}
 		for(String str : args)
 		{
-			if(str.equals("-gui")) launchGui();
+			if(str.equals("-gui")) {
+				gui = true;
+				launchGui();}
 		}
 		
 		for(int i = 0; i < args.length; i++)
@@ -128,6 +131,7 @@ public class Control {
 			else if(args[i].equals("-collect"))
 			{
 				while(!allRobotsAvailable()){sleep(2000);};//Wait for all robots to complete what they're doing
+				map.robotList.get(0).Status = RobotState.GarbageCollecting;
 				if(i + 4 < args.length)
 				{
 					try{
@@ -141,9 +145,14 @@ public class Control {
 						e.printStackTrace();
 					}
 				}
+				while(!allRobotsAvailable()){sleep(2000);}
 			}
 
 		}
+		while(!allRobotsAvailable()){sleep(2000);}
+		if (!gui) {
+			System.out.println("Finished processing all arguments. Exiting...");
+			System.exit(0);}
 
 	}
 	/**
