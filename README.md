@@ -1,3 +1,5 @@
+#Robotics Software Engineering Group Project
+######Computer Science - King's College London
 We programmed a robot with 16 sonar sensors and a fiducial sensor to map its environment and gather objects. We used the [Player](http://playerstage.sourceforge.net/) robot device interface and the 
 [Stage](http://playerstage.sourceforge.net/) multiple robot simulator. 
 
